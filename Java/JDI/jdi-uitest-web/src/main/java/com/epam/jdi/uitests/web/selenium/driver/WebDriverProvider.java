@@ -24,6 +24,9 @@ public class WebDriverProvider {
     static final String getChromeDriverPath (String folderPath) {
         return checkOS().equals("win") ? folderPath + "/chromedriver.exe" : folderPath + "/chromedriver";
     }
+    static final String getGeckoDriverPath (String folderPath) {
+        return checkOS().equals("win") ? folderPath + "/geckodriver.exe" : folderPath + "/geckodriver";
+    }
     static final String getIEDriverPath (String folderPath) {
         return folderPath + "/IEDriverServer.exe";
     }
@@ -32,9 +35,13 @@ public class WebDriverProvider {
     }
 
     private static final String CHROME_STORAGE = "http://chromedriver.storage.googleapis.com/";
+    private static final String GECKO_STORAGE = "https://github.com/mozilla/geckodriver/releases/download/v{0}/geckodriver-v{0}-{1}";
     private static final String CHROME_MAC_DRIVER = "chromedriver_mac64.zip";
     private static final String CHROME_NIX_DRIVER = "chromedriver_linux64.zip";
     private static final String CHROME_WIN_DRIVER = "chromedriver_win32.zip";
+    private static final String GECKO_MAC_DRIVER = "macos.tar.gz";
+    private static final String GECKO_NIX_DRIVER = "linux64.tar.gz";
+    private static final String GECKO_WIN_DRIVER = "win32.zip";
     public static String DRIVER_VERSION = "";
     private static final String IE_WIN_DRIVER_URL = "http://selenium-release.storage.googleapis.com/{0}/IEDriverServer_x64_{0}.1.zip";
 
@@ -88,6 +95,17 @@ public class WebDriverProvider {
                 return url + CHROME_NIX_DRIVER;
         }
     }
+
+    private static String geckoDriverDownloadUrl() throws IOException {
+        switch (checkOS()) {
+            case "mac":
+                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? "0.15.0" : DRIVER_VERSION, GECKO_MAC_DRIVER);
+            case "win":
+                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? "0.15.0" : DRIVER_VERSION, GECKO_WIN_DRIVER);
+            default:
+                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? "0.15.0" : DRIVER_VERSION, GECKO_NIX_DRIVER);
+        }
+    }
     private static String ieDriverDownloadUrl() {
         return format(IE_WIN_DRIVER_URL, DRIVER_VERSION.equals("") ? "2.53" : DRIVER_VERSION);
     }
@@ -112,6 +130,16 @@ public class WebDriverProvider {
                 Runtime.getRuntime().exec("chmod u+x " + getChromeDriverPath(folderPath));
         } catch (IOException e) {
             throw exception("Can't get %s. Exception: " + e.getMessage(), "ChromeDriver");
+        }
+    }
+
+    public static void downloadGeckoDriver(String folderPath) {
+        try {
+            downloadDriver("GeckoDriver", getGeckoDriverPath(folderPath), checkOS().equals("win") ? "geckodriver.exe" : "geckodriver", geckoDriverDownloadUrl());
+            if (checkOS().equals("mac") || checkOS().equals("nix"))
+                Runtime.getRuntime().exec("chmod u+x " + getGeckoDriverPath(folderPath));
+        } catch (IOException e) {
+            throw exception("Can't get %s. Exception: " + e.getMessage(), "GeckoDriver");
         }
     }
 

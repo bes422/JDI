@@ -64,8 +64,8 @@ public abstract class JDISettings {
 
     public static synchronized void initFromProperties() throws IOException {
         getProperties(jdiSettingsPath);
-        fillAction(driverFactory::registerDriver, "driver");
         fillAction(driverFactory::setRunType, "run.type");
+        fillAction(driverFactory::registerDriver, "driver");
         fillAction(p -> shortLogMessagesFormat = p.toLowerCase().equals("short"), "log.message.format");
         fillAction(p -> useCache =
                 p.toLowerCase().equals("true") || p.toLowerCase().equals("1"), "cache");

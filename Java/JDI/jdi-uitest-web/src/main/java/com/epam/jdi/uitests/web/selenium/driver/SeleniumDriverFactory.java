@@ -22,6 +22,7 @@ import com.epam.commons.map.MapArray;
 import com.epam.commons.pairs.Pair;
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.settings.IDriver;
+import com.epam.jdi.uitests.core.logger.LogLevels;
 import com.epam.jdi.uitests.core.settings.HighlightSettings;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
@@ -48,10 +49,13 @@ import static com.epam.commons.StringUtils.LINE_BREAK;
 import static com.epam.commons.Timer.sleep;
 import static com.epam.jdi.uitests.core.settings.JDISettings.exception;
 import static com.epam.jdi.uitests.core.settings.JDISettings.timeouts;
+import static com.epam.jdi.uitests.core.settings.JDISettings.toLog;
 import static com.epam.jdi.uitests.web.selenium.driver.DriverTypes.*;
+import static com.epam.jdi.uitests.web.selenium.driver.RunTypes.GRID;
 import static com.epam.jdi.uitests.web.selenium.driver.RunTypes.LOCAL;
+import static com.epam.jdi.uitests.web.selenium.driver.RunTypes.REMOTE;
 import static com.epam.jdi.uitests.web.selenium.driver.WebDriverProvider.*;
-import static com.epam.jdi.uitests.web.settings.WebSettings.getJSExecutor;
+import static com.epam.jdi.uitests.web.settings.WebSettings.*;
 import static java.lang.String.format;
 import static java.lang.System.setProperty;
 import static java.lang.Thread.currentThread;
@@ -79,6 +83,7 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     public SeleniumDriverFactory() {
         this(false, new HighlightSettings(), WebElement::isDisplayed);
     }
+
     public SeleniumDriverFactory(boolean isDemoMode) {
         this(isDemoMode, new HighlightSettings(), WebElement::isDisplayed);
     }
@@ -109,6 +114,7 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     public String currentDriverName() {
         return currentDriverName;
     }
+
     public void setCurrentDriver(String driverName) {
         currentDriverName = driverName;
     }
@@ -116,6 +122,7 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     public boolean hasDrivers() {
         return drivers.any();
     }
+
     public boolean hasRunDrivers() {
         return runDrivers.get() != null && runDrivers.get().any();
     }
@@ -129,10 +136,16 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     public void setRunType(String runType) {
         switch (runType.toLowerCase()) {
             case "local":
+                toLog("runType = local", LogLevels.DEBUG);
                 this.runType = LOCAL;
                 break;
             case "remote":
-                this.runType = RunTypes.REMOTE;
+                toLog("runType = remote", LogLevels.DEBUG);
+                this.runType = REMOTE;
+                break;
+            case "grid":
+                toLog("runType = grid", LogLevels.DEBUG);
+                this.runType = GRID;
                 break;
         }
     }
@@ -146,6 +159,14 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
             case "ie":
             case "internetexplorer":
                 return registerDriver(IE);
+            case "iphone":
+                return registerDriver(IPHONE);
+            case "safari":
+                return registerDriver(SAFARI);
+            case "ipad":
+                return registerDriver(IPAD);
+            case "android":
+                return registerDriver(ANDROID);
             default:
                 throw exception("Unknown driver: " + driverName);
         }
@@ -155,6 +176,14 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
         switch (runType) {
             case LOCAL:
                 return registerLocalDriver(driverType);
+            case GRID:
+                return registerDriver("Grid " + driverType,
+                        () -> {
+                            if (!hasHub())
+                                throw exception("Please set hubUrl");
+                            setProperty("webdriver.gecko.driver", getGeckoDriverPath(driversPath));
+                            return webDriverSettings.apply(new RemoteWebDriver(hub, driverType.getDesiredCapabilities(downloadsDir)));
+                        });
             case REMOTE:
                 return registerDriver("Remote " + driverType,
                         () -> new RemoteWebDriver(SauceLabRunner.getSauceUrl(), SauceLabRunner.getSauceDesiredCapabilities(driverType)));
@@ -167,29 +196,34 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     protected String registerLocalDriver(DriverTypes driverType) {
         switch (driverType) {
             case CHROME:
+            case IPAD:
+            case IPHONE:
+            case ANDROID:
                 return registerDriver(driverType,
                         () -> {
                             if (getLatestDriver)
                                 downloadChromeDriver(driversPath);
+                            DesiredCapabilities capabilities = driverType.getDesiredCapabilities(downloadsDir);
                             setProperty("webdriver.chrome.driver", getChromeDriverPath(driversPath));
-                            return webDriverSettings.apply(new ChromeDriver());
+                            return webDriverSettings.apply(driverType.getWebDriverObject(capabilities));
                         });
             case FIREFOX:
                 return registerDriver(driverType,
                         () -> {
-                            DesiredCapabilities capabilities = internetExplorer();
+                            downloadGeckoDriver(driversPath);
+                            DesiredCapabilities capabilities = driverType.getDesiredCapabilities(downloadsDir);
                             capabilities.setCapability(PAGE_LOAD_STRATEGY, pageLoadStrategy);
-                            setProperty("webdriver.gecko.driver", getFirefoxDriverPath(driversPath));
-                            return webDriverSettings.apply(new FirefoxDriver(capabilities));
+                            setProperty("webdriver.gecko.driver", getGeckoDriverPath(driversPath));
+                            return webDriverSettings.apply(driverType.getWebDriverObject(capabilities));
                         });
             case IE:
                 return registerDriver(driverType, () -> {
-                    DesiredCapabilities capabilities = internetExplorer();
+                    DesiredCapabilities capabilities = driverType.getDesiredCapabilities(downloadsDir);
                     capabilities.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
                     if (getLatestDriver)
                         downloadIEDriver(driversPath);
                     setProperty("webdriver.ie.driver", getIEDriverPath(driversPath));
-                    return webDriverSettings.apply(new InternetExplorerDriver(capabilities));
+                    return webDriverSettings.apply(driverType.getWebDriverObject(capabilities));
                 });
         }
         throw exception("Unknown driver: " + driverType);
@@ -204,6 +238,7 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
         currentDriverName = driverName;
         return driverName;
     }
+
     public String registerDriver(String driverName, Supplier<WebDriver> driver) {
         if (!drivers.add(driverName, driver))
             throw exception("Can't register WebDriver '%s'. Driver with same name already registered", driverName);
@@ -221,6 +256,7 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
             throw WebSettings.asserter.exception("Can't get WebDriver. " + LINE_BREAK + ex.getMessage());
         }
     }
+
     public static Dimension browserSizes;
 
     public static Function<WebDriver, WebDriver> webDriverSettings = driver -> {
@@ -272,6 +308,7 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
         if (drivers.keys().contains(driverName))
             getDriver();
     }
+
     public void switchToDriver(String driverName) {
         if (drivers.keys().contains(driverName))
             currentDriverName = driverName;

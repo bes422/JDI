@@ -165,8 +165,6 @@ public abstract class BaseMatcher implements IChecker {
             return;
         }
         if (!resultMessage.equals(FOUND)) {
-            if (doScreenshot == SCREEN_ON_FAIL)
-                logger.debug(doScreenshotGetMessage());
             assertException(failMessage == null ? defaultMessage + " failed" : failMessage);
         }
     }
