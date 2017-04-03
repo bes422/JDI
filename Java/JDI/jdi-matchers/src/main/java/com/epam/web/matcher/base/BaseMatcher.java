@@ -199,6 +199,13 @@ public abstract class BaseMatcher implements IChecker {
             throw exception(ex.getMessage());
         }
     }
+
+    public void ignore(JAction action) {
+        try {
+            action.invoke();
+        } catch (Exception ignore) { }
+    }
+
     //CHECKSTYLE OFF
     private String toUtf8(String text) {
         return silent(() -> new String(text.getBytes(), "UTF-8"));
@@ -310,6 +317,14 @@ public abstract class BaseMatcher implements IChecker {
     public <T> void listEquals(Collection<T> actual, Collection<T> expected, String failMessage) {
         assertAction("Check that Collections are equal",
                 () -> actual != null && expected != null && actual.size() == expected.size()
+                        ? FOUND
+                        : "listEquals failed because one of the Collections is null or size is different",
+                failMessage, false);
+        listContains(actual, expected);
+    }
+    public <T> void listContains(Collection<T> actual, Collection<T> expected, String failMessage) {
+        assertAction("Check that Collections are equal",
+                () -> actual != null && expected != null && actual.size() > 0 && expected.size() > 0
                         ? FOUND
                         : "listEquals failed because one of the Collections is null or empty",
                 failMessage, false);

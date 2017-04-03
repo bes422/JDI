@@ -116,6 +116,12 @@ public class Menu<TEnum extends Enum> extends Selector<TEnum> implements IMenu<T
         hoverAndClick(getEnumValue(name));
     }
 
+    public final void clickOn(String name) {
+        select(name);
+    }
+    public final void clickOn(TEnum name) {
+        select(name);
+    }
     protected void selectAction(String... names) {
         hoverAndClick(names);
     }
@@ -140,9 +146,13 @@ public class Menu<TEnum extends Enum> extends Selector<TEnum> implements IMenu<T
     }
 
     public Menu<TEnum> setUp(JMenu jMenu) {
-        this.menuLevelsLocators = LinqUtils.select(asList(jMenu.levelLocators()), WebAnnotationsUtil::findByToBy);
+        this.menuLevelsLocators = jMenu.levelLocators().length > 0
+        ? LinqUtils.select(asList(
+            jMenu.levelLocators()), WebAnnotationsUtil::findByToBy)
+        : LinqUtils.select(asList(
+            jMenu.jLevelLocators()), WebAnnotationsUtil::findByToBy);
         if (!jMenu.separator().equals(""))
-            useSeparator(jMenu.separator());
+            separator = jMenu.separator();
         return this;
     }
 }

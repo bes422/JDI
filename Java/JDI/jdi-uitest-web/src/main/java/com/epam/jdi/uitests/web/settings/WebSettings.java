@@ -66,8 +66,7 @@ import static java.util.Arrays.asList;
  */
 public class WebSettings extends JDISettings {
     public static String domain;
-
-    public static boolean hasDomain() {
+    public static String killBrowser;    public static boolean hasDomain() {
         return domain != null && domain.contains("://");
     }
 
@@ -124,6 +123,7 @@ public class WebSettings extends JDISettings {
         MapInterfaceToElement.init(defaultInterfacesMap);
     }
 
+
     public static synchronized void initFromProperties() throws IOException {
         init();
         JDISettings.initFromProperties();
@@ -144,6 +144,8 @@ public class WebSettings extends JDISettings {
         fillAction(p -> getDriverFactory().getLatestDriver =
                 p.toLowerCase().equals("true") || p.toLowerCase().equals("1"), "driver.getLatest");
         fillAction(p -> asserter.doScreenshot(p), "screenshot.strategy");
+        killBrowser = "afterAndBefore";
+        fillAction(p -> killBrowser = p, "browser.kill");
         fillAction(p -> {
             p = p.toLowerCase();
             if (p.equals("soft"))
