@@ -51,6 +51,7 @@ public @interface JFindBy {
     String model() default "";
     String binding() default "";
     String repeat() default "";
+    String e2e() default "";
 
     // Group
     String group() default APP_VERSION;

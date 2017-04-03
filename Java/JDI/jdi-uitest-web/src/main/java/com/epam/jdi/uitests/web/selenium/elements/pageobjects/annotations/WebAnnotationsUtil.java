@@ -147,6 +147,8 @@ public class WebAnnotationsUtil extends AnnotationsUtil {
             return By.cssSelector(format("[ng-binding='%s']", locator.binding()));
         if (!"".equals(locator.repeat()))
             return By.cssSelector(format("[ng-repeat='%s']", locator.repeat()));
+        if (!"".equals(locator.e2e()))
+            return By.cssSelector(format("[e2e='%s']", locator.e2e()));
 
         return null;
     }
