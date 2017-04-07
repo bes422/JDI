@@ -21,7 +21,6 @@ package com.epam.jdi.uitests.web.selenium.elements.complex;
 import com.epam.jdi.uitests.core.interfaces.complex.IDropList;
 import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
-import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -172,7 +171,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
     }
 
     public WebElement getWebElement() {
-        return new Element(getLocator()).getWebElement();
+        return new GetElementType(getLocator(), this).get(Clickable.class).getWebElement();
     }
 
     /**
