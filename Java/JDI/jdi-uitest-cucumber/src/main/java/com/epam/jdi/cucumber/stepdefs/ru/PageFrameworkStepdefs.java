@@ -1,47 +1,45 @@
-package com.epam.cucmber.stepdefs;
+package com.epam.jdi.cucumber.stepdefs.ru;
 
+import com.epam.jdi.cucumber.Utils;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebSite;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
+import cucumber.api.java.ru.Дано;
+import cucumber.api.java.ru.И;
+import cucumber.api.java.ru.Тогда;
 
-
-/**
- * Created by Dmitry_Lebedev1 on 1/18/2016.
- */
 public class PageFrameworkStepdefs {
-    @Given("^I'm open \"(.*?)\"$")
+
+    @Дано("^я открываю страницу \"(.*?)\"$")
     public void iMOpen(String pageName) {
         ((WebPage) Utils.getClassField(WebSite.currentSite, pageName)).open();
     }
 
-    @Then("^I'm on \"(.*?)\"$")
+    @Тогда("^я на странице \"(.*?)\"$")
     public void iMOn(String pageName) throws Throwable {
         ((WebPage) Utils.getClassField(WebSite.currentSite, pageName)).checkOpened();
     }
 
-    @And("^I'm refresh page$")
+    @И("^я обновляю страницу$")
     public void iMRefreshPage() throws Throwable {
         WebPage.currentPage.refresh();
     }
 
-    @And("^I'm go back$")
+    @И("^я перехожу на предыдущую страницу$")
     public void iMGoBack() throws Throwable {
         WebPage.currentPage.back();
     }
 
-    @And("^I'm go forward$")
+    @И("^я перехожу на последующую страницу$")
     public void iMGoForward() throws Throwable {
         WebPage.currentPage.forward();
     }
 
-    @And("^Check page url match$")
+    @И("^проверяю соответствие адреса текущей страницы$")
     public void checkPageUrlMatch() throws Throwable {
         WebPage.currentPage.url().match();
     }
 
-    @And("^Check page url contains$")
+    @И("^проверяю содержимое адреса текущей страницы$")
     public void checkPageUrlContains() throws Throwable {
         WebPage.currentPage.url().contains();
     }

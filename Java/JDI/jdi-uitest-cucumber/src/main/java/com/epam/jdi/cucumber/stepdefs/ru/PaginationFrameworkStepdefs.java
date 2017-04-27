@@ -1,36 +1,34 @@
-package com.epam.cucmber.stepdefs;
+package com.epam.jdi.cucumber.stepdefs.ru;
 
+import com.epam.jdi.cucumber.Utils;
 import com.epam.jdi.uitests.core.interfaces.complex.IPagination;
-import cucumber.api.java.en.And;
+import cucumber.api.java.ru.И;
 
 import static com.epam.jdi.uitests.web.selenium.elements.composite.WebPage.currentPage;
 
-/**
- * Created by Dmitry_Lebedev1 on 1/21/2016.
- */
 public class PaginationFrameworkStepdefs {
 
-    @And("^I'm use pagination \"([^\"]*)\" to go next$")
+    @И("^я использую постраничную навигацию \"([^\"]*)\", чтобы перейти на следующую страницу$")
     public void iMUsePaginationToGoNext(String paginationName) throws Throwable {
         ((IPagination) Utils.getClassField(currentPage, paginationName)).next();
     }
 
-    @And("^I'm use pagination \"([^\"]*)\" to go previous$")
+    @И("^я использую постраничную навигацию \"([^\"]*)\", чтобы перейти на предыдущую страницу$")
     public void iMUsePaginationToGoPrevious(String paginationName) throws Throwable {
         ((IPagination) Utils.getClassField(currentPage, paginationName)).previous();
     }
 
-    @And("^I'm use pagination \"([^\"]*)\" to select (\\d+)$")
+    @И("^я использую постраничную навигацию \"([^\"]*)\", чтобы выбрать страницу (\\d+)$")
     public void iMUsePaginationToSelect(String paginationName, int index) throws Throwable {
         ((IPagination) Utils.getClassField(currentPage, paginationName)).selectPage(index);
     }
 
-    @And("^I'm use pagination \"([^\"]*)\" to go last$")
+    @И("^я использую постраничную навигацию \"([^\"]*)\", чтобы перейти на последнюю страницу$")
     public void iMUsePaginationToGoLast(String paginationName) throws Throwable {
         ((IPagination) Utils.getClassField(currentPage, paginationName)).last();
     }
 
-    @And("^I'm use pagination \"([^\"]*)\" to go first$")
+    @И("^я использую постраничную навигацию \"([^\"]*)\", чтобы перейти на первую страницу$")
     public void iMUsePaginationToGoFirst(String paginationName) throws Throwable {
         ((IPagination) Utils.getClassField(currentPage, paginationName)).first();
     }

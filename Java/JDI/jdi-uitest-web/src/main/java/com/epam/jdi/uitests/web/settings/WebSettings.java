@@ -43,11 +43,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -66,26 +62,9 @@ import static java.util.Arrays.asList;
  */
 public class WebSettings extends JDISettings {
     public static String domain;
-    public static String killBrowser;    public static boolean hasDomain() {
+    public static String killBrowser;
+    public static boolean hasDomain() {
         return domain != null && domain.contains("://");
-    }
-
-    public static String testDataDir;
-
-    public static boolean hasTestDataDir() {
-        return testDataDir != null;
-    }
-
-    public static String downloadsDir = Paths.get("").toAbsolutePath().toString() + File.separator + "src" + File.separator + "test" + File.separator + "resources" + File.separator + "downloads";
-
-    public static boolean hasDownloadsDir() {
-        return downloadsDir != null;
-    }
-
-    public static URL hub;
-
-    public static boolean hasHub() {
-        return hub != null;
     }
 
     public static WebDriver getDriver() {
@@ -115,9 +94,9 @@ public class WebSettings extends JDISettings {
         driverFactory = new SeleniumDriverFactory();
         logger = new TestNGLogger("JDI Logger");
         asserter = new TestNGCheck().setUpLogger(logger);
-        screenshotAction = ScreenshotMaker::doScreenshotGetMessage;
-        asserter.doScreenshot("screen_on_fail");
         setMatcher((BaseMatcher) asserter);
+        asserter.doScreenshot("screen_on_fail");
+        screenshotAction = ScreenshotMaker::doScreenshotGetMessage;
         timeouts = new WebTimeoutSettings();
         getProperties(jdiSettingsPath);
         MapInterfaceToElement.init(defaultInterfacesMap);
@@ -127,17 +106,6 @@ public class WebSettings extends JDISettings {
     public static synchronized void initFromProperties() throws IOException {
         init();
         JDISettings.initFromProperties();
-        fillAction(p -> {
-            try {
-                hub = new URL(p);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }, "hubUrl");
-        fillAction(p -> testDataDir = p, "testData.dir");
-        File file = new File("resources");
-        String absolutePath = file.getAbsolutePath();
-        fillAction(p -> downloadsDir = absolutePath + File.separator + p, "downloads.dir");
         fillAction(p -> domain = p, "domain");
         fillAction(p -> DRIVER_VERSION = p, "drivers.version");
         fillAction(driverFactory::setDriverPath, "drivers.folder");
@@ -163,7 +131,7 @@ public class WebSettings extends JDISettings {
                 if (params.contains("multiple"))
                     onlyOneElementAllowedInSearch = false;
             }
-        }, "search.element.strategy");
+        }, "search.element.strategy" );
         fillAction(p -> {
             String[] split = null;
             if (p.split(",").length == 2)
