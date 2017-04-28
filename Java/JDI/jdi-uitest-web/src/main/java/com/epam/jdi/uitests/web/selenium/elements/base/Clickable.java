@@ -22,6 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.base.IClickable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import static java.lang.String.format;
 
@@ -52,11 +53,21 @@ public class Clickable extends Element implements IClickable {
      * Click on Element
      */
     public final void click() {
+        click(getName());
+    }
+
+    @Step("Click on {0}")
+    private final void click(String name) {
         actions.click(this::clickAction);
     }
 
     public void clickByXY(int x, int y) {
-        invoker.doJAction(format("Click on Element with coordinates (x,y) = (%s, %s)", x, y),
+        clickByXY(getName(), x, y);
+    }
+
+    @Step("Click on {0} with coordinates (x,y) = ({1}, {2})")
+    private void clickByXY(String name, int x, int y) {
+        invoker.doJAction(format("Click on Element(%s) with coordinates (x,y) = (%s, %s)",name, x, y),
                 () -> new Actions(getDriver())
                         .moveToElement(getWebElement(), x, y).click().build().perform());
     }

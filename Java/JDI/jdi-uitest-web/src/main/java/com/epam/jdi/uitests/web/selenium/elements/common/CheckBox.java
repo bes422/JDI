@@ -22,6 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.common.ICheckBox;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.function.Function;
 
@@ -100,6 +101,11 @@ public class CheckBox extends Clickable implements ICheckBox {
      * Set checkbox checked
      */
     public final void check() {
+        check(getName());
+    }
+
+    @Step("Check {0}")
+    private final void check(String name) {
         actions.check(this::checkAction);
     }
 
@@ -107,6 +113,11 @@ public class CheckBox extends Clickable implements ICheckBox {
      * Set checkbox unchecked
      */
     public final void uncheck() {
+        uncheck(getName());
+    }
+
+    @Step("Uncheck {0}")
+    private final void uncheck(String name) {
         actions.uncheck(this::uncheckAction);
     }
 
@@ -114,6 +125,11 @@ public class CheckBox extends Clickable implements ICheckBox {
      * @return Verify is checkbox checked
      */
     public final boolean isChecked() {
+        return isChecked(getName());
+    }
+
+    @Step("Is checked {0}")
+    private final boolean isChecked(String name) {
         return actions.isChecked(this::isCheckedAction);
     }
 
@@ -138,6 +154,7 @@ public class CheckBox extends Clickable implements ICheckBox {
     /**
      * @return Get Element’s text
      */
+    @Step
     public final String getText() {
         return actions.getText(this::getTextAction);
     }
@@ -146,6 +163,7 @@ public class CheckBox extends Clickable implements ICheckBox {
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
+    @Step
     public final String waitText(String text) {
         return actions.waitText(text, this::getTextAction);
     }
@@ -154,6 +172,7 @@ public class CheckBox extends Clickable implements ICheckBox {
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
+    @Step
     public final String waitMatchText(String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }

@@ -55,6 +55,7 @@ public class WebPage extends BaseElement implements IPage {
         this.title = title;
     }
 
+    @Step
     public static void openUrl(String url) {
         new WebPage(url).open();
     }

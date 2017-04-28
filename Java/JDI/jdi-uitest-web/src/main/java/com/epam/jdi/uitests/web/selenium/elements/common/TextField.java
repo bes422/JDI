@@ -21,6 +21,7 @@ package com.epam.jdi.uitests.web.selenium.elements.common;
 import com.epam.jdi.uitests.core.interfaces.common.ITextField;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import static com.epam.web.matcher.junit.Assert.exception;
 
@@ -82,6 +83,7 @@ public class TextField extends Text implements ITextField {
      * @param text Specify text to input to TextField
      *             Input text in textfield
      */
+    @Step
     public final void input(CharSequence text) {
         actions.input(text, this::inputAction);
     }
@@ -90,6 +92,7 @@ public class TextField extends Text implements ITextField {
      * @param text Specify text to input to TextField
      *             Clear and input text in textfield
      */
+    @Step
     public void newInput(CharSequence text) {
         clear();
         input(text);
@@ -98,6 +101,7 @@ public class TextField extends Text implements ITextField {
     /**
      * Clear textfield
      */
+    @Step
     public final void clear() {
         actions.clear(this::clearAction);
     }
@@ -105,6 +109,7 @@ public class TextField extends Text implements ITextField {
     /**
      * Focus(click) on textfield
      */
+    @Step
     public final void focus() {
         actions.focus(this::focusAction);
     }

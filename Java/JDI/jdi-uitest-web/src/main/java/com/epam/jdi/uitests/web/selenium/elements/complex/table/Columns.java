@@ -23,6 +23,7 @@ import com.epam.jdi.uitests.core.interfaces.common.IText;
 import com.epam.jdi.uitests.core.interfaces.complex.interfaces.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.Collection;
 import java.util.List;

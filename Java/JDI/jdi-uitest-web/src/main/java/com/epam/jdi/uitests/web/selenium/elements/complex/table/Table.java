@@ -28,6 +28,7 @@ import com.epam.jdi.uitests.web.selenium.elements.common.Text;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JTable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -150,6 +151,11 @@ public class Table extends Text implements ITable, Cloneable {
         if (!fieldHasAnnotation(field, JTable.class, ITable.class))
             return;
         ((Table) el).setUp(field.getAnnotation(JTable.class));
+    }
+
+    @Step
+    public List<String> getHeaders(){
+        return columns.getHeadersTextAction();
     }
 
     public ITable setUp(JTable jTable) {

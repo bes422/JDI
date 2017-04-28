@@ -25,6 +25,7 @@ import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.common.*;
 import com.epam.jdi.uitests.core.interfaces.complex.*;
 import com.epam.jdi.uitests.core.interfaces.complex.interfaces.ITable;
+import com.epam.jdi.uitests.core.logger.LogLevels;
 import com.epam.jdi.uitests.core.settings.JDISettings;
 import com.epam.jdi.uitests.web.selenium.TestNGCheck;
 import com.epam.jdi.uitests.web.selenium.driver.DriverTypes;
@@ -43,7 +44,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -65,6 +70,22 @@ public class WebSettings extends JDISettings {
     public static String killBrowser;
     public static boolean hasDomain() {
         return domain != null && domain.contains("://");
+    }
+    public static URL hub;
+
+    public static boolean hasHub() {
+        return hub != null;
+    }
+    public static String testDataDir;
+
+    public static boolean hasTestDataDir() {
+        return testDataDir != null;
+    }
+
+    public static String downloadsDir = Paths.get("").toAbsolutePath().toString()+ File.separator +"src" +File.separator +"test"+File.separator +"resources"+File.separator +"downloads";
+
+    public static boolean hasDownloadsDir() {
+        return downloadsDir != null;
     }
 
     public static WebDriver getDriver() {
@@ -106,6 +127,21 @@ public class WebSettings extends JDISettings {
     public static synchronized void initFromProperties() throws IOException {
         init();
         JDISettings.initFromProperties();
+        fillAction(p -> {
+            try {
+                toLog("hubUrl = " + p, LogLevels.DEBUG);
+                hub = new URL(p);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }, "hubUrl");
+        fillAction(p -> testDataDir = p, "testData.dir");
+        File file = new File("resources");
+        String absolutePath = file.getAbsolutePath();
+        fillAction(p -> {
+                    downloadsDir =absolutePath+File.separator+p;
+                }, "downloads.dir"
+        );
         fillAction(p -> domain = p, "domain");
         fillAction(p -> DRIVER_VERSION = p, "drivers.version");
         fillAction(driverFactory::setDriverPath, "drivers.folder");

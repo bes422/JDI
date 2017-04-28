@@ -28,6 +28,7 @@ import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.object
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -180,6 +181,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
     /**
      * Waits while Element becomes visible
      */
+    @Step
     @Override
     public void waitDisplayed() {
         element().waitDisplayed();
@@ -239,6 +241,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
     /**
      * Expanding DropDown
      */
+    @Step
     public final void expand() {
         actions.expand(() -> expandAction(1));
     }
@@ -252,6 +255,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
     /**
      * Closing DropDown
      */
+    @Step
     public final void close() {
         if (isDisplayedAction(1)) element().click();
     }
@@ -259,6 +263,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
     /**
      * Click on Element
      */
+    @Step
     public final void click() {
         actions.click(this::clickAction);
     }
@@ -266,6 +271,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
     /**
      * @return Get Element’s text
      */
+    @Step
     public final String getText() {
         return actions.getText(this::getTextAction);
     }
@@ -274,6 +280,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
+    @Step
     public final String waitText(String text) {
         return actions.waitText(text, this::getTextAction);
     }
@@ -282,6 +289,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
+    @Step
     public final String waitMatchText(String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }
@@ -291,6 +299,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
      * @param value         Specify attribute value
      *                      Sets attribute value for Element
      */
+    @Step
     public void setAttribute(String attributeName, String value) {
         element().setAttribute(attributeName, value);
     }
@@ -299,6 +308,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
         return new GetElementType(getLocator(), this).get(Element.class).getWebElement();
     }
 
+    @Step
     public String getAttribute(String name) {
         return element().getAttribute(name);
     }
@@ -308,6 +318,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
      * @param value Specify attribute value
      * Waits while attribute gets expected value. Return false if this not happens
      */
+    @Step
     public void waitAttribute(String name, String value) {
         element().waitAttribute(name, value);
     }

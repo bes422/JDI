@@ -98,7 +98,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
     /**
      * Specified Selenium Element for this Element
      */
-    @Step
+//    @Step
     public WebElement getWebElement() {
         return invoker.doJActionResult("Get web element",
                 () -> avatar.getElement(), DEBUG);

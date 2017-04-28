@@ -20,6 +20,7 @@ package com.epam.jdi.uitests.web.selenium.elements.composite;
 
 import com.epam.commons.map.MapArray;
 import com.epam.jdi.uitests.core.interfaces.complex.IPopup;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import static com.epam.jdi.uitests.core.annotations.functions.Functions.*;
 import static java.lang.String.format;
@@ -34,6 +35,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
      * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
      * * Letters case in button name  no matters
      */
+    @Step
     @Override
     public void submit(MapArray<String, String> objStrings) {
         fill(objStrings);
@@ -43,6 +45,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
     /**
      * Click on Button marked with annotation @OkButton or named "okButton"
      */
+    @Step
     public void ok() {
         getElementClass.getButton(OK_BUTTON).click();
     }
@@ -50,6 +53,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
     /**
      * Click on Button marked with annotation @CancelButton or named "cancelButton"
      */
+    @Step
     public void cancel() {
         getElementClass.getButton(CANCEL_BUTTON).click();
     }
@@ -57,6 +61,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
     /**
      * Click on Button marked with annotation @CloseButton or named "closeButton"
      */
+    @Step
     public void close() {
         getElementClass.getButton(CLOSE_BUTTON).click();
     }
@@ -68,6 +73,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
     /**
      * @return Get Element’s text
      */
+    @Step
     public final String getText() {
         return invoker.doJActionResult("Get text", this::getTextAction);
     }
@@ -76,6 +82,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
+    @Step
     public final String waitText(String text) {
         return invoker.doJActionResult(format("Wait text contains '%s'", text),
                 () -> timer().getResultByCondition(this::getTextAction, t -> t.contains(text)));
@@ -85,6 +92,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
+    @Step
     public final String waitMatchText(String regEx) {
         return invoker.doJActionResult(format("Wait text match regex '%s'", regEx),
                 () -> timer().getResultByCondition(this::getTextAction, t -> t.matches(regEx)));

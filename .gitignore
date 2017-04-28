@@ -16,3 +16,14 @@ packages/
 *.bat
 *.txt
 *.user
+groupbuy-ui-tests
+.gradle
+gradle
+*.gradle
+build
+Java/JDI/gradlew
+Java/JDI/jdi-commons/gradlew
+Java/JDI/jdi-matchers/gradlew
+Java/JDI/jdi-uitest-core/gradlew
+Java/JDI/jdi-uitest-web/gradlew
+Java/gradlew

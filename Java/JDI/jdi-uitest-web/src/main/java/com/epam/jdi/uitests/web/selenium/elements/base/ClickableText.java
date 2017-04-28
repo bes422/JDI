@@ -23,6 +23,7 @@ import com.epam.jdi.uitests.core.interfaces.base.IHasValue;
 import com.epam.jdi.uitests.core.interfaces.common.IText;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 /**
  * Button control implementation
@@ -61,6 +62,7 @@ public class ClickableText extends Clickable implements IHasValue, IClickable, I
     /**
      * @return Get Element’s text
      */
+    @Step
     public final String getText() {
         return actions.getText(this::getTextAction);
     }
@@ -69,6 +71,7 @@ public class ClickableText extends Clickable implements IHasValue, IClickable, I
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
+    @Step
     public final String waitText(String text) {
         return actions.waitText(text, this::getTextAction);
     }
@@ -77,6 +80,7 @@ public class ClickableText extends Clickable implements IHasValue, IClickable, I
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
+    @Step
     public final String waitMatchText(String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }

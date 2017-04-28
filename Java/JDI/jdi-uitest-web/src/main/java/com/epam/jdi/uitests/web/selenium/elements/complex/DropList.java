@@ -23,6 +23,7 @@ import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.function.Function;
 
@@ -110,6 +111,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * Waits while Element becomes visible
      */
     @Override
+    @Step
     public void waitDisplayed() {
         button().waitDisplayed();
     }
@@ -143,6 +145,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * @param value         Specify attribute value
      *                      Sets attribute value for Element
      */
+    @Step
     public void setAttribute(String attributeName, String value) {
         button().setAttribute(attributeName, value);
     }
@@ -150,6 +153,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
     /**
      * @return Get Element’s text
      */
+    @Step
     public final String getText() {
         return actions.getText(this::getTextAction);
     }
@@ -158,6 +162,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
+    @Step
     public final String waitText(String text) {
         return actions.waitText(text, this::getTextAction);
     }
@@ -166,6 +171,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
+    @Step
     public final String waitMatchText(String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }
@@ -180,6 +186,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * @param name Specify name for attribute
      * @return Returns chosen attribute
      */
+    @Step
     public String getAttribute(String name) {
         return button().getAttribute(name);
     }
@@ -189,6 +196,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * @param value Specify attribute value
      * Waits while attribute gets expected value. Return false if this not happens
      */
+    @Step
     public void waitAttribute(String name, String value) {
         button().waitAttribute(name, value);
     }

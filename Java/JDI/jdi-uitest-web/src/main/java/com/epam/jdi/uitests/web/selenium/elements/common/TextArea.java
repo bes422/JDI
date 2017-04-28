@@ -21,6 +21,7 @@ package com.epam.jdi.uitests.web.selenium.elements.common;
 import com.epam.jdi.uitests.core.interfaces.common.ITextArea;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 /**
  * Text Field control implementation
@@ -45,6 +46,7 @@ public class TextArea extends TextField implements ITextArea {
      * @param textLines Specify text lines (clear textArea before
      *                  Clear textarea and Input several lines of text in textarea
      */
+    @Step
     public final void inputLines(String... textLines) {
         actions.inputLines(this::clearAction, this::inputAction, textLines);
     }
@@ -53,6 +55,7 @@ public class TextArea extends TextField implements ITextArea {
      * @param textLine Specify text to add new line (without clearing previous)
      *                 Add text in textarea from new line
      */
+    @Step
     public final void addNewLine(String textLine) {
         actions.addNewLine(textLine, this::inputAction);
     }
@@ -60,6 +63,7 @@ public class TextArea extends TextField implements ITextArea {
     /**
      * @return Get lines of text in textarea
      */
+    @Step
     public final String[] getLines() {
         return actions.getLines(this::getTextAction);
     }
