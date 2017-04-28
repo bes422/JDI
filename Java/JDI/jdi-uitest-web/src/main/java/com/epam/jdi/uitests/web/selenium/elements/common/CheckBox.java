@@ -154,8 +154,12 @@ public class CheckBox extends Clickable implements ICheckBox {
     /**
      * @return Get Element’s text
      */
-    @Step
     public final String getText() {
+        return getText(getName());
+    }
+
+    @Step("[{0}] get text")
+    private final String getText(String elName) {
         return actions.getText(this::getTextAction);
     }
 
@@ -163,8 +167,13 @@ public class CheckBox extends Clickable implements ICheckBox {
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
-    @Step
+
     public final String waitText(String text) {
+        return waitText(getName(),text);
+    }
+
+    @Step("[{0}] wait text [{1}]")
+    private final String waitText(String elName, String text) {
         return actions.waitText(text, this::getTextAction);
     }
 
@@ -172,8 +181,12 @@ public class CheckBox extends Clickable implements ICheckBox {
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
-    @Step
     public final String waitMatchText(String regEx) {
+        return waitMatchText(getName(), regEx);
+    }
+
+    @Step("[{0}] wait match text [{1}]")
+    private final String waitMatchText(String elName, String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }
 }

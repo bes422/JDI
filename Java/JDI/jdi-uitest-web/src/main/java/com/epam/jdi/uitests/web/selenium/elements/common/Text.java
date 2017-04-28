@@ -28,63 +28,79 @@ import ru.yandex.qatools.allure.annotations.Step;
  * Created by Roman_Iovlev on 7/6/2015.
  */
 public class Text extends Element implements IText {
-    public Text() {
-    }
+	public Text() {
+	}
 
-    public Text(By byLocator) {
-        super(byLocator);
-    }
+	public Text(By byLocator) {
+		super(byLocator);
+	}
 
-    public Text(WebElement webElement) {
-        super(webElement);
-    }
+	public Text(WebElement webElement) {
+		super(webElement);
+	}
 
-    protected String getTextAction() {
-        WebElement element = getWebElement();
-        String getValue = element.getAttribute("value");
-        if (getValue != null && !getValue.equals(""))
-            return getValue;
-        String getText = element.getText();
-        return getText != null
-                ? getText
-                : getValue;
-    }
+	protected String getTextAction() {
+		WebElement element = getWebElement();
+		String getValue = element.getAttribute("value");
+		if (getValue != null && !getValue.equals(""))
+			return getValue;
+		String getText = element.getText();
+		return getText != null
+				? getText
+				: getValue;
+	}
 
-    protected String getValueAction() {
-        return getTextAction();
-    }
+	protected String getValueAction() {
+		return getTextAction();
+	}
 
-    /**
-     * @return Get value of Element
-     */
-    @Step
-    public final String getValue() {
-        return actions.getValue(this::getValueAction);
-    }
+	/**
+	 * @return Get value of Element
+	 */
+	public final String getValue() {
+		return getValue(getName());
+	}
 
-    /**
-     * @return Get Element’s text
-     */
-    @Step
-    public final String getText() {
-        return actions.getText(this::getTextAction);
-    }
+	@Step("{0} get value")
+	private String getValue(String elName) {
+		return actions.getValue(this::getValueAction);
+	}
 
-    /**
-     * @param text Specify expected text
-     * @return Wait while Element’s text contains expected text. Returns Element’s text
-     */
-    @Step
-    public final String waitText(String text) {
-        return actions.waitText(text, this::getTextAction);
-    }
+	/**
+	 * @return Get Element’s text
+	 */
+	public final String getText() {
+		return getText(getName());
+	}
 
-    /**
-     * @param regEx Specify expected regular expression Text
-     * @return Wait while Element’s text matches regEx. Returns Element’s text
-     */
-    @Step
-    public final String waitMatchText(String regEx) {
-        return actions.waitMatchText(regEx, this::getTextAction);
-    }
+	@Step("{0} get text")
+	private String getText(String elName) {
+		return actions.getText(this::getTextAction);
+	}
+
+	/**
+	 * @param text Specify expected text
+	 * @return Wait while Element’s text contains expected text. Returns Element’s text
+	 */
+	public final String waitText(String text) {
+		return waitText(getName(), text);
+	}
+
+	@Step("{0} wait text [{1}]")
+	private String waitText(String elName, String text) {
+		return actions.waitText(text, this::getTextAction);
+	}
+
+	/**
+	 * @param regEx Specify expected regular expression Text
+	 * @return Wait while Element’s text matches regEx. Returns Element’s text
+	 */
+	public final String waitMatchText(String regEx) {
+		return waitMatchText(getName(), regEx);
+	}
+
+	@Step("{0} wait match text [{1}]")
+	private String waitMatchText(String elName, String regEx) {
+		return actions.waitMatchText(regEx, this::getTextAction);
+	}
 }

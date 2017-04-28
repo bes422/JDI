@@ -23,6 +23,7 @@ import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.common.Label;
 import com.epam.jdi.uitests.web.selenium.elements.common.TextField;
 import org.openqa.selenium.By;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import static com.epam.web.matcher.junit.Assert.exception;
 
@@ -98,6 +99,11 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
      *             Input text in textfield
      */
     public final void input(CharSequence text) {
+        input(getName(), text);
+    }
+
+    @Step("{0} input [{1}]")
+    private void input(String name, CharSequence text) {
         actions.input(text, this::inputAction);
     }
 
@@ -114,6 +120,11 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
      *             Clear and input text in textfield
      */
     public void newInput(CharSequence text) {
+        newInput(getName(), text);
+    }
+
+    @Step("{0} new input [{1}]")
+    private void newInput(String name, CharSequence text) {
         clear();
         input(text);
     }
@@ -122,6 +133,11 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
      * Clear textfield
      */
     public final void clear() {
+        clear(getName());
+    }
+
+    @Step("{0} clear")
+    private void clear(String name) {
         actions.clear(this::clearAction);
     }
 

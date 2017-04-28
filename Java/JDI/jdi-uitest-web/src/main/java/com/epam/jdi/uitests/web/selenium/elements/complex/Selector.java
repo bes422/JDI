@@ -22,6 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.ISelector;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.List;
 
@@ -35,88 +36,98 @@ import static com.epam.jdi.uitests.core.settings.JDISettings.exception;
  */
 
 public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements ISelector<TEnum> {
-    public Selector() {
-        super();
-    }
+	public Selector() {
+		super();
+	}
 
-    public Selector(By optionsNamesLocatorTemplate) {
-        super(optionsNamesLocatorTemplate);
-    }
+	public Selector(By optionsNamesLocatorTemplate) {
+		super(optionsNamesLocatorTemplate);
+	}
 
-    public Selector(By optionsNamesLocatorTemplate, By allOptionsNamesLocator) {
-        super(optionsNamesLocatorTemplate, allOptionsNamesLocator);
-    }
+	public Selector(By optionsNamesLocatorTemplate, By allOptionsNamesLocator) {
+		super(optionsNamesLocatorTemplate, allOptionsNamesLocator);
+	}
 
-    /**
-     * @param name Specify name using string
-     *             Select Element with name (use text) from list
-     */
-    public final void select(String name) {
-        actions.select(name, this::selectAction);
-    }
+	/**
+	 * @param name Specify name using string
+	 *             Select Element with name (use text) from list
+	 */
+	public final void select(String name) {
+		select(getName(), name);
+	}
 
-    /**
-     * @param name Specify name using enum
-     *             Select Element with name (use enum) from list
-     */
-    public final void select(TEnum name) {
-        select(getEnumValue(name));
-    }
+	@Step("{0} select {1}")
+	private final void select(String elName, String name) {
+		actions.select(name, this::selectAction);
+	}
 
-    /**
-     * @param num Specify digit to select
-     *              Select Element with name (use index) from list
-     */
-    public final void select(int num) {
-        actions.select(num, this::selectAction);
-    }
+	/**
+	 * @param name Specify name using enum
+	 *             Select Element with name (use enum) from list
+	 */
+	public final void select(TEnum name) {
+		select(getEnumValue(name));
+	}
 
-    /**
-     * @return Get name of the selected Element
-     */
-    public final String getSelected() {
-        return actions.getSelected(this::getSelectedAction);
-    }
+	/**
+	 * @param num Specify digit to select
+	 *            Select Element with name (use index) from list
+	 */
+	public final void select(int num) {
+		select(getName(), num);
+	}
 
-    /**
-     * @return Get index of the selected Element
-     */
-    public final int getSelectedIndex() {
-        return actions.getSelectedIndex(this::getSelectedIndexAction);
-    }
+	@Step("{0} select {1}")
+	private final void select(String elName, int num) {
+		actions.select(num, this::selectAction);
+	}
 
-    protected final boolean isSelectedAction(String name) {
-        return getSelectedAction().equals(name);
-    }
+	/**
+	 * @return Get name of the selected Element
+	 */
+	public final String getSelected() {
+		return actions.getSelected(this::getSelectedAction);
+	}
 
-    protected final boolean isSelectedAction(int num) {
-        return getSelectedIndexAction() == num;
-    }
+	/**
+	 * @return Get index of the selected Element
+	 */
+	public final int getSelectedIndex() {
+		return actions.getSelectedIndex(this::getSelectedIndexAction);
+	}
 
-    protected String getValueAction() {
-        return getSelected();
-    }
+	protected final boolean isSelectedAction(String name) {
+		return getSelectedAction().equals(name);
+	}
 
-    protected String getSelectedAction() {
-        return getSelected(getElements());
-    }
+	protected final boolean isSelectedAction(int num) {
+		return getSelectedIndexAction() == num;
+	}
 
-    private String getSelected(List<WebElement> els) {
-        WebElement element = first(els, this::isSelectedAction);
-        if (element == null)
-            throw exception("No elements selected. Override getSelectedAction or place locator to <select> tag");
-        new Element(element).invoker.processDemoMode();
-        return element.getText();
-    }
+	protected String getValueAction() {
+		return getSelected();
+	}
 
-    protected int getSelectedIndexAction() {
-        return getSelectedIndex(getElements());
-    }
+	protected String getSelectedAction() {
+		return getSelected(getElements());
+	}
 
-    private int getSelectedIndex(List<WebElement> els) {
-        int num = firstIndex(els, this::isSelectedAction) + 1;
-        if (num == 0)
-            throw exception("No elements selected. Override getSelectedAction or place locator to <select> tag");
-        return num;
-    }
+	private String getSelected(List<WebElement> els) {
+		WebElement element = first(els, this::isSelectedAction);
+		if (element == null)
+			throw exception("No elements selected. Override getSelectedAction or place locator to <select> tag");
+		new Element(element).invoker.processDemoMode();
+		return element.getText();
+	}
+
+	protected int getSelectedIndexAction() {
+		return getSelectedIndex(getElements());
+	}
+
+	private int getSelectedIndex(List<WebElement> els) {
+		int num = firstIndex(els, this::isSelectedAction) + 1;
+		if (num == 0)
+			throw exception("No elements selected. Override getSelectedAction or place locator to <select> tag");
+		return num;
+	}
 }

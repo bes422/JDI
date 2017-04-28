@@ -30,7 +30,6 @@ public interface ITextField extends ISetValue, IText, IElement {
      * @param text Specify text to input to TextField
      *             Input text in textfield
      */
-    @Step
     void input(CharSequence text);
 
     /**
@@ -43,7 +42,6 @@ public interface ITextField extends ISetValue, IText, IElement {
      * @param text Specify text to send keys to TextField
      *             Input text in textfield
      */
-    @Step
     default void sendKeys(CharSequence text) {
         input(text);
     }
@@ -51,7 +49,6 @@ public interface ITextField extends ISetValue, IText, IElement {
      * @param text Specify text to input to TextField
      *             Clear and input text in textfield
      */
-    @Step
     void newInput(CharSequence text);
 
     /**

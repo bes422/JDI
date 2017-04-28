@@ -44,8 +44,12 @@ public class Image extends Clickable implements IImage {
     /**
      * @return Get image source
      */
-    @Step
     public String getSource() {
+        return getSource(getName());
+    }
+
+    @Step("Get image source for {0}")
+    private String getSource(String elName) {
         return invoker.doJActionResult("Get image source for Element " + this,
                 () -> getWebElement().getAttribute("src"));
     }
@@ -53,8 +57,12 @@ public class Image extends Clickable implements IImage {
     /**
      * @return Get image alt/hint text
      */
-    @Step
     public String getAlt() {
+        return getAlt(getName());
+    }
+
+    @Step("Get image title for {0}")
+    private String getAlt(String elName) {
         return invoker.doJActionResult("Get image title for Element " + this,
                 () -> getWebElement().getAttribute("alt"));
     }

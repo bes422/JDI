@@ -46,8 +46,11 @@ public class TextArea extends TextField implements ITextArea {
      * @param textLines Specify text lines (clear textArea before
      *                  Clear textarea and Input several lines of text in textarea
      */
-    @Step
     public final void inputLines(String... textLines) {
+        inputLines(getName(), textLines);
+    }
+    @Step("{0} - input lines [{1]]")
+    private void inputLines(String elName, String... textLines) {
         actions.inputLines(this::clearAction, this::inputAction, textLines);
     }
 
@@ -55,16 +58,23 @@ public class TextArea extends TextField implements ITextArea {
      * @param textLine Specify text to add new line (without clearing previous)
      *                 Add text in textarea from new line
      */
-    @Step
     public final void addNewLine(String textLine) {
+        addNewLine(getName(), textLine);
+    }
+
+    @Step("{0} - add new line [{1]]")
+    private void addNewLine(String elName, String textLine) {
         actions.addNewLine(textLine, this::inputAction);
     }
 
     /**
      * @return Get lines of text in textarea
      */
-    @Step
     public final String[] getLines() {
+        return getLines(getName());
+    }
+    @Step("{0} - get lines")
+    private String[] getLines(String elName) {
         return actions.getLines(this::getTextAction);
     }
 }

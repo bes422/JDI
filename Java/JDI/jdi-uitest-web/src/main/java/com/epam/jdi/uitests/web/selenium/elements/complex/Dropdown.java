@@ -44,283 +44,330 @@ import static com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations
  * @author Alexeenko Yan
  */
 public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDropDown<TEnum> {
-    protected GetElementType element;
-    protected GetElementType expander;
+	protected GetElementType element;
+	protected GetElementType expander;
 
-    public Dropdown() {
-        super();
-    }
+	public Dropdown() {
+		super();
+	}
 
-    public Dropdown(By selectLocator) {
-        super(selectLocator);
-    }
+	public Dropdown(By selectLocator) {
+		super(selectLocator);
+	}
 
-    public Dropdown(By selectLocator, By optionsNamesLocator) {
-        this(selectLocator, optionsNamesLocator, null);
-    }
+	public Dropdown(By selectLocator, By optionsNamesLocator) {
+		this(selectLocator, optionsNamesLocator, null);
+	}
 
-    public Dropdown(By selectLocator, By optionsNamesLocator, By allOptionsNamesLocator) {
-        super(optionsNamesLocator, allOptionsNamesLocator);
-        element = new GetElementType(selectLocator, this);
-        expander = new GetElementType(selectLocator, this);
-    }
+	public Dropdown(By selectLocator, By optionsNamesLocator, By allOptionsNamesLocator) {
+		super(optionsNamesLocator, allOptionsNamesLocator);
+		element = new GetElementType(selectLocator, this);
+		expander = new GetElementType(selectLocator, this);
+	}
 
-    public static void setUp(BaseElement el, Field field) {
-        if (!fieldHasAnnotation(field, JDropdown.class, IDropDown.class))
-            return;
-        ((Dropdown) el).setUp(field.getAnnotation(JDropdown.class));
-    }
+	public static void setUp(BaseElement el, Field field) {
+		if (!fieldHasAnnotation(field, JDropdown.class, IDropDown.class))
+			return;
+		((Dropdown) el).setUp(field.getAnnotation(JDropdown.class));
+	}
 
-    public Dropdown<TEnum> setUp(JDropdown jDropdown) {
-        By root = findByToBy(jDropdown.root());
-        By value = findByToBy(jDropdown.value());
-        By list = findByToBy(jDropdown.list());
-        By expand = findByToBy(jDropdown.expand());
-        if (root == null)
-            root = findByToBy(jDropdown.jRoot());
-        if (value == null)
-            value = findByToBy(jDropdown.jValue());
-        if (list == null)
-            list = findByToBy(jDropdown.jList());
-        if (expand == null)
-            expand = findByToBy(jDropdown.jExpand());
+	public Dropdown<TEnum> setUp(JDropdown jDropdown) {
+		By root = findByToBy(jDropdown.root());
+		By value = findByToBy(jDropdown.value());
+		By list = findByToBy(jDropdown.list());
+		By expand = findByToBy(jDropdown.expand());
+		if (root == null)
+			root = findByToBy(jDropdown.jRoot());
+		if (value == null)
+			value = findByToBy(jDropdown.jValue());
+		if (list == null)
+			list = findByToBy(jDropdown.jList());
+		if (expand == null)
+			expand = findByToBy(jDropdown.jExpand());
 
-        if (root != null) {
-            Element el = new Element(root);
-            el.setParent(getParent());
-            setParent(el);
-            setAvatar(root);
-        }
-        if (value != null) {
-            this.element = new GetElementType(value, this);
-            if (expander == null) this.expander = element;
-        }
-        if (list != null)
-            this.allLabels = new GetElementType(list, this);
-        if (expand != null) {
-            this.expander = new GetElementType(expand, this);
-            if (element == null) this.element = expander;
-        }
-        return this;
-    }
+		if (root != null) {
+			Element el = new Element(root);
+			el.setParent(getParent());
+			setParent(el);
+			setAvatar(root);
+		}
+		if (value != null) {
+			this.element = new GetElementType(value, this);
+			if (expander == null) this.expander = element;
+		}
+		if (list != null)
+			this.allLabels = new GetElementType(list, this);
+		if (expand != null) {
+			this.expander = new GetElementType(expand, this);
+			if (element == null) this.element = expander;
+		}
+		return this;
+	}
 
-    protected Label element() {
-        if (element == null)
-            return getLocator() != null && !getLocator().equals("")
-                ? new GetElementType(getLocator(), this).get(Label.class)
-                : null;
-        return element.get(Label.class);
-    }
-    protected Clickable expander() {
-        if (expander == null) {
-            if (getLocator() != null && !getLocator().equals(""))
-                return new GetElementType(getLocator(), this).get(Label.class);
-            throw exception("'Expand' element for dropdown not defined");
-        }
-        return expander.get(Label.class);
-    }
+	protected Label element() {
+		if (element == null)
+			return getLocator() != null && !getLocator().equals("")
+					? new GetElementType(getLocator(), this).get(Label.class)
+					: null;
+		return element.get(Label.class);
+	}
 
-    protected void expandAction(String name) {
-        if (element().isDisplayed()) {
-            setWaitTimeout(0);
-            if (!isDisplayedAction(name))
-                restoreWaitTimeout();
-                timer().wait(() -> {
-                    expander().click();
-                    return timer(1).wait(() -> isDisplayedAction(name));
-                });
-            restoreWaitTimeout();
-        }
-    }
+	protected Clickable expander() {
+		if (expander == null) {
+			if (getLocator() != null && !getLocator().equals(""))
+				return new GetElementType(getLocator(), this).get(Label.class);
+			throw exception("'Expand' element for dropdown not defined");
+		}
+		return expander.get(Label.class);
+	}
 
-    protected void expandAction(int index) {
-        if (!isDisplayedAction(index))
-            element().click();
-    }
+	protected void expandAction(String name) {
+		if (element().isDisplayed()) {
+			setWaitTimeout(0);
+			if (!isDisplayedAction(name))
+				restoreWaitTimeout();
+			timer().wait(() -> {
+				expander().click();
+				return timer(1).wait(() -> isDisplayedAction(name));
+			});
+			restoreWaitTimeout();
+		}
+	}
 
-    @Override
-    protected void selectAction(String name) {
-        if (element().getLocator().toString().contains("select"))
-            try {
-                new Select(element().getWebElement()).selectByVisibleText(name);
-                return;
-            } catch (Exception ignore) { }
-        expandAction(name);
-        super.selectAction(name);
-    }
+	protected void expandAction(int index) {
+		if (!isDisplayedAction(index))
+			element().click();
+	}
 
-    @Override
-    protected void selectAction(int index) {
-        if (element() != null) {
-            expandAction(index);
-            super.selectAction(index);
-        } else
-            new Select(getWebElement()).selectByIndex(index);
-    }
+	@Override
+	protected void selectAction(String name) {
+		if (element().getLocator().toString().contains("select"))
+			try {
+				new Select(element().getWebElement()).selectByVisibleText(name);
+				return;
+			} catch (Exception ignore) {
+			}
+		expandAction(name);
+		super.selectAction(name);
+	}
 
-    @Override
-    protected boolean isDisplayedAction(String name) {
-        WebElement element;
-        try {
-            element = allLabels.get(TextList.class).getElement(name);
-        } catch (Exception | Error ex) {
-            return false;
-        }
-        return element != null && element.isDisplayed();
-    }
-    @Override
-    protected String getValueAction() {
-        return getTextAction();
-    }
+	@Override
+	protected void selectAction(int index) {
+		if (element() != null) {
+			expandAction(index);
+			super.selectAction(index);
+		} else
+			new Select(getWebElement()).selectByIndex(index);
+	}
 
-    @Override
-    protected String getSelectedAction() {
-        return getTextAction();
-    }
+	@Override
+	protected boolean isDisplayedAction(String name) {
+		WebElement element;
+		try {
+			element = allLabels.get(TextList.class).getElement(name);
+		} catch (Exception | Error ex) {
+			return false;
+		}
+		return element != null && element.isDisplayed();
+	}
 
-    /**
-     * Waits while Element becomes visible
-     */
-    @Step
-    @Override
-    public void waitDisplayed() {
-        element().waitDisplayed();
-    }
+	@Override
+	protected String getValueAction() {
+		return getTextAction();
+	}
 
-    /**
-     * Waits while Element becomes invisible
-     */
-    @Override
-    public void waitVanished() {
-        element().waitVanished();
-    }
+	@Override
+	protected String getSelectedAction() {
+		return getTextAction();
+	}
 
-    public void wait(Function<WebElement, Boolean> resultFunc) {
-        element().wait(resultFunc);
-    }
+	/**
+	 * Waits while Element becomes visible
+	 */
+	@Step
+	@Override
+	public void waitDisplayed() {
+		element().waitDisplayed();
+	}
 
-    public <R> R wait(Function<WebElement, R> resultFunc, Function<R, Boolean> condition) {
-        return  element().wait(resultFunc, condition);
-    }
+	/**
+	 * Waits while Element becomes invisible
+	 */
+	@Override
+	public void waitVanished() {
+		element().waitVanished();
+	}
 
-    public <R> R test(Function<WebElement, R> resultFunc, Function<R, Boolean> condition) {
-        return resultFunc.apply(getWebElement());
-    }
+	public void wait(Function<WebElement, Boolean> resultFunc) {
+		element().wait(resultFunc);
+	}
 
-    public void wait(Function<WebElement, Boolean> resultFunc, int timeoutSec) {
-        element().wait(resultFunc, timeoutSec);
-    }
+	public <R> R wait(Function<WebElement, R> resultFunc, Function<R, Boolean> condition) {
+		return element().wait(resultFunc, condition);
+	}
 
-    public <R> R wait(Function<WebElement, R> resultFunc, Function<R, Boolean> condition, int timeoutSec) {
-        return element().wait(resultFunc, condition, timeoutSec);
-    }
+	public <R> R test(Function<WebElement, R> resultFunc, Function<R, Boolean> condition) {
+		return resultFunc.apply(getWebElement());
+	}
 
-    @Override
-    protected List<String> getOptionsAction() {
-        boolean isExpanded = isDisplayedAction(1);
-        if (!isExpanded) element().click();
-        List<String> result = super.getOptionsAction();
-        if (!isExpanded) element().click();
-        return result;
-    }
+	public void wait(Function<WebElement, Boolean> resultFunc, int timeoutSec) {
+		element().wait(resultFunc, timeoutSec);
+	}
 
-    protected void clickAction() {
-        element().click();
-    }
+	public <R> R wait(Function<WebElement, R> resultFunc, Function<R, Boolean> condition, int timeoutSec) {
+		return element().wait(resultFunc, condition, timeoutSec);
+	}
 
-    protected String getTextAction() {
-        String result = "";
-        if (element().getLocator().toString().contains("select")) try {
-            result = new Select(element().getWebElement()).getFirstSelectedOption().getText();
-        } catch (Exception ignore) {}
-        return result != null && !result.equals("")
-            ? result
-            : element().getText();
-    }
+	@Override
+	protected List<String> getOptionsAction() {
+		boolean isExpanded = isDisplayedAction(1);
+		if (!isExpanded) element().click();
+		List<String> result = super.getOptionsAction();
+		if (!isExpanded) element().click();
+		return result;
+	}
 
-    /**
-     * Expanding DropDown
-     */
-    @Step
-    public final void expand() {
-        actions.expand(() -> expandAction(1));
-    }
-    public final void expand(String name) {
-        actions.expand(() -> expandAction(name));
-    }
-    public final void expand(int index) {
-        actions.expand(() -> expandAction(index));
-    }
+	protected void clickAction() {
+		element().click();
+	}
 
-    /**
-     * Closing DropDown
-     */
-    @Step
-    public final void close() {
-        if (isDisplayedAction(1)) element().click();
-    }
+	protected String getTextAction() {
+		String result = "";
+		if (element().getLocator().toString().contains("select")) try {
+			result = new Select(element().getWebElement()).getFirstSelectedOption().getText();
+		} catch (Exception ignore) {
+		}
+		return result != null && !result.equals("")
+				? result
+				: element().getText();
+	}
 
-    /**
-     * Click on Element
-     */
-    @Step
-    public final void click() {
-        actions.click(this::clickAction);
-    }
+	/**
+	 * Expanding DropDown
+	 */
+	public final void expand() {
+		actions.expand(() -> expandAction(1));
+	}
 
-    /**
-     * @return Get Element’s text
-     */
-    @Step
-    public final String getText() {
-        return actions.getText(this::getTextAction);
-    }
+	public final void expand(String name) {
+		expand(getName(), name);
+	}
 
-    /**
-     * @param text Specify expected text
-     * @return Wait while Element’s text contains expected text. Returns Element’s text
-     */
-    @Step
-    public final String waitText(String text) {
-        return actions.waitText(text, this::getTextAction);
-    }
+	@Step("[{0}] expand {1}")
+	private void expand(String elName, String name) {
+		actions.expand(() -> expandAction(name));
+	}
 
-    /**
-     * @param regEx Specify expected regular expression Text
-     * @return Wait while Element’s text matches regEx. Returns Element’s text
-     */
-    @Step
-    public final String waitMatchText(String regEx) {
-        return actions.waitMatchText(regEx, this::getTextAction);
-    }
+	public final void expand(int index) {
+		expand(getName(), index);
+	}
 
-    /**
-     * @param attributeName Specify attribute name
-     * @param value         Specify attribute value
-     *                      Sets attribute value for Element
-     */
-    @Step
-    public void setAttribute(String attributeName, String value) {
-        element().setAttribute(attributeName, value);
-    }
+	@Step("[{0}] expand {1}")
+	private void expand(String elName, int index) {
+		actions.expand(() -> expandAction(index));
+	}
 
-    public WebElement getWebElement() {
-        return new GetElementType(getLocator(), this).get(Element.class).getWebElement();
-    }
+	/**
+	 * Closing DropDown
+	 */
+	public final void close() {
+		close(getName());
+	}
 
-    @Step
-    public String getAttribute(String name) {
-        return element().getAttribute(name);
-    }
+	@Step("[{0}] - close ")
+	private void close(String elName) {
+		if (isDisplayedAction(1)) element().click();
+	}
 
-    /**
-     * @param name  Specify attribute name
-     * @param value Specify attribute value
-     * Waits while attribute gets expected value. Return false if this not happens
-     */
-    @Step
-    public void waitAttribute(String name, String value) {
-        element().waitAttribute(name, value);
-    }
+	/**
+	 * Click on Element
+	 */
+	public final void click() {
+		click(getName());
+	}
+
+	@Step("Click on {0}")
+	private void click(String name) {
+		actions.click(this::clickAction);
+	}
+
+	/**
+	 * @return Get Element’s text
+	 */
+	public final String getText() {
+		return getText(getName());
+	}
+
+	@Step("{0} - get text")
+	private String getText(String elName) {
+		return actions.getText(this::getTextAction);
+	}
+
+	/**
+	 * @param text Specify expected text
+	 * @return Wait while Element’s text contains expected text. Returns Element’s text
+	 */
+	public final String waitText(String text) {
+		return waitText(getName(), text);
+	}
+
+	@Step("{0} - wait text [{0}]")
+	private String waitText(String elName, String text) {
+		return actions.waitText(text, this::getTextAction);
+	}
+
+	/**
+	 * @param regEx Specify expected regular expression Text
+	 * @return Wait while Element’s text matches regEx. Returns Element’s text
+	 */
+	public final String waitMatchText(String regEx) {
+		return waitMatchText(getName(), regEx);
+	}
+
+	@Step("{0} - wait match text [{0}]")
+	private String waitMatchText(String elName, String regEx) {
+		return actions.waitMatchText(regEx, this::getTextAction);
+	}
+
+	/**
+	 * @param attributeName Specify attribute name
+	 * @param value         Specify attribute value
+	 *                      Sets attribute value for Element
+	 */
+	public void setAttribute(String attributeName, String value) {
+		setAttribute(getName(), attributeName, value);
+	}
+
+	@Step("{0} - set attribute [name = {1}, value = {2}] ")
+	private void setAttribute(String elName, String attributeName, String value) {
+		element().setAttribute(attributeName, value);
+	}
+
+	public WebElement getWebElement() {
+		return new GetElementType(getLocator(), this).get(Element.class).getWebElement();
+	}
+
+	public String getAttribute(String name) {
+		return getAttribute(getName(), name);
+	}
+
+	@Step("{0} - get attribute [{1}] ")
+	private String getAttribute(String elName, String name) {
+		return element().getAttribute(name);
+	}
+
+	/**
+	 * @param name  Specify attribute name
+	 * @param value Specify attribute value
+	 *              Waits while attribute gets expected value. Return false if this not happens
+	 */
+	public void waitAttribute(String name, String value) {
+		waitAttribute(getName(), name, value);
+	}
+
+	@Step("{0} - wait attribute [{1}] has value [{2}]")
+	private void waitAttribute(String elName, String name, String value) {
+		element().waitAttribute(name, value);
+	}
 
 }

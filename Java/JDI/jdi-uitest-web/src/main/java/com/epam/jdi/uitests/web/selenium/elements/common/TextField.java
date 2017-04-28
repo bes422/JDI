@@ -83,8 +83,12 @@ public class TextField extends Text implements ITextField {
      * @param text Specify text to input to TextField
      *             Input text in textfield
      */
-    @Step
     public final void input(CharSequence text) {
+        input(getName(), text);
+    }
+
+    @Step("{0} input [{1}]")
+    private void input(String name,CharSequence text) {
         actions.input(text, this::inputAction);
     }
 
@@ -92,8 +96,12 @@ public class TextField extends Text implements ITextField {
      * @param text Specify text to input to TextField
      *             Clear and input text in textfield
      */
-    @Step
+
     public void newInput(CharSequence text) {
+        newInput(getName(), text);
+    }
+    @Step("{0} new input [{1}]")
+    private void newInput(String name, CharSequence text) {
         clear();
         input(text);
     }
@@ -101,16 +109,22 @@ public class TextField extends Text implements ITextField {
     /**
      * Clear textfield
      */
-    @Step
     public final void clear() {
+        clear(getName());
+    }
+    @Step("{0} - clear")
+    private void clear(String elName) {
         actions.clear(this::clearAction);
     }
 
     /**
      * Focus(click) on textfield
      */
-    @Step
     public final void focus() {
+        focus(getName());
+    }
+    @Step("Focus on {0}")
+    private void focus(String elName) {
         actions.focus(this::focusAction);
     }
 

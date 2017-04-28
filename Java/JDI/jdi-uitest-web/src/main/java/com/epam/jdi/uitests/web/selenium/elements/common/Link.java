@@ -54,13 +54,17 @@ public class Link extends ClickableText implements ILink {
     /**
      * @return Get URL
      */
-    @Step
     public final URL getURL(){ return tryGetResult(() -> new URL(getReference())); }
 
     /**
      * @return Get link destination
      */
     public final String getReference() {
+        return getReference(getName());
+    }
+
+    @Step("Get href of link {0}")
+    private final String getReference(String elName) {
         return invoker.doJActionResult("Get link reference", this::getReferenceAction, href -> "Get href of link '" + href + "'");
     }
 
@@ -68,8 +72,12 @@ public class Link extends ClickableText implements ILink {
      * @param text Specify expected text
      * @return Wait while link destination contains expected text. Returns link destination
      */
-    @Step
     public final String waitReferenceContains(String text) {
+        return waitReferenceContains(getName(), text);
+    }
+
+    @Step("{0} - wait link contains {1}")
+    private String waitReferenceContains(String elName, String text) {
         return invoker.doJActionResult(format("Wait link contains '%s'", text),
                 () -> getByCondition(this::getReferenceAction, t -> t.contains(text)));
     }
@@ -78,8 +86,12 @@ public class Link extends ClickableText implements ILink {
      * @param regEx Specify expected regular expression Text
      * @return Wait while link destination contains expected text. Returns link destination
      */
-    @Step
     public final String waitMatchReference(String regEx) {
+        return waitMatchReference(getName(), regEx);
+    }
+
+    @Step("{0} - wait link match regex {1}")
+    private String waitMatchReference(String elName, String regEx) {
         return invoker.doJActionResult(format("Wait link match regex '%s'", regEx),
                 () -> getByCondition(this::getReferenceAction, t -> t.matches(regEx)));
     }
@@ -91,8 +103,12 @@ public class Link extends ClickableText implements ILink {
     /**
      * @return Get links tooltip
      */
-    @Step
     public final String getTooltip() {
+        return getTooltip(getName());
+    }
+
+    @Step("{0} - get link tooltip")
+    private final String getTooltip(String elName) {
         return invoker.doJActionResult("Get link tooltip", this::getTooltipAction, href -> "Get link tooltip '" + href + "'");
     }
 }

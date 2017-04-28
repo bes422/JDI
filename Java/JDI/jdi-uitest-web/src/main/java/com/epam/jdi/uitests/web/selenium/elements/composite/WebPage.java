@@ -121,6 +121,11 @@ public class WebPage extends BaseElement implements IPage {
      * Opens url specified for page
      */
     public <T extends IPage> T open() {
+        return open(getName(), url);
+    }
+
+    @Step("Open page {0} by url {1}")
+    private  <T extends IPage> T open(String name, String url) {
         invoker.doJAction(format("Open page '%s' by url %s", getName(), url),
                 () -> getDriver().navigate().to(url));
         if (checkAfterOpen)

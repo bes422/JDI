@@ -153,8 +153,11 @@ public class Table extends Text implements ITable, Cloneable {
         ((Table) el).setUp(field.getAnnotation(JTable.class));
     }
 
-    @Step
     public List<String> getHeaders(){
+        return getHeaders(getName());
+    }
+    @Step("{0} - get headers")
+    private List<String> getHeaders(String elName){
         return columns.getHeadersTextAction();
     }
 

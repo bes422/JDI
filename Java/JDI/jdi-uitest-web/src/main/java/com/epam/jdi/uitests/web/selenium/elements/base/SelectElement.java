@@ -21,6 +21,7 @@ package com.epam.jdi.uitests.web.selenium.elements.base;
 import com.epam.jdi.uitests.core.interfaces.base.ISelect;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.yandex.qatools.allure.annotations.Step;
 
 /**
  * Created by Roman_Iovlev on 7/9/2015.
@@ -45,6 +46,11 @@ public class SelectElement extends ClickableText implements ISelect {
      * Selects Element. Similar to click()
      */
     public void select() {
+        select(getName());
+    }
+
+    @Step
+    private void select(String elName) {
         click();
     }
 
@@ -52,6 +58,11 @@ public class SelectElement extends ClickableText implements ISelect {
      * Selects Element. Similar to click()
      */
     public boolean isSelected() {
+        return isSelected(getName());
+    }
+
+    @Step
+    private boolean isSelected(String elName) {
         return actions.isSelected(this::isSelectedAction);
     }
 }
