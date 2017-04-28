@@ -132,7 +132,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		return getAttribute(getName(), name);
 	}
 
-	@Step("get attribute [{1} from [{0}]]")
+	@Step("{0} - Get attribute [{1}]")
 	private String getAttribute(String elName, String name) {
 		return getWebElement().getAttribute(name);
 	}
@@ -143,6 +143,10 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	 *              Waits while attribute gets expected value. Return false if this not happens
 	 */
 	public void waitAttribute(String name, String value) {
+		waitAttribute(getName(), name, value);
+	}
+	@Step("{0} Wait attribute [{1}] gets value [{2}]")
+	private void waitAttribute(String elName, String name, String value) {
 		wait(el -> el.getAttribute(name).equals(value));
 	}
 
@@ -152,6 +156,11 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	 *                      Sets attribute value for Element
 	 */
 	public void setAttribute(String attributeName, String value) {
+		setAttribute(getName(),attributeName,value);
+	}
+
+	@Step("{0} Set attribute {1}={2}")
+	private void setAttribute(String elName, String attributeName, String value) {
 		invoker.doJAction(format("Set Attribute '%s'='%s'", attributeName, value),
 				() -> jsExecutor().executeScript(format("arguments[0].setAttribute('%s',arguments[1]);", attributeName),
 						getWebElement(), value));
@@ -174,7 +183,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		return isDisplayed(getName());
 	}
 
-	@Step
+	@Step("{0} - Is displayed")
 	private boolean isDisplayed(String elName) {
 		return actions.isDisplayed(this::isDisplayedAction);
 	}
@@ -197,7 +206,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		waitDisplayed(getName());
 	}
 
-	@Step
+	@Step("{0} - Wait displayed")
 	private void waitDisplayed(String elName) {
 		actions.waitDisplayed(getWebElement()::isDisplayed);
 	}
@@ -209,7 +218,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		waitVanished(getName());
 	}
 
-	@Step
+	@Step("{0} - Waits while becomes invisible")
 	private void waitVanished(String elName) {
 		actions.waitVanished(() -> timer().wait(() -> !isDisplayedAction()));
 	}
@@ -227,7 +236,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		wait(getName(), resultFunc);
 	}
 
-	@Step
+	@Step("{0} - Wait [{1}]")
 	private void wait(String elName, Function<WebElement, Boolean> resultFunc) {
 		boolean result = wait(resultFunc, r -> r);
 		asserter.isTrue(result);

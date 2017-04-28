@@ -241,7 +241,6 @@ public class WebPage extends BaseElement implements IPage {
 		/**
 		 * Check that current page url/title equals to expected url/title
 		 */
-		@Step
 		public boolean check() {
 			logger.info(format("Check that page %s equals to '%s'", what, equals));
 			return equals == null
@@ -252,7 +251,6 @@ public class WebPage extends BaseElement implements IPage {
 		/**
 		 * Check that current page url/title matches to expected url/title-matcher
 		 */
-		@Step
 		public boolean match() {
 			logger.info(format("Check that page %s matches to '%s'", what, template));
 			return template == null
@@ -263,7 +261,6 @@ public class WebPage extends BaseElement implements IPage {
 		/**
 		 * Check that current page url/title contains expected url/title-matcher
 		 */
-		@Step
 		public boolean contains() {
 			logger.info(format("Check that page %s contains to '%s'", what, template));
 			return template == null

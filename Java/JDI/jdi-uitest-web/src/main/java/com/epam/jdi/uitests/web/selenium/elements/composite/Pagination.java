@@ -26,6 +26,7 @@ import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import org.openqa.selenium.By;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -75,6 +76,11 @@ public class Pagination extends BaseElement implements IPagination {
      * Choose Next page
      */
     public void next() {
+        next(getName());
+    }
+
+    @Step("{0} - Choose Next page")
+    private void next(String elName) {
         invoker.doJAction("Choose Next page", () -> nextAction().click());
     }
 
@@ -82,6 +88,11 @@ public class Pagination extends BaseElement implements IPagination {
      * Choose Previous page
      */
     public void previous() {
+        previous(getName());
+    }
+
+    @Step("{0} - Choose Previous page")
+    private void previous(String elName) {
         invoker.doJAction("Choose Previous page", () -> previousAction().click());
     }
 
@@ -89,6 +100,11 @@ public class Pagination extends BaseElement implements IPagination {
      * hoose First page
      */
     public void first() {
+        first(getName());
+    }
+
+    @Step("{0} - Choose First page")
+    private void first(String elName) {
         invoker.doJAction("Choose First page", () -> firstAction().click());
     }
 
@@ -96,6 +112,11 @@ public class Pagination extends BaseElement implements IPagination {
      * Choose Last page
      */
     public void last() {
+        last(getName());
+    }
+
+    @Step("{0} - Choose Last page")
+    private void last(String elName) {
         invoker.doJAction("Choose Last page", () -> lastAction().click());
     }
 
@@ -104,6 +125,11 @@ public class Pagination extends BaseElement implements IPagination {
      *              Choose page by index
      */
     public void selectPage(int index) {
+        selectPage(getName(), index);
+    }
+
+    @Step("{0} - Choose {1} page")
+    private void selectPage(String elName, int index) {
         invoker.doJAction(format("Choose '%s' page", index), () -> pageAction(index).click());
     }
 

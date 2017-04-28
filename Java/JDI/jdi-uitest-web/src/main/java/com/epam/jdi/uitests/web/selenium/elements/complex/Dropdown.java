@@ -184,7 +184,6 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 	/**
 	 * Waits while Element becomes visible
 	 */
-	@Step
 	@Override
 	public void waitDisplayed() {
 		element().waitDisplayed();
@@ -335,11 +334,6 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 	 *                      Sets attribute value for Element
 	 */
 	public void setAttribute(String attributeName, String value) {
-		setAttribute(getName(), attributeName, value);
-	}
-
-	@Step("{0} - set attribute [name = {1}, value = {2}] ")
-	private void setAttribute(String elName, String attributeName, String value) {
 		element().setAttribute(attributeName, value);
 	}
 
@@ -348,11 +342,6 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 	}
 
 	public String getAttribute(String name) {
-		return getAttribute(getName(), name);
-	}
-
-	@Step("{0} - get attribute [{1}] ")
-	private String getAttribute(String elName, String name) {
 		return element().getAttribute(name);
 	}
 

@@ -56,7 +56,7 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 		select(getName(), name);
 	}
 
-	@Step("{0} select {1}")
+	@Step("{0} - Select [{1}]")
 	private final void select(String elName, String name) {
 		actions.select(name, this::selectAction);
 	}
@@ -77,7 +77,7 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 		select(getName(), num);
 	}
 
-	@Step("{0} select {1}")
+	@Step("{0} - Select [{1}]")
 	private final void select(String elName, int num) {
 		actions.select(num, this::selectAction);
 	}
@@ -86,6 +86,11 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 	 * @return Get name of the selected Element
 	 */
 	public final String getSelected() {
+		return getSelected(getName());
+	}
+
+	@Step("{0} - Get name of the selected Element")
+	private String getSelected(String elName) {
 		return actions.getSelected(this::getSelectedAction);
 	}
 
@@ -93,6 +98,11 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 	 * @return Get index of the selected Element
 	 */
 	public final int getSelectedIndex() {
+		return getSelectedIndex(getName());
+	}
+
+	@Step("{0} - Get index of the selected Element")
+	private int getSelectedIndex(String elName) {
 		return actions.getSelectedIndex(this::getSelectedIndexAction);
 	}
 
