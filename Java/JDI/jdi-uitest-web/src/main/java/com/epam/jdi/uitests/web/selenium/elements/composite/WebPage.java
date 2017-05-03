@@ -139,11 +139,6 @@ public class WebPage extends BaseElement implements IPage {
 	}
 
 	public void shouldBeOpened() {
-		shouldBeOpened(getName());
-	}
-
-	@Step("Page {0} should be opened")
-	private void shouldBeOpened(String elName) {
 		isOpened();
 	}
 

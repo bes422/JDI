@@ -26,6 +26,5 @@ public interface IClickable extends IElement {
     /**
      * Click on Element
      */
-    @Step
     void click();
 }
