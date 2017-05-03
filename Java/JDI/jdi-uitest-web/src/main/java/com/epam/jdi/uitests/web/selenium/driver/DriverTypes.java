@@ -73,9 +73,13 @@ public enum DriverTypes implements DriverSetup  {
     CHROME("chrome") {
         public DesiredCapabilities getDesiredCapabilities(String downloadFilepath) {
             ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-web-security");
             options.addArguments("--disable-extensions");
             options.addArguments("test-type");
             HashMap<String, Object> chromePrefs = new HashMap<>();
+            chromePrefs.put("profile.default_content_setting_values.notifications", 0);
+            chromePrefs.put("profile.password_manager_enabled", false);
+            chromePrefs.put("credentials_enable_service", false);
             chromePrefs.put("profile.default_content_settings.popups", 0);
             chromePrefs.put("download.default_directory", downloadFilepath);
             options.setExperimentalOption("prefs", chromePrefs);
