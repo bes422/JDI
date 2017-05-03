@@ -42,8 +42,8 @@ public class WebAnnotationsUtil extends AnnotationsUtil {
     }
     public static String getUrlFromUri(String uri, Class<?> parentClass) {
         String siteDomain = domain;
-        if (parentClass.isAnnotationPresent(JSite.class))
-            siteDomain = parentClass.getAnnotation(JSite.class).domain();
+//        if (parentClass.isAnnotationPresent(JSite.class))
+//            siteDomain = parentClass.getAnnotation(JSite.class).domain();
         if (siteDomain == null)
             siteDomain = "";
         return siteDomain.replaceAll("/*$", "") + "/" + uri.replaceAll("^/*", "");
