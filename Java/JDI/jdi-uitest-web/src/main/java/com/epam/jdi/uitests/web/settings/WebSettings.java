@@ -142,6 +142,7 @@ public class WebSettings extends JDISettings {
                     downloadsDir =absolutePath+File.separator+p;
                 }, "downloads.dir"
         );
+        System.setProperty("downloads.dir",downloadsDir);
         fillAction(p -> domain = p, "domain");
         fillAction(p -> DRIVER_VERSION = p, "drivers.version");
         fillAction(driverFactory::setDriverPath, "drivers.folder");

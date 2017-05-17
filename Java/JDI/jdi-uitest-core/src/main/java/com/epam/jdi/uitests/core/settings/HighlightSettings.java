@@ -23,7 +23,7 @@ package com.epam.jdi.uitests.core.settings;
 public class HighlightSettings {
     private String bgColor = "yellow";
     private String frameColor = "red";
-    private int timeoutInSec = 1;
+    private int timeoutInSec = 500;
 
     public HighlightSettings() {
     }

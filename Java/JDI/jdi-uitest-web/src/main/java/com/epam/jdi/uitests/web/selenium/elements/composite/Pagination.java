@@ -25,6 +25,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.IPagination;
 import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
+import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
@@ -41,7 +42,7 @@ import static java.lang.String.format;
 /**
  * Created by Roman_Iovlev on 7/29/2015.
  */
-public class Pagination extends BaseElement implements IPagination {
+public class Pagination extends Element implements IPagination {
     private By nextLocator;
     private By previousLocator;
     private By firstLocator;
@@ -212,5 +213,33 @@ public class Pagination extends BaseElement implements IPagination {
         if (pageLink != null)
             return pageLink;
         throw exception(cantChooseElementMsg(Integer.toString(index), shortName, "pageAction"));
+    }
+
+    public boolean isNextPresent() {
+        setWaitTimeout(0);
+        boolean b = getDriver().findElements(nextLocator).size() > 0;
+        restoreWaitTimeout();
+        return b;
+    }
+
+    public boolean isPreviousPresent() {
+        setWaitTimeout(0);
+        boolean b = getDriver().findElements(previousLocator).size() > 0;
+        restoreWaitTimeout();
+        return b;
+    }
+
+    public boolean isFirstPresent() {
+        setWaitTimeout(0);
+        boolean b = getDriver().findElements(firstLocator).size() > 0;
+        restoreWaitTimeout();
+        return b;
+    }
+
+    public boolean isLastPresent() {
+        setWaitTimeout(0);
+        boolean b = getDriver().findElements(lastLocator).size() > 0;
+        restoreWaitTimeout();
+        return b;
     }
 }

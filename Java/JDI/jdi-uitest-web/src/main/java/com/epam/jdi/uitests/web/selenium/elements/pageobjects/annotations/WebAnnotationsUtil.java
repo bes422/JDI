@@ -57,7 +57,7 @@ public class WebAnnotationsUtil extends AnnotationsUtil {
         String urlTemplate = pageAnnotation.urlTemplate();
         CheckPageTypes urlCheckType = pageAnnotation.urlCheckType();
         CheckPageTypes titleCheckType = pageAnnotation.titleCheckType();
-        if (urlCheckType == MATCH || urlCheckType == CONTAINS && urlTemplate.equals(""))
+        if (((urlCheckType == CheckPageTypes.MATCH) || (urlCheckType == CheckPageTypes.CONTAINS)) && urlTemplate.equals(""))
             urlTemplate = url;
         page.updatePageData(url, title, urlCheckType, titleCheckType, urlTemplate);
     }
