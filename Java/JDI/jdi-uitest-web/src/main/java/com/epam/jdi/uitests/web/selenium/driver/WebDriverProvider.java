@@ -97,13 +97,14 @@ public class WebDriverProvider {
     }
 
     private static String geckoDriverDownloadUrl() throws IOException {
+        String version = "0.16.1";
         switch (checkOS()) {
             case "mac":
-                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? "0.15.0" : DRIVER_VERSION, GECKO_MAC_DRIVER);
+                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? version : DRIVER_VERSION, GECKO_MAC_DRIVER);
             case "win":
-                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? "0.15.0" : DRIVER_VERSION, GECKO_WIN_DRIVER);
+                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? version : DRIVER_VERSION, GECKO_WIN_DRIVER);
             default:
-                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? "0.15.0" : DRIVER_VERSION, GECKO_NIX_DRIVER);
+                return format(GECKO_STORAGE, DRIVER_VERSION.equals("") ? version : DRIVER_VERSION, GECKO_NIX_DRIVER);
         }
     }
     private static String ieDriverDownloadUrl() {
@@ -116,14 +117,19 @@ public class WebDriverProvider {
                 File zip = new File(TEMP_FOLDER + zipName);
                 FileUtils.copyURLToFile(new URL(downloadUrl), zip);
                 new ZipFile(zip).extractAll(FOLDER_PATH);
-                deleteDirectory(temp);
+                try {
+                    deleteDirectory(temp);
+                }catch(IOException ex){
+                    Thread.sleep(1000);
+                    deleteDirectory(temp);
+                }
             } catch (Exception e) {
                 throw exception("Can't get %s. Exception: " + e.getMessage(), driverName);
             }
         }
     }
 
-    public static void downloadChromeDriver(String folderPath) {
+    public synchronized static void downloadChromeDriver(String folderPath) {
         try {
             downloadDriver("ChromeDriver", getChromeDriverPath(folderPath), "chromedriver.zip", chromeDriverDownloadUrl());
             if (checkOS().equals("mac") || checkOS().equals("nix"))
