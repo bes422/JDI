@@ -25,6 +25,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.interfaces.*;
 import com.epam.jdi.uitests.web.selenium.elements.apiInteract.GetElementModule;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.common.Text;
+import com.epam.jdi.uitests.web.selenium.elements.complex.Elements;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JTable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -270,6 +271,9 @@ public class Table extends Text implements ITable, Cloneable {
 
     public IRow rows() {
         return rows;
+    }
+    public int getRowsSize() {
+        return new Elements(rows.lineTemplate).size();
     }
 
     public MapArray<String, ICell> row(int rowNum) {
