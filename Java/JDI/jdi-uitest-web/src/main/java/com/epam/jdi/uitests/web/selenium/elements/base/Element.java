@@ -159,6 +159,16 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		setAttribute(getName(),attributeName,value);
 	}
 
+	public void removeAttribute(String attributeName) {
+		removeAttribute(getName(),attributeName);
+	}
+
+	@Step("{0} Remove attribute {1}")
+	private void removeAttribute(String elName, String attributeName) {
+		invoker.doJAction(format("Remove Attribute '%s'", attributeName),
+				() -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
+	}
+
 	@Step("{0} Set attribute {1}={2}")
 	private void setAttribute(String elName, String attributeName, String value) {
 		invoker.doJAction(format("Set Attribute '%s'='%s'", attributeName, value),

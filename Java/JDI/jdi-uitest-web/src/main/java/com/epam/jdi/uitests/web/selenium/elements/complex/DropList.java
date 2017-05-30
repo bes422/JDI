@@ -27,6 +27,8 @@ import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.function.Function;
 
+import static java.lang.String.format;
+
 /**
  * Select control implementation
  *
@@ -208,6 +210,16 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      */
     public void waitAttribute(String name, String value) {
         button().waitAttribute(name, value);
+    }
+
+    public void removeAttribute(String attributeName) {
+        removeAttribute(getName(),attributeName);
+    }
+
+    @Step("{0} Remove attribute {1}")
+    private void removeAttribute(String elName, String attributeName) {
+        invoker.doJAction(format("Remove Attribute '%s'", attributeName),
+                () -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
     }
 
 }

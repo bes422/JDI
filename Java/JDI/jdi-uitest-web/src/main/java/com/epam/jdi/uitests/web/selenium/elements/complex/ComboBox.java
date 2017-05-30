@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
 import static com.epam.web.matcher.junit.Assert.exception;
+import static java.lang.String.format;
 
 /**
  * ComboBox control implementation
@@ -146,6 +147,16 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
      */
     public final void focus() {
         actions.focus(this::focusAction);
+    }
+
+    public void removeAttribute(String attributeName) {
+        removeAttribute(getName(),attributeName);
+    }
+
+    @Step("{0} Remove attribute {1}")
+    private void removeAttribute(String elName, String attributeName) {
+        invoker.doJAction(format("Remove Attribute '%s'", attributeName),
+                () -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
     }
 
 }
