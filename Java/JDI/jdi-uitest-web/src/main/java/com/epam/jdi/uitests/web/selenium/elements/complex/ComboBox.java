@@ -100,12 +100,12 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
      *             Input text in textfield
      */
     public final void input(CharSequence text) {
-        input(getName(), text);
+        input(getName(), text.toString().replace("$","\\$"));
     }
 
     @Step("{name} input {text}")
     private void input(String name, CharSequence text) {
-        actions.input(text, this::inputAction);
+        actions.input(text.toString().replace("\\$","$"), this::inputAction);
     }
 
     /**
@@ -121,7 +121,7 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
      *             Clear and input text in textfield
      */
     public void newInput(CharSequence text) {
-        newInput(getName(), text);
+        newInput(getName(), text.toString().replace("$","\\$"));
     }
 
     @Step("{name} new input {text}")

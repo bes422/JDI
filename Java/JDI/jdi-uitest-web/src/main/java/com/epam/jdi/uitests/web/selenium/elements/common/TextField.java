@@ -84,12 +84,12 @@ public class TextField extends Text implements ITextField {
      *             Input text in textfield
      */
     public final void input(CharSequence text) {
-        input(getName(), text);
+        input(getName(), text.toString().replace("$","\\$"));
     }
 
     @Step("{name} input {text}")
     private void input(String name,CharSequence text) {
-        actions.input(text, this::inputAction);
+        actions.input(text.toString().replace("\\$","$"), this::inputAction);
     }
 
     /**
