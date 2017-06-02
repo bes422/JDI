@@ -30,7 +30,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -132,7 +132,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		return getAttribute(getName(), name);
 	}
 
-	@Step("{0} - Get attribute [{1}]")
+	@Step("{elName} - Get attribute {name}")
 	private String getAttribute(String elName, String name) {
 		return getWebElement().getAttribute(name);
 	}
@@ -145,7 +145,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	public void waitAttribute(String name, String value) {
 		waitAttribute(getName(), name, value);
 	}
-	@Step("{0} Wait attribute [{1}] gets value [{2}]")
+	@Step("{elName} Wait attribute {name} gets value {value}")
 	private void waitAttribute(String elName, String name, String value) {
 		wait(el -> el.getAttribute(name).equals(value));
 	}
@@ -163,13 +163,13 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		removeAttribute(getName(),attributeName);
 	}
 
-	@Step("{0} Remove attribute {1}")
+	@Step("{elName} Remove attribute {attributeName}")
 	private void removeAttribute(String elName, String attributeName) {
 		invoker.doJAction(format("Remove Attribute '%s'", attributeName),
 				() -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
 	}
 
-	@Step("{0} Set attribute {1}={2}")
+	@Step("{elName} Set attribute {attributeName}={value}")
 	private void setAttribute(String elName, String attributeName, String value) {
 		invoker.doJAction(format("Set Attribute '%s'='%s'", attributeName, value),
 				() -> jsExecutor().executeScript(format("arguments[0].setAttribute('%s',arguments[1]);", attributeName),
@@ -193,7 +193,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		return isDisplayed(getName());
 	}
 
-	@Step("{0} - Is displayed")
+	@Step("{elName} - Is displayed")
 	private boolean isDisplayed(String elName) {
 		return actions.isDisplayed(this::isDisplayedAction);
 	}
@@ -216,7 +216,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		waitDisplayed(getName());
 	}
 
-	@Step("{0} - Wait displayed")
+	@Step("{elName} - Wait displayed")
 	private void waitDisplayed(String elName) {
 		actions.waitDisplayed(getWebElement()::isDisplayed);
 	}
@@ -228,7 +228,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		waitVanished(getName());
 	}
 
-	@Step("{0} - Waits while becomes invisible")
+	@Step("{elName} - Waits while becomes invisible")
 	private void waitVanished(String elName) {
 		actions.waitVanished(() -> timer().wait(() -> !isDisplayedAction()));
 	}
@@ -246,7 +246,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		wait(getName(), resultFunc);
 	}
 
-	@Step("{0} - Wait [{1}]")
+	@Step("{elName} - Wait {resultFunc}")
 	private void wait(String elName, Function<WebElement, Boolean> resultFunc) {
 		boolean result = wait(resultFunc, r -> r);
 		asserter.isTrue(result);
@@ -261,7 +261,6 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		return wait(getName(), resultFunc, condition);
 	}
 
-	@Step
 	private <R> R wait(String elName, Function<WebElement, R> resultFunc, Function<R, Boolean> condition) {
 		return timer().getResultByCondition(() -> resultFunc.apply(getWebElement()), condition);
 	}
@@ -324,7 +323,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		doubleClicks(getName());
 	}
 
-	@Step("Double click on {0}")
+	@Step("Double click on {elName}")
 	private void doubleClicks(String elName) {
 		invoker.doJAction("Double click on Element", () -> {
 			Actions builder = new Actions(getDriver());
@@ -336,7 +335,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		rightClick(getName());
 	}
 
-	@Step("Right click on {0}")
+	@Step("Right click on {elName}")
 	private void rightClick(String elName) {
 		invoker.doJAction("Right click on Element", () -> {
 			Actions builder = new Actions(getDriver());
@@ -348,7 +347,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		clickCenter(getName());
 	}
 
-	@Step("Click in Center of {0}")
+	@Step("Click in Center of {elName}")
 	private void clickCenter(String elName) {
 		invoker.doJAction("Click in Center of Element", () -> {
 			Actions builder = new Actions(getDriver());
@@ -360,7 +359,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		mouseOver(getName());
 	}
 
-	@Step("Move mouse over {0}")
+	@Step("Move mouse over {elName}")
 	private void mouseOver(String elName) {
 		invoker.doJAction("Move mouse over Element", () -> {
 			Actions builder = new Actions(getDriver());
@@ -373,7 +372,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	}
 
 
-	@Step("Focus on {0}")
+	@Step("Focus on {elName}")
 	private void focus(String elName) {
 		invoker.doJAction("Focus on Element", () -> {
 			Dimension size = getWebElement().getSize(); //for scroll to object
@@ -385,7 +384,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		selectArea(getName(), x1, y1, x2,y2);
 	}
 
-	@Step("[{0}] Select area: from x={1},y={2};to x={3},y={4}")
+	@Step("{elName} - Select area: from x={x1},y={y1};to x={x2},y={y2}")
 	private void selectArea(String elName, int x1, int y1, int x2, int y2) {
 		invoker.doJAction(format("Select area: from %d,%d;to %d,%d", x1, y1, x2, y2), () -> {
 			WebElement element = getWebElement();
@@ -398,7 +397,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		dragAndDropBy(getName(), x, y);
 	}
 
-	@Step("Drag and drop [{0}]: (x,y)=({1},{2})")
+	@Step("Drag and drop {elName}: (x,y)=({x},{y})")
 	private void dragAndDropBy(String elName, int x, int y) {
 		invoker.doJAction(format("Drag and drop Element: (x,y)=(%s,%s)", x, y), () ->
 				new Actions(getDriver()).dragAndDropBy(getWebElement(), x, y).build().perform());
@@ -408,7 +407,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 		dragAndDrop(getName(), target, target.getName());
 	}
 
-	@Step("[{0}] Drag and drop to [{2}]")
+	@Step("{elName} - Drag and drop to {tName}")
 	private void dragAndDrop(String elName, Element target, String tName) {
 		invoker.doJAction(format("Drag and drop to Target Element: %s", target.toString()), () ->
 				new Actions(getDriver()).dragAndDrop(getWebElement(), target.getWebElement()).build().perform());

@@ -20,7 +20,7 @@ package com.epam.jdi.uitests.web.selenium.elements.actions;
 
 import com.epam.commons.linqinterfaces.JAction;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,7 @@ package com.epam.jdi.uitests.testing.unittests.tests.complex;
 import com.epam.commons.Timer;
 import com.epam.commons.linqinterfaces.JAction;
 import org.openqa.selenium.By;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.io.File;
 import java.util.function.Supplier;

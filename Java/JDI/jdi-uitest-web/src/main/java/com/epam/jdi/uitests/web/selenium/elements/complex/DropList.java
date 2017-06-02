@@ -23,7 +23,7 @@ import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.function.Function;
 
@@ -158,7 +158,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         return getText(getName());
     }
 
-    @Step("{0} - Get text")
+    @Step("{elName} - Get text")
     private String getText(String elName) {
         return actions.getText(this::getTextAction);
     }
@@ -171,7 +171,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         return waitText(getName(), text);
     }
 
-    @Step("{0} - Wait while text contains [{1}]")
+    @Step("{elName} - Wait while text contains {text}")
     private String waitText(String elName, String text) {
         return actions.waitText(text, this::getTextAction);
     }
@@ -184,7 +184,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         return waitMatchText(getName(), regEx);
     }
 
-    @Step("{0} - Wait while text matches [{1}]")
+    @Step("{elName} - Wait while text matches {regEx}")
     private String waitMatchText(String elName, String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }
@@ -216,7 +216,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         removeAttribute(getName(),attributeName);
     }
 
-    @Step("{0} Remove attribute {1}")
+    @Step("{elName} Remove attribute {attributeName}")
     private void removeAttribute(String elName, String attributeName) {
         invoker.doJAction(format("Remove Attribute '%s'", attributeName),
                 () -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));

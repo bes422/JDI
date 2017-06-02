@@ -19,7 +19,7 @@ package com.epam.jdi.uitests.core.interfaces.common;
 
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.base.IHasValue;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Created by Roman_Iovlev on 6/10/2015.
@@ -28,20 +28,17 @@ public interface IText extends IHasValue, IElement {
     /**
      * @return Get Element’s text
      */
-    @Step
     String getText();
 
     /**
      * @param text Specify expected text
      * @return Wait while Element’s text contains expected text. Returns Element’s text
      */
-    @Step
     String waitText(String text);
 
     /**
      * @param regEx Specify expected regular expression Text
      * @return Wait while Element’s text matches regEx. Returns Element’s text
      */
-    @Step
     String waitMatchText(String regEx);
 }

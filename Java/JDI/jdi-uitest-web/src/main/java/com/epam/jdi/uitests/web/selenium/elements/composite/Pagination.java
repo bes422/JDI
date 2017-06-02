@@ -27,7 +27,7 @@ import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import org.openqa.selenium.By;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -80,7 +80,7 @@ public class Pagination extends Element implements IPagination {
         next(getName());
     }
 
-    @Step("{0} - Choose Next page")
+    @Step("{elName} - Choose Next page")
     private void next(String elName) {
         invoker.doJAction("Choose Next page", () -> nextAction().click());
     }
@@ -92,7 +92,7 @@ public class Pagination extends Element implements IPagination {
         previous(getName());
     }
 
-    @Step("{0} - Choose Previous page")
+    @Step("{elName} - Choose Previous page")
     private void previous(String elName) {
         invoker.doJAction("Choose Previous page", () -> previousAction().click());
     }
@@ -104,7 +104,7 @@ public class Pagination extends Element implements IPagination {
         first(getName());
     }
 
-    @Step("{0} - Choose First page")
+    @Step("{elName} - Choose First page")
     private void first(String elName) {
         invoker.doJAction("Choose First page", () -> firstAction().click());
     }
@@ -116,7 +116,7 @@ public class Pagination extends Element implements IPagination {
         last(getName());
     }
 
-    @Step("{0} - Choose Last page")
+    @Step("{elName} - Choose Last page")
     private void last(String elName) {
         invoker.doJAction("Choose Last page", () -> lastAction().click());
     }
@@ -129,7 +129,7 @@ public class Pagination extends Element implements IPagination {
         selectPage(getName(), index);
     }
 
-    @Step("{0} - Choose {1} page")
+    @Step("{elName} - Choose {index} page")
     private void selectPage(String elName, int index) {
         invoker.doJAction(format("Choose '%s' page", index), () -> pageAction(index).click());
     }

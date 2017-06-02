@@ -29,7 +29,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.IForm;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import com.epam.jdi.uitests.web.selenium.elements.common.Button;
 import com.epam.web.matcher.testng.Assert;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class Form<T> extends Element implements IForm<T> {
 		fill(getName(), map);
 	}
 
-	@Step("{0} - fill [{1}]")
+	@Step("{elName} - fill {map}")
 	private void fill(String elName, MapArray<String, String> map) {
 		foreach(allFields(), element -> {
 			String fieldValue = map.first((name, value) ->
@@ -129,7 +129,7 @@ public class Form<T> extends Element implements IForm<T> {
 		submit(getName(), objStrings);
 	}
 
-	@Step("{0} - submit [{1}]")
+	@Step("{elName} - submit {objStrings}")
 	private void submit(String elName, MapArray<String, String> objStrings) {
 		fill(objStrings);
 		getElementClass.getButton("submit").click();
@@ -150,7 +150,7 @@ public class Form<T> extends Element implements IForm<T> {
 		submitCustom(getName(), text);
 	}
 
-	@Step("{0} - submit [{1}]")
+	@Step("{elName} - submit {text}")
 	private void submitCustom(String elName, String text) {
 		setText(text);
 		getElementClass.getButton("submit").click();
@@ -168,7 +168,7 @@ public class Form<T> extends Element implements IForm<T> {
 		submit(getName(), entity, buttonName);
 	}
 
-	@Step("{0} - submit entity [{1}] and click button [{2}]")
+	@Step("{elName} - submit entity {entity} and click button {buttonName}")
 	private void submit(String elName, T entity, String buttonName) {
 		fill(getMapFromObject(entity));
 		getElementClass.getButton(buttonName).click();
@@ -185,7 +185,7 @@ public class Form<T> extends Element implements IForm<T> {
 		submit(getName(), text, buttonName);
 	}
 
-	@Step("{0} - submit [{1}] and click button [{2}]")
+	@Step("{elName} - submit {text} and click button {buttonName}")
 	private void submit(String elName, String text, String buttonName) {
 		setText(text);
 		getElementClass.getButton(buttonName).click();
@@ -203,7 +203,7 @@ public class Form<T> extends Element implements IForm<T> {
 		submit(getName(), entity, buttonName);
 	}
 
-	@Step("{0} - submit [{1}] and click button [{2}]")
+	@Step("{elName} - submit {entity} and click button {buttonName}")
 	private void submit(String elName, T entity, Enum buttonName) {
 		fill(getMapFromObject(entity));
 		getElementClass.getButton(buttonName.toString().toLowerCase()).click();

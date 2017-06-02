@@ -22,7 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.common.ICheckBox;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.function.Function;
 
@@ -104,7 +104,7 @@ public class CheckBox extends Clickable implements ICheckBox {
         check(getName());
     }
 
-    @Step("Check {0}")
+    @Step("Check {name}")
     private final void check(String name) {
         actions.check(this::checkAction);
     }
@@ -116,7 +116,7 @@ public class CheckBox extends Clickable implements ICheckBox {
         uncheck(getName());
     }
 
-    @Step("Uncheck {0}")
+    @Step("Uncheck {name}")
     private final void uncheck(String name) {
         actions.uncheck(this::uncheckAction);
     }
@@ -128,7 +128,7 @@ public class CheckBox extends Clickable implements ICheckBox {
         return isChecked(getName());
     }
 
-    @Step("Is checked {0}")
+    @Step("Is {name} checked")
     private final boolean isChecked(String name) {
         return actions.isChecked(this::isCheckedAction);
     }
@@ -158,7 +158,7 @@ public class CheckBox extends Clickable implements ICheckBox {
         return getText(getName());
     }
 
-    @Step("[{0}] get text")
+    @Step("{elName} - get text")
     private final String getText(String elName) {
         return actions.getText(this::getTextAction);
     }
@@ -172,7 +172,7 @@ public class CheckBox extends Clickable implements ICheckBox {
         return waitText(getName(),text);
     }
 
-    @Step("[{0}] wait text [{1}]")
+    @Step("{elName} - wait text {text}")
     private final String waitText(String elName, String text) {
         return actions.waitText(text, this::getTextAction);
     }
@@ -185,7 +185,7 @@ public class CheckBox extends Clickable implements ICheckBox {
         return waitMatchText(getName(), regEx);
     }
 
-    @Step("[{0}] wait match text [{1}]")
+    @Step("{elName} - wait match text {regEx}")
     private final String waitMatchText(String elName, String regEx) {
         return actions.waitMatchText(regEx, this::getTextAction);
     }

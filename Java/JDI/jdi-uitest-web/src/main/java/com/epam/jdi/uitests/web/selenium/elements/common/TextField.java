@@ -21,7 +21,7 @@ package com.epam.jdi.uitests.web.selenium.elements.common;
 import com.epam.jdi.uitests.core.interfaces.common.ITextField;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import static com.epam.web.matcher.junit.Assert.exception;
 
@@ -87,7 +87,7 @@ public class TextField extends Text implements ITextField {
         input(getName(), text);
     }
 
-    @Step("{0} input [{1}]")
+    @Step("{name} input {text}")
     private void input(String name,CharSequence text) {
         actions.input(text, this::inputAction);
     }
@@ -100,7 +100,7 @@ public class TextField extends Text implements ITextField {
     public void newInput(CharSequence text) {
         newInput(getName(), text);
     }
-    @Step("{0} new input [{1}]")
+    @Step("{name} new input {text}")
     private void newInput(String name, CharSequence text) {
         clear();
         input(text);
@@ -112,7 +112,7 @@ public class TextField extends Text implements ITextField {
     public final void clear() {
         clear(getName());
     }
-    @Step("{0} - clear")
+    @Step("{elName} - clear")
     private void clear(String elName) {
         actions.clear(this::clearAction);
     }
@@ -123,7 +123,7 @@ public class TextField extends Text implements ITextField {
     public final void focus() {
         focus(getName());
     }
-    @Step("Focus on {0}")
+    @Step("Focus on {elName}")
     private void focus(String elName) {
         actions.focus(this::focusAction);
     }

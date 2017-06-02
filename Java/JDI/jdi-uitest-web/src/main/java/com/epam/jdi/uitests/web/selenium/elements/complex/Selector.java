@@ -22,7 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.ISelector;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 		select(getName(), name);
 	}
 
-	@Step("{0} - Select [{1}]")
+	@Step("{elName} - Select {name}")
 	private final void select(String elName, String name) {
 		actions.select(name, this::selectAction);
 	}
@@ -77,7 +77,7 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 		select(getName(), num);
 	}
 
-	@Step("{0} - Select [{1}]")
+	@Step("{elName} - Select {num}")
 	private final void select(String elName, int num) {
 		actions.select(num, this::selectAction);
 	}
@@ -89,7 +89,7 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 		return getSelected(getName());
 	}
 
-	@Step("{0} - Get name of the selected Element")
+	@Step("{elName} - Get name of the selected Element")
 	private String getSelected(String elName) {
 		return actions.getSelected(this::getSelectedAction);
 	}
@@ -101,7 +101,7 @@ public class Selector<TEnum extends Enum> extends BaseSelector<TEnum> implements
 		return getSelectedIndex(getName());
 	}
 
-	@Step("{0} - Get index of the selected Element")
+	@Step("{elName} - Get index of the selected Element")
 	private int getSelectedIndex(String elName) {
 		return actions.getSelectedIndex(this::getSelectedIndexAction);
 	}

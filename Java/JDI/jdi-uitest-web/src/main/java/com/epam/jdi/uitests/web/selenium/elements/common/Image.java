@@ -22,7 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.common.IImage;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Image control implementation
@@ -48,7 +48,7 @@ public class Image extends Clickable implements IImage {
         return getSource(getName());
     }
 
-    @Step("Get image source for {0}")
+    @Step("Get image source for {elName}")
     private String getSource(String elName) {
         return invoker.doJActionResult("Get image source for Element " + this,
                 () -> getWebElement().getAttribute("src"));
@@ -61,7 +61,7 @@ public class Image extends Clickable implements IImage {
         return getAlt(getName());
     }
 
-    @Step("Get image title for {0}")
+    @Step("Get image title for {elName}")
     private String getAlt(String elName) {
         return invoker.doJActionResult("Get image title for Element " + this,
                 () -> getWebElement().getAttribute("alt"));

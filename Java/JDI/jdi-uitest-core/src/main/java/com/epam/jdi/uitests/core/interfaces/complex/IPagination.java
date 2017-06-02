@@ -19,7 +19,7 @@ package com.epam.jdi.uitests.core.interfaces.complex;
 
 import com.epam.jdi.uitests.core.interfaces.base.IBaseElement;
 import com.epam.jdi.uitests.core.interfaces.base.IComposite;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Created by Roman_Iovlev on 7/29/2015.
@@ -28,31 +28,26 @@ public interface IPagination extends IBaseElement, IComposite {
     /**
      * Choose Next page
      */
-    @Step
     void next();
 
     /**
      * Choose Previous page
      */
-    @Step
     void previous();
 
     /**
      * hoose First page
      */
-    @Step
     void first();
 
     /**
      * Choose Last page
      */
-    @Step
     void last();
 
     /**
      * @param index Specify page index
      *              Choose page by index
      */
-    @Step
     void selectPage(int index);
 }

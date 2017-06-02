@@ -28,7 +28,7 @@ import com.epam.jdi.uitests.web.selenium.elements.common.TextField;
 import com.epam.jdi.uitests.web.selenium.elements.complex.TextList;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JSearch;
 import org.openqa.selenium.By;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -96,7 +96,7 @@ public class Search extends TextField implements ISearch {
         find(getName(), text);
     }
 
-    @Step("{0} - Search text [{1}]")
+    @Step("{elName} - Search text {text}")
     private void find(String elName, String text) {
         invoker.doJAction(format("Search text '%s'", text), () -> findAction(text));
     }
@@ -110,7 +110,7 @@ public class Search extends TextField implements ISearch {
         chooseSuggestion(getName(), text, selectValue);
     }
 
-    @Step("{0} - Search for text [{1}] and choose suggestion [value={2}]")
+    @Step("{elName} - Search for text {text} and choose suggestion value={selectValue}")
     private void chooseSuggestion(String elName, String text, String selectValue) {
         invoker.doJAction(format("Search for text '%s' and choose suggestion '%s'", text, selectValue),
                 () -> chooseSuggestionAction(text, selectValue));
@@ -125,7 +125,7 @@ public class Search extends TextField implements ISearch {
         chooseSuggestion(getName(), text, selectIndex);
     }
 
-    @Step("{0} - Search for text [{1}] and choose suggestion [index={2}]")
+    @Step("{elName} - Search for text {text} and choose suggestion index={selectIndex}")
     private void chooseSuggestion(String elName, String text, int selectIndex) {
         invoker.doJAction(format("Search for text '%s' and choose suggestion '%s'", text, selectIndex),
                 () -> chooseSuggestionAction(text, selectIndex));
@@ -139,7 +139,7 @@ public class Search extends TextField implements ISearch {
         return getSuggesions(getName(), text);
     }
 
-    @Step("{0} - Get all suggestions for input [{1}]")
+    @Step("{elName} - Get all suggestions for input {text}")
     private List<String> getSuggesions(String elName, String text) {
         return invoker.doJActionResult(format("Get all suggestions for input '%s'", text),
                 () -> getSuggesionsAction(text));

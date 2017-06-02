@@ -21,7 +21,7 @@ package com.epam.jdi.uitests.web.selenium.elements.common;
 import com.epam.jdi.uitests.core.interfaces.common.ITextArea;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Text Field control implementation
@@ -49,7 +49,7 @@ public class TextArea extends TextField implements ITextArea {
     public final void inputLines(String... textLines) {
         inputLines(getName(), textLines);
     }
-    @Step("{0} - input lines [{1]]")
+    @Step("{elName} - input lines {textLines}")
     private void inputLines(String elName, String... textLines) {
         actions.inputLines(this::clearAction, this::inputAction, textLines);
     }
@@ -62,7 +62,7 @@ public class TextArea extends TextField implements ITextArea {
         addNewLine(getName(), textLine);
     }
 
-    @Step("{0} - add new line [{1]]")
+    @Step("{elName} - add new line {textLine}")
     private void addNewLine(String elName, String textLine) {
         actions.addNewLine(textLine, this::inputAction);
     }
@@ -73,7 +73,7 @@ public class TextArea extends TextField implements ITextArea {
     public final String[] getLines() {
         return getLines(getName());
     }
-    @Step("{0} - get lines")
+    @Step("{elName} - get lines")
     private String[] getLines(String elName) {
         return actions.getLines(this::getTextAction);
     }

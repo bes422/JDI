@@ -19,7 +19,7 @@ package com.epam.jdi.uitests.core.interfaces.complex;
 
 import com.epam.jdi.uitests.core.interfaces.base.IComposite;
 import com.epam.jdi.uitests.core.interfaces.common.IText;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Created by Roman_Iovlev on 7/8/2015.
@@ -28,18 +28,15 @@ public interface IPopup extends IText, IComposite {
     /**
      * Click on Button marked with annotation @OkButton or named "okButton"
      */
-    @Step
     void ok();
 
     /**
      * Click on Button marked with annotation @CancelButton or named "cancelButton"
      */
-    @Step
     void cancel();
 
     /**
      * Click on Button marked with annotation @CloseButton or named "closeButton"
      */
-    @Step
     void close();
 }

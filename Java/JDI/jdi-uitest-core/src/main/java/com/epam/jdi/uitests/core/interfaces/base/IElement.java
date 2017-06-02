@@ -17,8 +17,6 @@ package com.epam.jdi.uitests.core.interfaces.base;
  * along with JDI. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import ru.yandex.qatools.allure.annotations.Step;
-
 /**
  * Created by Roman_Iovlev on 6/10/2015.
  */
@@ -30,7 +28,6 @@ public interface IElement extends IBaseElement, IVisible {
      * @param name Specify name for attribute
      * @return Returns chosen attribute
      */
-    @Step
     String getAttribute(String name);
 
     /**
@@ -38,7 +35,6 @@ public interface IElement extends IBaseElement, IVisible {
      * @param value Specify attribute value
      * Waits while attribute gets expected value. Return false if this not happens
      */
-    @Step
     void waitAttribute(String name, String value);
 
     /**
@@ -46,10 +42,8 @@ public interface IElement extends IBaseElement, IVisible {
      * @param value         Specify attribute value
      *                      Sets attribute value for Element
      */
-    @Step
     void setAttribute(String attributeName, String value);
 
-    @Step
     void removeAttribute(String attributeName);
 
 }

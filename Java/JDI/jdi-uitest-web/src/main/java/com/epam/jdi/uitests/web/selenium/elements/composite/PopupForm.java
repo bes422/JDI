@@ -20,7 +20,7 @@ package com.epam.jdi.uitests.web.selenium.elements.composite;
 
 import com.epam.commons.map.MapArray;
 import com.epam.jdi.uitests.core.interfaces.complex.IPopup;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import static com.epam.jdi.uitests.core.annotations.functions.Functions.*;
 import static java.lang.String.format;
@@ -40,7 +40,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
         submit(getName(), objStrings);
     }
 
-    @Step("{0} - submit [{1}]")
+    @Step("{elName} - submit {objStrings}")
     public void submit(String elName, MapArray<String, String> objStrings) {
         fill(objStrings);
         ok();
@@ -53,7 +53,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
         okCustom(getName());
     }
 
-    @Step("{0} - Press Ok on popup")
+    @Step("{elName} - Press Ok on popup")
     private void okCustom(String elName) {
         getElementClass.getButton(OK_BUTTON).click();
     }
@@ -65,7 +65,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
         cancelCustom(getName());
     }
 
-    @Step("{0} - Press Cancel on popup")
+    @Step("{elName} - Press Cancel on popup")
     private void cancelCustom(String elName) {
         getElementClass.getButton(CANCEL_BUTTON).click();
     }
@@ -77,7 +77,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
         closeCustom(getName());
     }
 
-    @Step("{0} - Close on popup")
+    @Step("{elName} - Close on popup")
     private void closeCustom(String elName) {
         getElementClass.getButton(CLOSE_BUTTON).click();
     }
@@ -93,7 +93,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
         return getText(getName());
     }
 
-    @Step("{0} - Get text")
+    @Step("{elName} - Get text")
     private String getText(String elName) {
         return invoker.doJActionResult("Get text", this::getTextAction);
     }
@@ -105,7 +105,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
     public final String waitText(String text) {
         return waitText(getName(), text);
     }
-    @Step("{0} - Wait text contains [{1}]")
+    @Step("{elName} - Wait text contains {text}")
     private String waitText(String elName, String text) {
         return invoker.doJActionResult(format("Wait text contains '%s'", text),
                 () -> timer().getResultByCondition(this::getTextAction, t -> t.contains(text)));
@@ -118,7 +118,7 @@ public class PopupForm<T> extends Form<T> implements IPopup {
     public final String waitMatchText(String regEx) {
         return waitMatchText(getName(), regEx);
     }
-    @Step("{0} - Wait text match regex [{1}]")
+    @Step("{elName} - Wait text match regex {regEx}")
     private String waitMatchText(String elName, String regEx) {
         return invoker.doJActionResult(format("Wait text match regex '%s'", regEx),
                 () -> timer().getResultByCondition(this::getTextAction, t -> t.matches(regEx)));

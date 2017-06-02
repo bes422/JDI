@@ -20,9 +20,9 @@ package com.epam.jdi.uitests.web.selenium.elements.common;
 
 import com.epam.jdi.uitests.core.interfaces.common.IText;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
 
 /**
  * Created by Roman_Iovlev on 7/6/2015.
@@ -61,7 +61,7 @@ public class Text extends Element implements IText {
 		return getValue(getName());
 	}
 
-	@Step("{0} get value")
+	@Step("{elName} get value")
 	private String getValue(String elName) {
 		return actions.getValue(this::getValueAction);
 	}
@@ -73,7 +73,7 @@ public class Text extends Element implements IText {
 		return getText(getName());
 	}
 
-	@Step("{0} get text")
+	@Step("{elName} get text")
 	private String getText(String elName) {
 		return actions.getText(this::getTextAction);
 	}
@@ -86,7 +86,6 @@ public class Text extends Element implements IText {
 		return waitText(getName(), text);
 	}
 
-	@Step("{0} wait text [{1}]")
 	private String waitText(String elName, String text) {
 		return actions.waitText(text, this::getTextAction);
 	}
@@ -99,7 +98,7 @@ public class Text extends Element implements IText {
 		return waitMatchText(getName(), regEx);
 	}
 
-	@Step("{0} wait match text [{1}]")
+	@Step("{elName} wait match text {regEx}")
 	private String waitMatchText(String elName, String regEx) {
 		return actions.waitMatchText(regEx, this::getTextAction);
 	}

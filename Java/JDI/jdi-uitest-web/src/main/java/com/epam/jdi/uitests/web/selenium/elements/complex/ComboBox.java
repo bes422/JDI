@@ -23,7 +23,7 @@ import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.common.Label;
 import com.epam.jdi.uitests.web.selenium.elements.common.TextField;
 import org.openqa.selenium.By;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import static com.epam.web.matcher.junit.Assert.exception;
 import static java.lang.String.format;
@@ -103,7 +103,7 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
         input(getName(), text);
     }
 
-    @Step("{0} input [{1}]")
+    @Step("{name} input {text}")
     private void input(String name, CharSequence text) {
         actions.input(text, this::inputAction);
     }
@@ -124,7 +124,7 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
         newInput(getName(), text);
     }
 
-    @Step("{0} new input [{1}]")
+    @Step("{name} new input {text}")
     private void newInput(String name, CharSequence text) {
         clear();
         input(text);
@@ -137,7 +137,7 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
         clear(getName());
     }
 
-    @Step("{0} clear")
+    @Step("{name} clear")
     private void clear(String name) {
         actions.clear(this::clearAction);
     }
@@ -153,7 +153,7 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
         removeAttribute(getName(),attributeName);
     }
 
-    @Step("{0} Remove attribute {1}")
+    @Step("{elName} Remove attribute {attributeName}")
     private void removeAttribute(String elName, String attributeName) {
         invoker.doJAction(format("Remove Attribute '%s'", attributeName),
                 () -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));

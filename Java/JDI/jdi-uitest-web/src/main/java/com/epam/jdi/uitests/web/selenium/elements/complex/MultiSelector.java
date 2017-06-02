@@ -24,7 +24,7 @@ import com.epam.jdi.uitests.core.interfaces.base.IMultiSelector;
 import com.epam.jdi.uitests.web.selenium.elements.apiInteract.GetElementModule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -153,7 +153,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         select(getName(), names);
     }
 
-    @Step("{0} - Select options with name [{1}]")
+    @Step("{elName} - Select options with name {names}")
     private void select(String elName, String... names) {
         actions.select(this::selectListAction, names);
     }
@@ -174,7 +174,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         select(getName(), nums);
     }
 
-    @Step("{0} - Select options use index [{1}]")
+    @Step("{elName} - Select options use index {nums}")
     private void select(String elName, int... nums) {
         actions.select(this::selectListAction, nums);
     }
@@ -187,7 +187,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         check(getName(), names);
     }
 
-    @Step("{0} - Check options [{1}]")
+    @Step("{elName} - Check options {names}")
     private void check(String elName, String... names) {
         clear();
         select(names);
@@ -201,7 +201,6 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         check(getName(), names);
     }
 
-    @Step("{0} - Check options [{1}]")
     private void check(String elName, TEnum... names) {
         clear();
         select(names);
@@ -215,7 +214,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         check(getName(), nums);
     }
 
-    @Step("{0} - Check options [{1}]")
+    @Step("{elName} - Check options {nums}")
     private void check(String elName, int... nums) {
         clear();
         select(nums);
@@ -229,7 +228,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         uncheck(getName(), names);
     }
 
-    @Step("{0} - Uncheck options [{1}]")
+    @Step("{elName} - Uncheck options {names}")
     private void uncheck(String elName, String... names) {
         checkAll();
         select(names);
@@ -243,7 +242,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         uncheck(getName(), names);
     }
 
-    @Step("{0} - Uncheck options [{1}]")
+    @Step("{elName} - Uncheck options {names}")
     private void uncheck(String elName, TEnum... names) {
         checkAll();
         select(names);
@@ -257,7 +256,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         uncheck(getName(), nums);
     }
 
-    @Step("{0} - Uncheck options [{1}]")
+    @Step("{elName} - Uncheck options {nums}")
     private void uncheck(String elName,int... nums) {
         checkAll();
         select(nums);
@@ -270,7 +269,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         return areSelected(getName());
     }
 
-    @Step("{0} - Get names of checked options")
+    @Step("{elName} - Get names of checked options")
     private List<String> areSelected(String elName) {
         return actions.areSelected(this::getNames, this::isSelectedAction);
     }
@@ -291,7 +290,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         waitSelected(getName(), names);
     }
 
-    @Step("{0} - Wait while all options with names [{1}]")
+    @Step("{elName} - Wait while all options with names {names}")
     private void waitSelected(String elName, String... names) {
         actions.waitSelected(n -> timer().wait(() -> isSelectedAction(n)), names);
     }
@@ -303,7 +302,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         return areDeselected(getName());
     }
 
-    @Step("{0} - Get names of unchecked options")
+    @Step("{elName} - Get names of unchecked options")
     private List<String> areDeselected(String elName) {
         return actions.areDeselected(this::getNames, n -> timer().wait(() -> isSelectedAction(n)));
     }
@@ -324,7 +323,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         waitDeselected(getName(), names);
     }
 
-    @Step("{0} - Wait while all options with names [{1}]")
+    @Step("{elName} - Wait while all options with names {names}")
     private void waitDeselected(String elName, String... names) {
         actions.waitDeselected(n -> timer().wait(() -> isSelectedAction(n)), names);
     }
@@ -336,7 +335,7 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         clear(getName());
     }
 
-    @Step("{0} - Clear Options")
+    @Step("{elName} - Clear Options")
     private void clear(String elName) {
         invoker.doJAction("Clear Options", this::clearAction);
     }
@@ -348,8 +347,8 @@ public abstract class MultiSelector<TEnum extends Enum> extends BaseSelector<TEn
         foreach(where(getOptions(), label -> !isSelectedAction(label)), this::selectAction);
     }
 
-    @Step("{0} - Check all options")
-    private void checkAll(String elname) {
+    @Step("{elName} - Check all options")
+    private void checkAll(String elName) {
         foreach(where(getOptions(), label -> !isSelectedAction(label)), this::selectAction);
     }
 

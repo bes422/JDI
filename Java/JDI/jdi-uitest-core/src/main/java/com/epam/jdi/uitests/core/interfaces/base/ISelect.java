@@ -18,7 +18,7 @@ package com.epam.jdi.uitests.core.interfaces.base;
  */
 
 import com.epam.jdi.uitests.core.interfaces.common.IText;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Created by Roman_Iovlev on 7/9/2015.
@@ -27,12 +27,10 @@ public interface ISelect extends IClickable, IText {
     /**
      * Selects Element. Similar to click()
      */
-    @Step
     void select();
 
     /**
      * @return Checks is Element selected
      */
-    @Step
     boolean isSelected();
 }

@@ -24,7 +24,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.ITextList;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return isDisplayed(getName());
     }
 
-    @Step("{0} - is displayed")
+    @Step("Is {elName} displayed")
     private boolean isDisplayed(String elName) {
         return actions.isDisplayed(this::isDisplayedAction);
     }
@@ -90,7 +90,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return isHidden(getName());
     }
 
-    @Step("{0} - is hidden")
+    @Step("Is {elName} hidden")
     private boolean isHidden(String elName) {
         return actions.isDisplayed(() -> !isDisplayedAction());
     }
@@ -102,7 +102,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         waitDisplayed(getName());
     }
 
-    @Step("{0} - wait displayed")
+    @Step("{elName} - wait displayed")
     private void waitDisplayed(String elName) {
         actions.waitDisplayed(this::waitDisplayedAction);
     }
@@ -114,7 +114,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         waitVanished(getName());
     }
 
-    @Step("{0} - wait displayed")
+    @Step("{elName} - wait displayed")
     private void waitVanished(String elName) {
         actions.waitVanished(this::waitVanishedAction);
     }
@@ -153,7 +153,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return getLabels(getName());
     }
 
-    @Step("{0} - Get names")
+    @Step("{elName} - Get names")
     private List<String> getLabels(String elName) {
         return invoker.doJActionResult("Get names", this::getLabelsAction);
     }
@@ -170,7 +170,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return getText(getName(), name);
     }
 
-    @Step("{0} - Get text for Element [{1}] with name [{2}]")
+    @Step("Get text for Element {elName} with name {name}")
     private String getText(String elName, String name) {
         return invoker.doJActionResult(String.format("Get text for Element '%s' with name '%s'", this.toString(), name),
                 () -> getTextAction(getElement(name)));
@@ -185,7 +185,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
                 () -> getTextAction(getElement(index)));
     }
 
-    @Step("{0} - Get text for Element [{1}] with index [{2}]")
+    @Step("Get text for Element {elName} with index {index}")
     private String getText(String elName, int index) {
         return invoker.doJActionResult(String.format("Get text for Element '%s' with index '%s'", this.toString(), index),
                 () -> getTextAction(getElement(index)));
@@ -206,7 +206,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return count(getName());
     }
 
-    @Step("{0} - Get count")
+    @Step("{elName} - Get count")
     private int count(String elName) {
         return getElements().size();
     }
@@ -222,7 +222,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return getValue(getName());
     }
 
-    @Step("{0} - Get value")
+    @Step("{elName} - Get value")
     private String getValue(String elName) {
         return invoker.doJActionResult("Get value", this::getValueAction);
     }
@@ -234,7 +234,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return waitText(getName(), str);
     }
 
-    @Step("{0} - Wait text [{1}]")
+    @Step("{elName} - Wait text {str}")
     private List<String> waitText(String elName, String str) {
         if (timer().wait(() -> select(getWebElements(), WebElement::getText).contains(str)))
             return getLabels();
@@ -248,7 +248,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return getTextList(getName());
     }
 
-    @Step("{0} - Get list of texts")
+    @Step("{elName} - Get list of texts")
     private List<String> getTextList(String elName) {
         return invoker.doJActionResult("Get list of texts", () -> select(getWebElements(), WebElement::getText),
                 PrintUtils::print);
@@ -261,7 +261,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return getFirstText(getName());
     }
 
-    @Step("{0} - Get first text")
+    @Step("{elName} - Get first text")
     private String getFirstText(String elName) {
         List<String> results = getTextList();
         return (results != null && results.size() > 0)
@@ -276,7 +276,7 @@ public class TextList<TEnum extends Enum> extends BaseElement implements ITextLi
         return getLastText(getName());
     }
 
-    @Step("{0} - Get last text")
+    @Step("{elName} - Get last text")
     private String getLastText(String elName) {
         List<String> results = getTextList();
         return (results != null && results.size() > 0)

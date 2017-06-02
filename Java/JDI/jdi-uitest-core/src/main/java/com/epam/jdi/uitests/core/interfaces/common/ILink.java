@@ -18,7 +18,7 @@ package com.epam.jdi.uitests.core.interfaces.common;
  */
 
 import com.epam.jdi.uitests.core.interfaces.base.IClickable;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.net.URL;
 
@@ -29,32 +29,27 @@ public interface ILink extends IClickable, IText {
     /**
      * @return Get link destination
      */
-    @Step
     String getReference();
 
     /**
      * @return Get URL
      */
-    @Step
     URL getURL();
 
     /**
      * @param text Specify expected text
      * @return Wait while link destination contains expected text. Returns link destination
      */
-    @Step
     String waitReferenceContains(String text);
 
     /**
      * @param regEx Specify expected regular expression Text
      * @return Wait while link destination contains expected text. Returns link destination
      */
-    @Step
     String waitMatchReference(String regEx);
 
     /**
      * @return Get links tooltip
      */
-    @Step
     String getTooltip();
 }

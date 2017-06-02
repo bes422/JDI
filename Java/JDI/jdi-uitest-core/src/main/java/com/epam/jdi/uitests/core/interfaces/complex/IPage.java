@@ -18,7 +18,7 @@ package com.epam.jdi.uitests.core.interfaces.complex;
  */
 
 import com.epam.jdi.uitests.core.interfaces.base.IComposite;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Created by Roman_Iovlev on 9/3/2015.
@@ -27,12 +27,10 @@ public interface IPage extends IComposite {
     /**
      * Check that page opened
      */
-    @Step
     void checkOpened();
 
     /**
      * Opens url specified for page
      */
-    @Step
     <T extends IPage> T open();
 }

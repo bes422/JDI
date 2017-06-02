@@ -22,7 +22,7 @@ import com.epam.jdi.uitests.core.interfaces.common.ILink;
 import com.epam.jdi.uitests.web.selenium.elements.base.ClickableText;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.net.URL;
 
@@ -63,7 +63,7 @@ public class Link extends ClickableText implements ILink {
         return getReference(getName());
     }
 
-    @Step("Get href of link {0}")
+    @Step("Get href of link {elName}")
     private final String getReference(String elName) {
         return invoker.doJActionResult("Get link reference", this::getReferenceAction, href -> "Get href of link '" + href + "'");
     }
@@ -76,7 +76,7 @@ public class Link extends ClickableText implements ILink {
         return waitReferenceContains(getName(), text);
     }
 
-    @Step("{0} - wait link contains {1}")
+    @Step("{elName} - wait link contains {text}")
     private String waitReferenceContains(String elName, String text) {
         return invoker.doJActionResult(format("Wait link contains '%s'", text),
                 () -> getByCondition(this::getReferenceAction, t -> t.contains(text)));
@@ -90,7 +90,7 @@ public class Link extends ClickableText implements ILink {
         return waitMatchReference(getName(), regEx);
     }
 
-    @Step("{0} - wait link match regex {1}")
+    @Step("{elName} - wait link match regex {regEx}")
     private String waitMatchReference(String elName, String regEx) {
         return invoker.doJActionResult(format("Wait link match regex '%s'", regEx),
                 () -> getByCondition(this::getReferenceAction, t -> t.matches(regEx)));
@@ -107,7 +107,7 @@ public class Link extends ClickableText implements ILink {
         return getTooltip(getName());
     }
 
-    @Step("{0} - get link tooltip")
+    @Step("{elName} - get link tooltip")
     private final String getTooltip(String elName) {
         return invoker.doJActionResult("Get link tooltip", this::getTooltipAction, href -> "Get link tooltip '" + href + "'");
     }

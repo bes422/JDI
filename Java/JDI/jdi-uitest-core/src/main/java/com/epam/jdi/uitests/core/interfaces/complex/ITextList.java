@@ -20,7 +20,7 @@ package com.epam.jdi.uitests.core.interfaces.complex;
 import com.epam.jdi.uitests.core.interfaces.base.IBaseElement;
 import com.epam.jdi.uitests.core.interfaces.base.IHasValue;
 import com.epam.jdi.uitests.core.interfaces.base.IVisible;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -32,50 +32,42 @@ public interface ITextList<TEnum extends Enum> extends IBaseElement, IHasValue, 
      * @param name Specify string by String mechanic
      * @return Get textList’s text by specified param
      */
-    @Step
     String getText(String name);
 
     /**
      * @param index Specify string by Integer mechanic
      * @return Get textList’s text by specified param
      */
-    @Step
     String getText(int index);
 
     /**
      * @param enumName Specify string by Enum mechanic
      * @return Get textList’s text by specified param
      */
-    @Step
     String getText(TEnum enumName);
 
     /**
      * @return Returns strings count
      */
-    @Step
     int count();
 
     /**
      * @return Wait while TextList’s text contains expected text. Returns Element’s text
      */
-    @Step
     List<String> waitText(String str);
 
     /**
      * @return Return list of strings of TextList
      */
-    @Step
     List<String> getTextList();
 
     /**
      * @return Return first String in list
      */
-    @Step
     String getFirstText();
 
     /**
      * @return Return last String in list
      */
-    @Step
     String getLastText();
 }

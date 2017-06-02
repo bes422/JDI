@@ -24,7 +24,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageTypes;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.settings.WebSettings;
 import org.openqa.selenium.Cookie;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.util.function.Supplier;
 
@@ -55,7 +55,6 @@ public class WebPage extends BaseElement implements IPage {
 		this.title = title;
 	}
 
-	@Step
 	public static void openUrl(String url) {
 		new WebPage(url).open();
 	}
@@ -125,11 +124,11 @@ public class WebPage extends BaseElement implements IPage {
 	 * Opens url specified for page
 	 */
 	public <T extends IPage> T open() {
-		return open(getName(), url);
+		return open(url);
 	}
 
-	@Step("Open page {0} by url {1}")
-	private <T extends IPage> T open(String name, String url) {
+	@Step("Open page {url}")
+	private <T extends IPage> T open(String url) {
 		invoker.doJAction(format("Open page '%s' by url %s", getName(), url),
 				() -> getDriver().navigate().to(url));
 		if (checkAfterOpen)

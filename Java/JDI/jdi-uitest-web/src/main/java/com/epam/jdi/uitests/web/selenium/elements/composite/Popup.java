@@ -20,7 +20,7 @@ package com.epam.jdi.uitests.web.selenium.elements.composite;
 
 import com.epam.jdi.uitests.core.interfaces.complex.IPopup;
 import com.epam.jdi.uitests.web.selenium.elements.common.Text;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import static com.epam.jdi.uitests.core.annotations.functions.Functions.*;
 
@@ -50,7 +50,7 @@ public class Popup extends Text implements IPopup {
         ok(getName());
     }
 
-    @Step("{0} - Press Ok on popup")
+    @Step("{elName} - Press Ok on popup")
     private void ok(String elName) {
         invoker.doJAction("Press Ok on popup", this::okAction);
     }
@@ -62,7 +62,7 @@ public class Popup extends Text implements IPopup {
         cancel(getName());
     }
 
-    @Step("{0} - Press Cancel on popup")
+    @Step("{elName} - Press Cancel on popup")
     private void cancel(String elName) {
         invoker.doJAction("Press Cancel on popup", this::cancelAction);
     }
@@ -74,7 +74,7 @@ public class Popup extends Text implements IPopup {
         close(getName());
     }
 
-    @Step("{0} - Close on popup")
+    @Step("{elName} - Close on popup")
     private void close(String elName) {
         invoker.doJAction("Close on popup", this::closeAction);
     }

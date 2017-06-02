@@ -28,7 +28,7 @@ import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.object
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -253,7 +253,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		expand(getName(), name);
 	}
 
-	@Step("[{0}] expand {1}")
+	@Step("{elName} expand {name}")
 	private void expand(String elName, String name) {
 		actions.expand(() -> expandAction(name));
 	}
@@ -262,7 +262,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		expand(getName(), index);
 	}
 
-	@Step("[{0}] expand {1}")
+	@Step("{elName} expand {index}")
 	private void expand(String elName, int index) {
 		actions.expand(() -> expandAction(index));
 	}
@@ -274,7 +274,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		close(getName());
 	}
 
-	@Step("[{0}] - close ")
+	@Step("{elName} - close")
 	private void close(String elName) {
 		if (isDisplayedAction(1)) element().click();
 	}
@@ -286,7 +286,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		click(getName());
 	}
 
-	@Step("Click on {0}")
+	@Step("Click on {name}")
 	private void click(String name) {
 		actions.click(this::clickAction);
 	}
@@ -298,7 +298,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		return getText(getName());
 	}
 
-	@Step("{0} - get text")
+	@Step("{elName} - get text")
 	private String getText(String elName) {
 		return actions.getText(this::getTextAction);
 	}
@@ -311,7 +311,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		return waitText(getName(), text);
 	}
 
-	@Step("{0} - wait text [{0}]")
+	@Step("{elName} - wait text {text}")
 	private String waitText(String elName, String text) {
 		return actions.waitText(text, this::getTextAction);
 	}
@@ -324,7 +324,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		return waitMatchText(getName(), regEx);
 	}
 
-	@Step("{0} - wait match text [{0}]")
+	@Step("{elName} - wait match text {regEx}")
 	private String waitMatchText(String elName, String regEx) {
 		return actions.waitMatchText(regEx, this::getTextAction);
 	}
@@ -355,7 +355,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		waitAttribute(getName(), name, value);
 	}
 
-	@Step("{0} - wait attribute [{1}] has value [{2}]")
+	@Step("{elName} - wait attribute {name} has value {value}")
 	private void waitAttribute(String elName, String name, String value) {
 		element().waitAttribute(name, value);
 	}
@@ -364,7 +364,7 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		removeAttribute(getName(),attributeName);
 	}
 
-	@Step("{0} Remove attribute {1}")
+	@Step("{elName} Remove attribute {attributeName}")
 	private void removeAttribute(String elName, String attributeName) {
 		invoker.doJAction(format("Remove Attribute '%s'", attributeName),
 				() -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));

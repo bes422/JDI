@@ -20,7 +20,7 @@ package com.epam.jdi.uitests.core.interfaces.common;
 
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.base.ISetValue;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 /**
  * Created by Roman_Iovlev on 7/6/2015.
@@ -35,7 +35,6 @@ public interface ITextField extends ISetValue, IText, IElement {
     /**
      * Returns label of text field
      */
-    @Step
     String label();
 
     /**
@@ -54,12 +53,10 @@ public interface ITextField extends ISetValue, IText, IElement {
     /**
      * Clear textfield
      */
-    @Step
     void clear();
 
     /**
      * Focus(click) on textfield
      */
-    @Step
     void focus();
 }

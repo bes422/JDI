@@ -19,7 +19,8 @@ package com.epam.jdi.uitests.core.interfaces.complex;
 
 import com.epam.jdi.uitests.core.interfaces.base.IBaseElement;
 import com.epam.jdi.uitests.core.interfaces.base.ISetValue;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
+//import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -33,61 +34,52 @@ public interface ISelector<TEnum extends Enum> extends IBaseElement, ISetValue {
      * @param name Specify name using string
      *             Select Element with name (use text) from list
      */
-    @Step
     void select(String name);
 
     /**
      * @param name Specify name using enum
      *             Select Element with name (use enum) from list
      */
-    @Step
     void select(TEnum name);
 
     /**
      * @param index Specify digit to select
      *              Select Element with name (use index) from list
      */
-    @Step
     void select(int index);
 
     /**
      * @return Get name of the selected Element
      */
-    @Step
     String getSelected();
 
     /**
      * @return Get index of the selected Element
      */
-    @Step
     int getSelectedIndex();
 
     /**
      * @param name Specify name using string
      * @return Is option selected?
      */
-    @Step
     boolean isSelected(String name);
 
     /**
      * @param name Specify name using enum
      * @return Is option selected?
      */
-    @Step
     boolean isSelected(TEnum name);
 
     /**
      * @param name Specify name using string
      * Wait while option (from text) is selected. Return false if this not happens
      */
-    @Step
     void waitSelected(String name);
 
     /**
      * @param name Specify name using enum
      * Wait while option (from enum) is selected. Return false if this not happens
      */
-    @Step
     void waitSelected(TEnum name);
 /*
     boolean isDisplayed(String name);
@@ -95,13 +87,14 @@ public interface ISelector<TEnum extends Enum> extends IBaseElement, ISetValue {
     /**
      * @return Get labels of all options
      */
-    @Step
     List<String> getOptions();
 
+    @Step
     default List<String> getNames() {
         return getOptions();
     }
 
+    @Step
     default List<String> getValues() {
         return getOptions();
     }

@@ -29,7 +29,7 @@ import com.epam.jdi.uitests.web.selenium.elements.complex.Elements;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JTable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -157,7 +157,7 @@ public class Table extends Text implements ITable, Cloneable {
     public List<String> getHeaders(){
         return getHeaders(getName());
     }
-    @Step("{0} - get headers")
+    @Step("{elName} - get headers")
     private List<String> getHeaders(String elName){
         return columns.getHeadersTextAction();
     }

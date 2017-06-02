@@ -21,7 +21,7 @@ import com.epam.jdi.uitests.core.interfaces.IAsserter;
 import com.epam.jdi.uitests.core.interfaces.settings.IDriver;
 import com.epam.jdi.uitests.core.logger.ILogger;
 import com.epam.jdi.uitests.core.logger.LogLevels;
-import ru.yandex.qatools.allure.annotations.Step;
+import io.qameta.allure.Step;
 
 import java.io.IOException;
 
