@@ -1,4 +1,4 @@
-package com.epam.jdi.uitests.web.selenium.elements.apiInteract;
+package com.epam.jdi.uitests.mobile.appium.elements.apiInteract;
 /*
  * Copyright 2004-2016 EPAM Systems
  *
@@ -9,7 +9,7 @@ package com.epam.jdi.uitests.web.selenium.elements.apiInteract;
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * JDI is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+ * JDI is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
  * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
@@ -17,12 +17,13 @@ package com.epam.jdi.uitests.web.selenium.elements.apiInteract;
  * along with JDI. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 import com.epam.commons.Timer;
 import com.epam.commons.linqinterfaces.JFuncTREx;
 import com.epam.jdi.uitests.core.interfaces.base.IAvatar;
 import com.epam.jdi.uitests.core.interfaces.base.IBaseElement;
-import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
-import com.epam.jdi.uitests.web.selenium.elements.base.Element;
+import com.epam.jdi.uitests.mobile.appium.elements.BaseElement;
+import com.epam.jdi.uitests.mobile.appium.elements.base.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -30,7 +31,6 @@ import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -38,19 +38,17 @@ import static com.epam.commons.LinqUtils.any;
 import static com.epam.commons.LinqUtils.where;
 import static com.epam.commons.ReflectionUtils.isClass;
 import static com.epam.jdi.uitests.core.settings.JDISettings.*;
-import static com.epam.jdi.uitests.web.selenium.driver.SeleniumDriverFactory.elementSearchCriteria;
-import static com.epam.jdi.uitests.web.selenium.driver.SeleniumDriverFactory.onlyOneElementAllowedInSearch;
-import static com.epam.jdi.uitests.web.selenium.driver.WebDriverByUtils.*;
+import static com.epam.jdi.uitests.mobile.WebSettings.getDriverFactory;
+import static com.epam.jdi.uitests.mobile.appium.driver.AppiumDriverFactory.onlyOneElementAllowedInSearch;
+import static com.epam.jdi.uitests.mobile.appium.driver.WebDriverByUtils.*;
 import static java.lang.String.format;
 
 /**
  * Created by Roman_Iovlev on 7/3/2015.
  */
 public class GetElementModule implements IAvatar {
-    private static final String FAILED_TO_FIND_ELEMENT_MESSAGE
-            = "Can't find Element '%s' during %s seconds";
-    private static final String FIND_TO_MUCH_ELEMENTS_MESSAGE
-            = "Find %s elements instead of one for Element '%s' during %s seconds";
+    private static final String FAILED_TO_FIND_ELEMENT_MESSAGE = "Can't find Element '%s' during %s seconds";
+    private static final String FIND_TO_MUCH_ELEMENTS_MESSAGE = "Find %s elements instead of one for Element '%s' during %s seconds";
     private By byLocator;
     public By frameLocator;
     public JFuncTREx<WebElement, Boolean> localElementSearchCriteria = null;
@@ -62,8 +60,7 @@ public class GetElementModule implements IAvatar {
 
     public GetElementModule(BaseElement element) {
         this.element = element;
-        if (driverName.equals(""))
-            driverName = driverFactory.currentDriverName();
+        driverName = !driverName.equals("") ? driverName : driverFactory.currentDriverName();
     }
 
     public GetElementModule(By byLocator, BaseElement element) {
@@ -106,8 +103,7 @@ public class GetElementModule implements IAvatar {
         logger.debug("Get Web Element: " + element);
         WebElement element = webElement != null
                 ? webElement
-                : getElementAction();
-        //: timer().getResultByCondition(this::getElementAction, Objects::nonNull);
+                : timer().getResultByCondition(this::getElementAction, el -> el != null);
         logger.debug("One Element found");
         return element;
     }
@@ -134,11 +130,8 @@ public class GetElementModule implements IAvatar {
         return result;
     }
 
-    public Timer timer(int sec) {
-        return new Timer(sec * 1000);
-    }
     public Timer timer() {
-        return timer(timeouts.getCurrentTimeoutSec());
+        return new Timer(timeouts.getCurrentTimeoutSec() * 1000);
     }
     private List<WebElement> getElementsByCondition(JFuncTREx<WebElement, Boolean> condition) {
         List<WebElement> elements = timer().getResultByCondition(
@@ -160,25 +153,17 @@ public class GetElementModule implements IAvatar {
     }
 
     private JFuncTREx<WebElement, Boolean> getSearchCriteria() {
-        return localElementSearchCriteria != null ? localElementSearchCriteria : elementSearchCriteria;
+        return localElementSearchCriteria != null ? localElementSearchCriteria : getDriverFactory().elementSearchCriteria;
     }
 
     public GetElementModule searchAll() {
-        localElementSearchCriteria = Objects::nonNull;
+        localElementSearchCriteria = el -> el != null;
         return this;
-    }
-    private List<WebElement> getOneOrMoreElements() {
-        List<WebElement> result = webElements != null
-                ? webElements
-                : searchElements();
-        if (result.size() == 1)
-            return result;
-        return where(result, el -> getSearchCriteria().invoke(el));
     }
 
     private WebElement getElementAction() {
         int timeout = timeouts.getCurrentTimeoutSec();
-        List<WebElement> result = getOneOrMoreElements();
+        List<WebElement> result = getElementsAction();
         switch (result.size()) {
             case 0:
                 throw exception(FAILED_TO_FIND_ELEMENT_MESSAGE, element, timeout);
@@ -187,7 +172,8 @@ public class GetElementModule implements IAvatar {
             default:
                 if (onlyOneElementAllowedInSearch)
                     throw exception(FIND_TO_MUCH_ELEMENTS_MESSAGE, result.size(), element, timeout);
-                return result.get(0);
+                else
+                    return result.get(0);
         }
     }
 
@@ -199,8 +185,7 @@ public class GetElementModule implements IAvatar {
                 || ((p = (bElement = (BaseElement) element).getParent()) == null
                 && bElement.avatar.frameLocator == null))
             return getDriver().switchTo().defaultContent();
-        if (isClass(bElement.getClass(), Element.class)
-                && (el = (Element) bElement).avatar.hasWebElement())
+        if (isClass(bElement.getClass(), Element.class) && (el = (Element) bElement).avatar.hasWebElement())
             return el.getWebElement();
         By locator = bElement.getLocator();
         SearchContext searchContext = containsRoot(locator)

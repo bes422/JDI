@@ -1,4 +1,4 @@
-package com.epam.jdi.uitests.web.selenium.elements.actions;
+package com.epam.jdi.uitests.mobile.appium.elements.actions;
 /*
  * Copyright 2004-2016 EPAM Systems
  *
@@ -20,7 +20,7 @@ package com.epam.jdi.uitests.web.selenium.elements.actions;
 
 import com.epam.commons.linqinterfaces.JAction;
 import com.epam.commons.linqinterfaces.JFuncTREx;
-import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
+import com.epam.jdi.uitests.mobile.appium.elements.BaseElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,8 @@ import static com.epam.commons.Timer.getByCondition;
 import static com.epam.jdi.uitests.core.settings.JDISettings.asserter;
 import static java.lang.String.format;
 import static java.lang.String.join;
+
+;
 
 /**
  * Created by Roman_Iovlev on 9/3/2015.
@@ -113,7 +115,6 @@ public class ElementsActions {
                 isCheckedAction,
                 result -> "Checkbox is " + (result ? "checked" : "unchecked"));
     }
-
 
     // Input Actions
     public void inputLines(JAction clearAction, Consumer<String> inputAction, String... textLines) {

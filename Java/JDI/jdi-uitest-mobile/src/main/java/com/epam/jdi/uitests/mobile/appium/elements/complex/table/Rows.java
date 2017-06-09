@@ -1,4 +1,4 @@
-package com.epam.jdi.uitests.web.selenium.elements.complex.table;
+package com.epam.jdi.uitests.mobile.appium.elements.complex.table;
 /*
  * Copyright 2004-2016 EPAM Systems
  *
@@ -47,7 +47,7 @@ public class Rows extends TableLine implements IRow {
         return table.getWebElement().findElements(headersLocator);
     }
 
-    protected List<WebElement> getCrossFirstLine() {
+    protected List<WebElement> getFirstLine() {
         return ((Columns)table.columns()).getLineAction(1);
     }
 
@@ -76,8 +76,6 @@ public class Rows extends TableLine implements IRow {
     }
 
     public MapArray<String, ICell> getRow(int rowNum) {
-        if (rowNum <= 0)
-            throw exception("Table indexes starts from 1");
         if (count() < 0 || count() < rowNum || rowNum <= 0)
             throw exception("Can't Get Row '%s'. [num] > ColumnsCount(%s).", rowNum, count());
         try {
@@ -93,8 +91,6 @@ public class Rows extends TableLine implements IRow {
     }
 
     public List<String> getRowValue(int rowNum) {
-        if (rowNum <= 0)
-            throw exception("Table indexes starts from 1");
         if (count() < 0 || count() < rowNum || rowNum <= 0)
             throw exception("Can't Get Row '%s'. [num] > ColumnsCount(%s).", rowNum, count());
         try {
@@ -108,8 +104,8 @@ public class Rows extends TableLine implements IRow {
         return getRow(rowNum).toMapArray(IText::getText);
     }
 
-    private MapArray<String, MapArray<String, ICell>> withValueByRule(
-        Column column, JFuncTTREx<String, String, Boolean> func) {
+    private MapArray<String, MapArray<String, ICell>> withValueByRule(Column column,
+      JFuncTTREx<String, String, Boolean> func) {
         Collection<String> rowNames = column.hasName()
                 ? table.columns().getColumnAsText(column.getName()).where(func).keys()
                 : table.columns().getColumnAsText(column.getNum()).where(func).keys();
@@ -131,6 +127,9 @@ public class Rows extends TableLine implements IRow {
             List<WebElement> webRowLine = timer().getResultByCondition(
                     () -> getLineAction(rowName), els -> els.size() == colsCount);
             List<String> headers = table.columns().headers();
+            if (webRowLine.size() != headers.size() || headers.size() != table.columns().headers().size()
+                || headers.size() == 0)
+                throw exception("Can't getRow" + rowName);
             return new MapArray<>(colsCount,
                     table.columns().headers()::get,
                     value -> table.cell(webRowLine.get(value), new Column(headers.get(value)), new Row(rowName)));

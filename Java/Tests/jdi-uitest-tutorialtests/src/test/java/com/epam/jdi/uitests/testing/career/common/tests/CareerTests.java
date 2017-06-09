@@ -4,22 +4,16 @@ import com.epam.jdi.dataProviders.AttendeesProvider;
 import com.epam.jdi.entities.Attendee;
 import com.epam.jdi.uitests.testing.TestsBase;
 import com.epam.web.matcher.testng.Check;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.FindBy;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.Method;
 
 import static com.epam.jdi.enums.HeaderMenu.CAREERS;
 import static com.epam.jdi.site.epam.EpamSite.*;
 
 
 public class CareerTests extends TestsBase {
-
-    @BeforeMethod
-    public void before() {
-        homePage.shouldBeOpened();
-    }
-
     @Test(dataProvider = "attendees", dataProviderClass = AttendeesProvider.class)
     public void sendCVTest(Attendee attendee) {
         multipleHeaderMenu.hoverAndClick("SOLUTIONS|Product Development");

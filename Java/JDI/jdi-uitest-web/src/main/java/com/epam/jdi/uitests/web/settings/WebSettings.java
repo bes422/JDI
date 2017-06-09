@@ -53,7 +53,6 @@ import java.util.function.Supplier;
 import java.io.File;
 import static com.epam.commons.PropertyReader.fillAction;
 import static com.epam.commons.PropertyReader.getProperties;
-import static com.epam.jdi.uitests.core.settings.JDISettings.driverFactory;
 import static com.epam.jdi.uitests.web.selenium.driver.SeleniumDriverFactory.*;
 import static com.epam.jdi.uitests.web.selenium.driver.WebDriverProvider.DRIVER_VERSION;
 import static com.epam.web.matcher.base.BaseMatcher.screenshotAction;

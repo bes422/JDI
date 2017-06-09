@@ -1,4 +1,4 @@
-package com.epam.jdi.uitests.web.selenium.elements.complex.table;
+package com.epam.jdi.uitests.mobile.appium.elements.complex.table;
 /*
  * Copyright 2004-2016 EPAM Systems
  *
@@ -24,7 +24,6 @@ import com.epam.jdi.uitests.core.interfaces.common.IText;
 import com.epam.jdi.uitests.core.interfaces.complex.interfaces.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import io.qameta.allure.Step;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +48,7 @@ public class Columns extends TableLine implements IColumn {
         return table.getWebElement().findElements(headersLocator);
     }
 
-    protected List<WebElement> getCrossFirstLine() {
+    protected List<WebElement> getFirstLine() {
         return ((Rows)table.rows()).getLineAction(1);
     }
 
@@ -85,8 +84,8 @@ public class Columns extends TableLine implements IColumn {
                 cell -> cell);
     }
 
-    private MapArray<String, MapArray<String, ICell>> withValueByRule(
-            Row row, JFuncTTREx<String, String, Boolean> func) {
+    private MapArray<String, MapArray<String, ICell>> withValueByRule(Row row,
+      JFuncTTREx<String, String, Boolean> func) {
         Collection<String> rowNames = row.hasName()
                 ? table.rows().getRowAsText(row.getName()).where(func).keys()
                 : table.rows().getRowAsText(row.getNum()).where(func).keys();
@@ -103,8 +102,6 @@ public class Columns extends TableLine implements IColumn {
     }
 
     public final MapArray<String, ICell> getColumn(int colNum) {
-        if (colNum <= 0)
-            throw exception("Table indexes starts from 1");
         if (count() < 0 || count() < colNum || colNum <= 0)
             throw exception("Can't Get Column '%s'. [num] > RowsCount(%s).", colNum, count());
         try {
@@ -120,8 +117,6 @@ public class Columns extends TableLine implements IColumn {
     }
 
     public final List<String> getColumnValue(int colNum) {
-        if (colNum <= 0)
-            throw exception("Table indexes starts from 1");
         if (count() < 0 || count() < colNum || colNum <= 0)
             throw exception("Can't Get Column '%s'. [num] > RowsCount(%s).", colNum, count());
         try {
