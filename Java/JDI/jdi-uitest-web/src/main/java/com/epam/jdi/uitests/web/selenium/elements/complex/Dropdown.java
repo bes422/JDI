@@ -355,6 +355,16 @@ public class Dropdown<TEnum extends Enum> extends Selector<TEnum> implements IDr
 		waitAttribute(getName(), name, value);
 	}
 
+	@Override
+	public void waitContainsAttribute(String name, String value) {
+		waitContainsAttribute(getName(), name, value);
+	}
+
+	@Step("{elName} Wait attribute {name} contains value {value}")
+	private void waitContainsAttribute(String elName, String name, String value) {
+		wait(el -> el.getAttribute(name).contains(value));
+	}
+
 	@Step("{elName} - wait attribute {name} has value {value}")
 	private void waitAttribute(String elName, String name, String value) {
 		element().waitAttribute(name, value);

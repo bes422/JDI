@@ -221,5 +221,14 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         invoker.doJAction(format("Remove Attribute '%s'", attributeName),
                 () -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
     }
+    @Override
+    public void waitContainsAttribute(String name, String value) {
+        waitContainsAttribute(getName(), name, value);
+    }
+
+    @Step("{elName} Wait attribute {name} contains value {value}")
+    private void waitContainsAttribute(String elName, String name, String value) {
+        wait(el -> el.getAttribute(name).contains(value));
+    }
 
 }

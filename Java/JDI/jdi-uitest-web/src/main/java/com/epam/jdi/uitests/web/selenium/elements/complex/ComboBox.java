@@ -159,4 +159,14 @@ public class ComboBox<TEnum extends Enum> extends Dropdown<TEnum> implements ICo
                 () -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
     }
 
+    @Override
+    public void waitContainsAttribute(String name, String value) {
+        waitContainsAttribute(getName(), name, value);
+    }
+
+    @Step("{elName} Wait attribute {name} contains value {value}")
+    private void waitContainsAttribute(String elName, String name, String value) {
+        wait(el -> el.getAttribute(name).contains(value));
+    }
+
 }

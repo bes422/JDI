@@ -145,6 +145,17 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	public void waitAttribute(String name, String value) {
 		waitAttribute(getName(), name, value);
 	}
+
+	@Override
+	public void waitContainsAttribute(String name, String value) {
+		waitContainsAttribute(getName(), name, value);
+	}
+
+	@Step("{elName} Wait attribute {name} contains value {value}")
+	private void waitContainsAttribute(String elName, String name, String value) {
+		wait(el -> el.getAttribute(name).contains(value));
+	}
+
 	@Step("{elName} Wait attribute {name} gets value {value}")
 	private void waitAttribute(String elName, String name, String value) {
 		wait(el -> el.getAttribute(name).equals(value));

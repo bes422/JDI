@@ -37,6 +37,8 @@ public interface IElement extends IBaseElement, IVisible {
      */
     void waitAttribute(String name, String value);
 
+    void waitContainsAttribute(String name, String value);
+
     /**
      * @param attributeName Specify attribute name
      * @param value         Specify attribute value
