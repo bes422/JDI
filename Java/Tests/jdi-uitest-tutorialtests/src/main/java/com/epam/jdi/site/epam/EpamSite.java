@@ -4,6 +4,7 @@ import com.epam.jdi.enums.HeaderMenu;
 import com.epam.jdi.enums.HeaderSolutionsMenu;
 import com.epam.jdi.site.epam.pages.*;
 import com.epam.jdi.uitests.web.selenium.elements.common.Button;
+import com.epam.jdi.uitests.web.selenium.elements.common.Label;
 import com.epam.jdi.uitests.web.selenium.elements.complex.Elements;
 import com.epam.jdi.uitests.web.selenium.elements.complex.Menu;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebSite;
@@ -23,6 +24,7 @@ import static com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageT
  */
 @JSite(domain = "https://www.epam.com")
 public class EpamSite extends WebSite {
+    @JPage(url = "/", title = "EPAM|Software Product Development Services")
     public static HomePage homePage;
     @JPage(url = "/careers", title = "Careers")
     public static CareerPage careerPage;
@@ -58,4 +60,5 @@ public class EpamSite extends WebSite {
             super.selectAction(name);
             }
     };
+
 }
