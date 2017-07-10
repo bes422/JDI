@@ -1,0 +1,63 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.epam.jdi'
+version = '1.0.66'
+
+description = """EPAM JDI UI Testing Framework Core"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+configurations.all {
+}
+
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+shadowJar {
+    mergeServiceFiles {
+        exclude 'META-INF/services/com.acme.*'
+    }
+    dependencies {
+        exclude(dependency('io.qameta.allure::'))
+    }
+}
+
+repositories {
+
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile project(':jdi-commons')
+
+//    compile group: 'com.epam.jdi', name: 'jdi-commons', version: '1.0.66'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.13'
+    compile(group: 'io.qameta.allure', name: 'allure-testng', version: '2.0-BETA15'){
+        exclude(module: 'junit')
+        exclude(module: 'slf4j-log4j12')
+        exclude(module: 'testng')
+    }
+//
+//    compile(group: 'ru.yandex.qatools.allure', name: 'allure-testng-adaptor', version: '1.5.2') {
+//        exclude(module: 'junit')
+//        exclude(module: 'slf4j-log4j12')
+//        exclude(module: 'testng')
+//    }
+//    compile(group: 'ru.yandex.qatools.allure', name: 'allure-bundle', version: '1.5.2') {
+//        exclude(module: 'slf4j-simple')
+//        exclude(module: 'guava')
+//    }
+//    compile(group: 'ru.yandex.qatools.allure', name: 'allure-commandline', version: '1.5.2') {
+//        exclude(module: 'slf4j-log4j12')
+//    }
+}

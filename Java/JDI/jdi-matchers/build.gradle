@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.epam.jdi'
+version = '1.0.66'
+
+description = """"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+configurations.all {
+}
+
+repositories {
+        
+     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.testng', name: 'testng', version:'6.11'
+    compile group: 'junit', name: 'junit', version:'4.11'
+    compile group: 'com.epam.jdi', name: 'jdi-commons', version:'1.0.66'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version:'1.7.13'
+}
