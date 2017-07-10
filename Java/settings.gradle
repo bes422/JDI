@@ -1,0 +1,36 @@
+rootProject.name = 'jdi-uitest-framework'
+include ':jdi-commons'
+include ':jdi-matchers'
+include ':jdi-uitest-core'
+include ':jdi-uitest-web'
+//include ':groupbuy-ui-tests'
+
+//include ':jdi-uitest-mobile'
+//include ':jdi-uitest-gui'
+//include ':jdi-uitest-cucumber'
+//include ':jdi-http'
+//include ':jdi-uitest-tutorialtests'
+include ':jdi-uitest-webtests'
+//include ':jdi-uitest-mobiletests'
+//include ':jdi-uitest-guitests'
+//include ':jdi-uitest-cucumbertests'
+//include ':jdi-httpTests'
+include ':jdi-uitest-web-examples'
+
+project(':jdi-commons').projectDir = "$rootDir/JDI/jdi-commons" as File
+project(':jdi-matchers').projectDir = "$rootDir/JDI/jdi-matchers" as File
+project(':jdi-uitest-core').projectDir = "$rootDir/JDI/jdi-uitest-core" as File
+project(':jdi-uitest-web').projectDir = "$rootDir/JDI/jdi-uitest-web" as File
+//project(':jdi-uitest-mobile').projectDir = "$rootDir/JDI/jdi-uitest-mobile" as File
+//project(':jdi-uitest-gui').projectDir = "$rootDir/JDI/jdi-uitest-gui" as File
+//project(':jdi-uitest-cucumber').projectDir = "$rootDir/JDI/jdi-uitest-cucumber" as File
+//project(':jdi-http').projectDir = "$rootDir/JDI/jdi-http" as File
+//project(':jdi-uitest-tutorialtests').projectDir = "$rootDir/Tests/jdi-uitest-tutorialtests" as File
+project(':jdi-uitest-webtests').projectDir = "$rootDir/Tests/jdi-uitest-webtests" as File
+//project(':jdi-uitest-mobiletests').projectDir = "$rootDir/Tests/jdi-uitest-mobiletests" as File
+//project(':jdi-uitest-guitests').projectDir = "$rootDir/Tests/jdi-uitest-guitests" as File
+//project(':jdi-uitest-cucumbertests').projectDir = "$rootDir/Tests/jdi-uitest-cucumbertests" as File
+//project(':jdi-httpTests').projectDir = "$rootDir/Tests/jdi-httpTests" as File
+project(':jdi-uitest-web-examples').projectDir = "$rootDir/Tests/jdi-uitest-web-examples" as File
+
+//project(':groupbuy-ui-tests').projectDir = "$rootDir/Tests/groupbuy-ui-tests" as File
