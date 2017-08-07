@@ -10,9 +10,9 @@ import org.testng.annotations.BeforeSuite;
  * Created by Roman_Iovlev on 7/13/2015.
  */
 public class InitTestsAngular extends TestNGBase {
-
     @BeforeSuite(alwaysRun = true)
     public static void setUp() throws Exception {
         WebSite.init(AngularSite.class);
     }
+
 }

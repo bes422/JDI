@@ -15,4 +15,5 @@ public class InitTestsTableForm extends TestNGBase {
     public static void setUp() throws Exception {
         WebSite.init(EpamSite.class);
     }
+
 }

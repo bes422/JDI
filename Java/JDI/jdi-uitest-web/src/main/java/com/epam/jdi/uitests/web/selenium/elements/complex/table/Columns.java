@@ -28,7 +28,6 @@ import io.qameta.allure.Step;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import static com.epam.commons.LinqUtils.select;
 import static com.epam.jdi.uitests.core.settings.JDISettings.exception;

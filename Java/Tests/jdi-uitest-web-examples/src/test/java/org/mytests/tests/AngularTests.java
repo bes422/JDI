@@ -20,6 +20,4 @@ public class AngularTests extends InitTestsAngular {
         angularPage.specialOptions.check();
         Assert.isTrue(angularPage.specialOptions.isChecked());
     }
-
-
 }

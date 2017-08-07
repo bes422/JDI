@@ -23,7 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import io.qameta.allure.Step;
 
-import static com.epam.web.matcher.junit.Assert.exception;
+import static com.epam.jdi.uitests.core.settings.JDISettings.exception;
 
 /**
  * Text Field control implementation

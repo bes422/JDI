@@ -15,6 +15,7 @@ import static com.epam.jdi.uitests.testing.unittests.pageobjects.EpamJDISite.hom
 import static com.epam.jdi.uitests.web.settings.WebSettings.getDriver;
 import static com.epam.web.matcher.testng.Assert.*;
 
+
 /**
  * Created by Dmitry_Lebedev1 on 22/12/2015.
  */
@@ -51,7 +52,7 @@ public class PageTests extends InitTests {
     }
 
     @Test
-    public void addCookieTest(){
+    public void addCookieTest() throws Exception{
         getDriver().manage().deleteAllCookies();
         assertTrue(() -> getDriver().manage().getCookies().isEmpty());
         Cookie cookie = new Cookie("key", "value");
@@ -60,7 +61,7 @@ public class PageTests extends InitTests {
     }
 
     @Test
-    public void clearCacheTest(){
+    public void clearCacheTest()throws Exception{
         Cookie cookie = new Cookie("key", "value");
         getDriver().manage().addCookie(cookie);
         assertFalse(() -> getDriver().manage().getCookies().isEmpty());
@@ -70,12 +71,13 @@ public class PageTests extends InitTests {
 
     @Test
     public void checkOpenedTest(){
-        contactFormPage.checkOpened();
+         contactFormPage.checkOpened();
     }
 
     @AfterMethod
     public void restoreLoginCookies(){
-        Cookie loginCookie = new Cookie("authUser", "true", "jdi-framework.github.io/tests", "/", null, false);
+        getDriver().manage().deleteAllCookies();
+        Cookie loginCookie = new Cookie("authUser", "true", "epam.github.io", "/", null, false);
         getDriver().manage().addCookie(loginCookie);
     }
 

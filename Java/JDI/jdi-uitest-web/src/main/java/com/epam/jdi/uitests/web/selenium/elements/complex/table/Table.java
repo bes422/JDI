@@ -139,7 +139,9 @@ public class Table extends Text implements ITable, Cloneable {
     public List<ICell> getCells() {
         List<ICell> result = new ArrayList<>();
         for (String columnName : columns().headers())
-            headers().forEach(rowName
+            //it was so
+            // columns().headers().forEach(rowName-> result.add(cell(columnName, rowName)))
+            rows().headers().forEach(rowName
                 -> result.add(cell(columnName, rowName)));
         if (cache)
             allCells = result;
@@ -672,8 +674,7 @@ public class Table extends Text implements ITable, Cloneable {
     @Override
     protected String getTextAction() {
         return "||X||" + print(columns().headers(), "|") + "||\n"
-                + print(select(rows().headers(),
-                        rowName -> "||" + rowName + "||" + print(rowValue(rowName), "|") + "||"), "\n");
+                + print(select(rows().headers(),rowName -> "||" + rowName + "||" + print(rowValue(rowName), "|") + "||"), "\n");
     }
 
     private Cell addCell(int colIndex, int rowIndex, int colNum, int rowNum, String colName, String rowName) {

@@ -32,16 +32,15 @@ public class EntityTableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         Assert.areEquals(jobsTable().columns().size(), 4);
-        Assert.areEquals(jobsTable().rows().size(), 5);
-        Assert.areEquals(jobsTable().entities().size(), 5);
-        Assert.areEquals(jobsTable().getRows().size(), 5);
+        Assert.areEquals(jobsTable().rows().size(), 4);
+        Assert.areEquals(jobsTable().entities().size(), 4);
+        Assert.areEquals(jobsTable().getRows().size(), 4);
         Assert.areEquals(jobsTable().getValue(),
-            "||X||name|category|location|apply||\n" +
-            "||1||Senior Software Testing Engineer|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||2||Software Test Automation Engineer (front-end)|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||3||Test Automation Engineer (back-end)|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||4||QA Specialist|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||5||Testing Team Leader|Software Test Engineering|St-Petersburg, Russia|Apply||");
+                "||X||name|category|location|apply||\n" +
+                        "||1||Senior Software Testing Engineer|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
+                        "||2||Software Test Automation Engineer (front-end)|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
+                        "||3||Software Testing Engineer (Life Science Department)|Software Test Engineering|St-Petersburg, Russia|Apply||\n"+
+                        "||4||Test Automation Engineer (back-end)|Software Test Engineering|St-Petersburg, Russia|Apply||");
     }
 
     @Test
@@ -49,7 +48,7 @@ public class EntityTableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
-            .getRow(withValue("QA Specialist"), inColumn("name")).apply.click();
+            .getRow(withValue("Test Automation Engineer (back-end)"), inColumn("name")).apply.click();
 
         jobDescriptionPage.checkOpened();
     }
@@ -58,15 +57,15 @@ public class EntityTableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         Job job = jobsTable()
-                .entity(withValue("QA Specialist"), inColumn("name"));
-        Assert.entitiesAreEquals(job, new Job("QA Specialist", "Software Test Engineering", "St-Petersburg, Russia"));
+                .entity(withValue("Test Automation Engineer (back-end)"), inColumn("name"));
+        Assert.entitiesAreEquals(job, new Job("Test Automation Engineer (back-end)", "Software Test Engineering", "St-Petersburg, Russia"));
     }
     @Test
     public void searchContainsInTable() {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
-                .rowContains("Automation Engineer", inColumn("name")) //TODO
+                .rowContains("back-end", inColumn("name")) //TODO
                 .get("apply").select();
 
         jobDescriptionPage.checkOpened();
@@ -76,7 +75,7 @@ public class EntityTableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
-                .rowMatch(".+ Automation Engineer.*", inColumn("name")) //TODO
+                .rowMatch(".+back-end.*", inColumn("name")) //TODO
                 .get("apply").select();
 
         jobDescriptionPage.checkOpened();
@@ -99,10 +98,10 @@ public class EntityTableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         JobRecord firstRow = jobsTable().firstRow(r ->
-                textOf(r.name).equals("QA Specialist") &&
+                textOf(r.name).equals("Test Automation Engineer (back-end)") &&
                 textOf(r.category).equals("Software Test Engineering"));
 
-        Assert.areEquals(firstRow.name.getText(), "QA Specialist");
+        Assert.areEquals(firstRow.name.getText(), "Test Automation Engineer (back-end)");
         Assert.areEquals(firstRow.category.getText(), "Software Test Engineering");
     }
 
@@ -111,8 +110,8 @@ public class EntityTableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         JobRecord firstRow = jobsTable().firstRow(r ->
-                r.name.getText().equals("QA Specialist") &&
-                r.category.getText().equals("Software Test Engineering"));
+            r.name.getText().equals("Test Automation Engineer (back-end)") &&
+            r.category.getText().equals("Software Test Engineering"));
         firstRow.apply.click();
     }
 }

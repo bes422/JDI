@@ -10,7 +10,6 @@ import org.testng.annotations.BeforeSuite;
  * Created by Roman_Iovlev on 7/13/2015.
  */
 public class InitTestsText extends TestNGBase {
-
     @BeforeSuite(alwaysRun = true)
     public static void setUp() throws Exception {
         WebSite.init(TextSite.class);

@@ -31,14 +31,13 @@ public class TableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         Assert.areEquals(jobsTable().columns().count(), 4);
-        Assert.areEquals(jobsTable().rows().count(), 5);
+        Assert.areEquals(jobsTable().rows().count(), 4);
         Assert.areEquals(jobsTable().getValue(),
     "||X||name|category|location|apply||\n" +
             "||1||Senior Software Testing Engineer|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
             "||2||Software Test Automation Engineer (front-end)|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||3||Test Automation Engineer (back-end)|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||4||QA Specialist|Software Test Engineering|St-Petersburg, Russia|Apply||\n" +
-            "||5||Testing Team Leader|Software Test Engineering|St-Petersburg, Russia|Apply||");
+            "||3||Software Testing Engineer (Life Science Department)|Software Test Engineering|St-Petersburg, Russia|Apply||\n"+
+            "||4||Test Automation Engineer (back-end)|Software Test Engineering|St-Petersburg, Russia|Apply||");
     }
 
     @Test
@@ -46,7 +45,7 @@ public class TableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
-            .row(withValue("QA Specialist"), inColumn("name"))
+            .row(withValue("Test Automation Engineer (back-end)"), inColumn("name"))
             .get("apply").select();
 
         jobDescriptionPage.checkOpened();
@@ -56,7 +55,7 @@ public class TableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
-            .rowContains("Automation Engineer", inColumn("name"))
+            .rowContains("front-end", inColumn("name"))
             .get("apply").select();
 
         jobDescriptionPage.checkOpened();
@@ -66,7 +65,7 @@ public class TableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
-                .rowMatch(".+ Automation Engineer.*", inColumn("name"))
+                .rowMatch(".+front-end.*", inColumn("name"))
                 .get("apply").select();
 
         jobDescriptionPage.checkOpened();
@@ -76,7 +75,7 @@ public class TableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         MapArray<String, ICell> firstRow = jobsTable().rows(
-                "name~=Automation Engineer",
+                "name~=front-end",
                 "category*=.*Test Engineering")
                 .first().value;
 
@@ -89,11 +88,11 @@ public class TableExamples extends TestsBase {
         jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         MapArray<String, ICell> firstRow = jobsTable().rows(
-                "name=QA Specialist",
+                "name=Test Automation Engineer (back-end)",
                 "category=Software Test Engineering")
                 .first().value;
 
-        Assert.areEquals(firstRow.get("name").getText(), "QA Specialist");
+        Assert.areEquals(firstRow.get("name").getText(), "Test Automation Engineer (back-end)");
         Assert.areEquals(firstRow.get("category").getText(), "Software Test Engineering");
     }
 }
