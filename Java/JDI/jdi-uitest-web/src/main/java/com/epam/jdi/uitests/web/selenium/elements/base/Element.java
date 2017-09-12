@@ -18,24 +18,29 @@ package com.epam.jdi.uitests.web.selenium.elements.base;
  */
 
 
+import com.epam.commons.LinqUtils;
 import com.epam.commons.Timer;
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
+import com.epam.jdi.uitests.core.interfaces.base.IHasValue;
 import com.epam.jdi.uitests.core.settings.HighlightSettings;
-import com.epam.jdi.uitests.core.settings.JDISettings;
 import com.epam.jdi.uitests.web.settings.WebSettings;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import io.qameta.allure.Step;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.epam.commons.ReflectionUtils.newEntity;
+import static com.epam.commons.LinqUtils.foreach;
+import static com.epam.commons.ReflectionUtils.*;
+import static com.epam.commons.StringUtils.namesEqual;
 import static com.epam.jdi.uitests.core.logger.LogLevels.DEBUG;
 import static com.epam.jdi.uitests.core.settings.JDISettings.asserter;
+import static com.epam.jdi.uitests.core.settings.JDISettings.exception;
 import static java.lang.String.format;
 
 /**
@@ -86,7 +91,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 			result.setAvatar(newLocator, element.getAvatar());
 			return result;
 		} catch (Exception ex) {
-			throw JDISettings.exception("Can't copy Element: " + element);
+			throw exception("Can't copy Element: " + element);
 		}
 	}
 
@@ -161,17 +166,17 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	 *                      Sets attribute value for Element
 	 */
 	public void setAttribute(String attributeName, String value) {
-		setAttribute(getName(),attributeName,value);
+		setAttribute(getName(), attributeName, value);
 	}
 
 	public void removeAttribute(String attributeName) {
-		removeAttribute(getName(),attributeName);
+		removeAttribute(getName(), attributeName);
 	}
 
 	@Step("{elName} Remove attribute {attributeName}")
 	private void removeAttribute(String elName, String attributeName) {
 		invoker.doJAction(format("Remove Attribute '%s'", attributeName),
-				() -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);",getWebElement(), attributeName));
+				() -> jsExecutor().executeScript("arguments[0].removeAttribute(arguments[1]);", getWebElement(), attributeName));
 	}
 
 	@Step("{elName} Set attribute {attributeName}={value}")
@@ -184,8 +189,13 @@ public class Element extends BaseElement implements IElement, IHasElement {
 
 	protected boolean isDisplayedAction() {
 		return avatar.findImmediately(() -> {
-					WebElement webElement = getWebElement();
-					return webElement.isDisplayed() && webElement.getSize().height>0 && webElement.getSize().width > 0;
+					WebElement webElement;
+					try {
+						webElement = getWebElement();
+					} catch (NullPointerException e) {
+						return false;
+					}
+					return null != webElement && webElement.isDisplayed() & webElement.getSize().height > 0 & webElement.getSize().width > 0;
 				}
 				, false
 		);
@@ -386,7 +396,7 @@ public class Element extends BaseElement implements IElement, IHasElement {
 	}
 
 	public void selectArea(int x1, int y1, int x2, int y2) {
-		selectArea(getName(), x1, y1, x2,y2);
+		selectArea(getName(), x1, y1, x2, y2);
 	}
 
 	@Step("{elName} - Select area: from x={x1},y={y1};to x={x2},y={y2}")

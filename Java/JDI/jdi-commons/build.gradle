@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'com.epam.jdi'
-version = '1.0.66'
+version = '1.0.70'
 
 description = """"""
 
@@ -13,6 +13,9 @@ tasks.withType(JavaCompile) {
 }
 
 configurations.all {
+}
+dependencies {
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.3'
 }
 
 repositories {
