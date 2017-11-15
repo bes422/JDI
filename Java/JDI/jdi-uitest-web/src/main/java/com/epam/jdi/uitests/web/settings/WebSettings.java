@@ -24,7 +24,7 @@ import com.epam.jdi.uitests.core.interfaces.base.IClickable;
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.common.*;
 import com.epam.jdi.uitests.core.interfaces.complex.*;
-import com.epam.jdi.uitests.core.interfaces.complex.interfaces.ITable;
+import com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.ITable;
 import com.epam.jdi.uitests.core.logger.LogLevels;
 import com.epam.jdi.uitests.core.settings.JDISettings;
 import com.epam.jdi.uitests.web.selenium.TestNGCheck;
@@ -43,18 +43,18 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-import java.io.File;
+
 import static com.epam.commons.PropertyReader.fillAction;
-import static com.epam.commons.PropertyReader.getProperties;
 import static com.epam.jdi.uitests.web.selenium.driver.SeleniumDriverFactory.*;
-import static com.epam.jdi.uitests.web.selenium.driver.WebDriverProvider.DRIVER_VERSION;
 import static com.epam.web.matcher.base.BaseMatcher.screenshotAction;
 import static com.epam.web.matcher.testng.Assert.setMatcher;
 import static java.lang.Integer.parseInt;
@@ -106,6 +106,8 @@ public class WebSettings extends JDISettings {
     }
 
     public static JavascriptExecutor getJSExecutor() {
+        if (!initialized)
+            try { initFromProperties(); } catch (Exception ex) { throw new RuntimeException(ex); }
         if (driverFactory.getDriver() instanceof JavascriptExecutor)
             return (JavascriptExecutor) driverFactory.getDriver();
         else
@@ -119,7 +121,6 @@ public class WebSettings extends JDISettings {
         asserter.doScreenshot("screen_on_fail");
         screenshotAction = ScreenshotMaker::doScreenshotGetMessage;
         timeouts = new WebTimeoutSettings();
-        getProperties(jdiSettingsPath);
         MapInterfaceToElement.init(defaultInterfacesMap);
         driverFactory = new SeleniumDriverFactory();
     }
@@ -145,7 +146,6 @@ public class WebSettings extends JDISettings {
         );
         System.setProperty("downloads.dir",downloadsDir);
         fillAction(p -> domain = p, "domain");
-        fillAction(p -> DRIVER_VERSION = p, "drivers.version");
         fillAction(driverFactory::setDriverPath, "drivers.folder");
         fillAction(p -> getDriverFactory().getLatestDriver =
                 p.toLowerCase().equals("true") || p.toLowerCase().equals("1"), "driver.getLatest");

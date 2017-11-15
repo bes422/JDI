@@ -5,17 +5,12 @@
     <parent>
         <artifactId>jdi-uitest-framework</artifactId>
         <groupId>com.epam.jdi</groupId>
-        <version>1.0.70</version>
+        <version>1.0.82</version>
         <relativePath>../..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jdi-uitest-guitests</artifactId>
-
-    <properties>
-        <selenium.version>3.0.1</selenium.version>
-        <allure.version>1.4.5</allure.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -26,12 +21,12 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>${selenium.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-api</artifactId>
-            <version>${selenium.version}</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

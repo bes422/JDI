@@ -1,0 +1,9 @@
+
+description = 'EPAM JDI UI Testing Tutorial Tests'
+dependencies {
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version:'3.7.1'
+  compile project(':jdi-uitest-web')
+    compile group: 'ru.yandex.qatools.allure', name: 'allure-testng-adaptor', version:'1.4.5'
+    compile group: 'org.projectlombok', name: 'lombok', version:'1.16.12'
+}
+test.useTestNG()

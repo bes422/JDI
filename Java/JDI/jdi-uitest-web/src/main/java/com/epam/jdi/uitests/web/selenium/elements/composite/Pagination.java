@@ -151,63 +151,63 @@ public class Pagination extends Element implements IPagination {
     protected Clickable nextAction() {
         String shortName = "next";
         if (nextLocator != null)
-            return new GetElementType(nextLocator, this).get(Clickable.class);
+            return new GetElementType(nextLocator, getParent()).get(Clickable.class);
 
         Clickable nextLink = getClickable(shortName);
         if (nextLink != null)
             return nextLink;
 
         if (getLocator() != null && getLocator().toString().contains("%s"))
-            return new GetElementType(fillByTemplate(getLocator(), shortName), this).get(Clickable.class);
+            return new GetElementType(fillByTemplate(getLocator(), shortName), getParent()).get(Clickable.class);
         throw exception(cantChooseElementMsg("Next", shortName, "nextAction"));
     }
 
     private Clickable previousAction() {
         String shortName = "prev";
         if (previousLocator != null)
-            return new GetElementType(previousLocator, this).get(Clickable.class);
+            return new GetElementType(previousLocator, getParent()).get(Clickable.class);
 
         Clickable prevLink = getClickable(shortName);
         if (prevLink != null)
             return prevLink;
 
         if (getLocator() != null && getLocator().toString().contains("%s"))
-            return new GetElementType(fillByTemplate(getLocator(), shortName), this).get(Clickable.class);
+            return new GetElementType(fillByTemplate(getLocator(), shortName), getParent()).get(Clickable.class);
         throw exception(cantChooseElementMsg("Previous", shortName, "previousAction"));
     }
 
     private Clickable firstAction() {
         String shortName = "first";
         if (firstLocator != null)
-            return new GetElementType(firstLocator, this).get(Clickable.class);
+            return new GetElementType(firstLocator, getParent()).get(Clickable.class);
 
         Clickable firstLink = getClickable(shortName);
         if (firstLink != null)
             return firstLink;
 
         if (getLocator() != null && getLocator().toString().contains("%s"))
-            return new GetElementType(fillByTemplate(getLocator(), shortName), this).get(Clickable.class);
+            return new GetElementType(fillByTemplate(getLocator(), shortName), getParent()).get(Clickable.class);
         throw exception(cantChooseElementMsg("First", shortName, "firstAction"));
     }
 
     private Clickable lastAction() {
         String shortName = "last";
         if (lastLocator != null)
-            return new GetElementType(lastLocator, this).get(Clickable.class);
+            return new GetElementType(lastLocator, getParent()).get(Clickable.class);
 
         Clickable lastLink = getClickable(shortName);
         if (lastLink != null)
             return lastLink;
 
         if (getLocator() != null && getLocator().toString().contains("%s"))
-            return new GetElementType(fillByTemplate(getLocator(), shortName), this).get(Clickable.class);
+            return new GetElementType(fillByTemplate(getLocator(), shortName), getParent()).get(Clickable.class);
         throw exception(cantChooseElementMsg("Last", shortName, "lastAction"));
     }
 
     private Clickable pageAction(int index) {
         String shortName = "page";
         if (getLocator() != null && getLocator().toString().contains("%s"))
-            return new GetElementType(fillByTemplate(getLocator(), index), this).get(Clickable.class);
+            return new GetElementType(fillByTemplate(getLocator(), index), getParent()).get(Clickable.class);
 
         Clickable pageLink = getClickable(shortName);
         if (pageLink != null)

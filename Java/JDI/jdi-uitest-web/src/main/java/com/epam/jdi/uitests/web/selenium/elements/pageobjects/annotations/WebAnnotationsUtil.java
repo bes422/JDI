@@ -19,17 +19,19 @@ package com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations;
 
 
 import com.epam.jdi.uitests.core.annotations.AnnotationsUtil;
-import com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageTypes;
+import com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.CheckPageTypes;
+import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
+import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.simple.*;
+import java.lang.reflect.Field;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.Quotes;
 
 import java.util.function.Consumer;
 
-import static com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageTypes.CONTAINS;
-import static com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageTypes.MATCH;
-import static com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageTypes.EQUAL;
+import static com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.CheckPageTypes.CONTAINS;
+import static com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.CheckPageTypes.EQUAL;
 import static com.epam.jdi.uitests.web.settings.WebSettings.domain;
 import static java.lang.String.format;
 
@@ -38,14 +40,11 @@ import static java.lang.String.format;
  */
 public class WebAnnotationsUtil extends AnnotationsUtil {
 
-    private static void initDomain(Class<?> parentClass) {
-
-    }
-
     public static String getUrlFromUri(String uri, Class<?> parentClass) {
+        if (parentClass.isAnnotationPresent(JSite.class)) {
+            domain = parentClass.getAnnotation(JSite.class).value();
+        }
         String siteDomain = domain;
-//        if (parentClass.isAnnotationPresent(JSite.class))
-//            siteDomain = parentClass.getAnnotation(JSite.class).domain();
         if (siteDomain == null)
             siteDomain = "";
         return siteDomain.replaceAll("/*$", "") + "/" + uri.replaceAll("^/*", "");
@@ -59,9 +58,9 @@ public class WebAnnotationsUtil extends AnnotationsUtil {
         String urlTemplate = pageAnnotation.urlTemplate();
         CheckPageTypes urlCheckType = pageAnnotation.urlCheckType();
         CheckPageTypes titleCheckType = pageAnnotation.titleCheckType();
-		if (urlTemplate.isEmpty()) {
+        if (urlTemplate.isEmpty())
             urlTemplate = url;
-		}
+
         page.updatePageData(url, title, urlCheckType, titleCheckType, urlTemplate);
     }
 
@@ -113,6 +112,80 @@ public class WebAnnotationsUtil extends AnnotationsUtil {
             action.accept(by);
     }
 
+    public static By findByToBy(Css locator){
+        if (locator == null) return null;
+        return By.cssSelector(locator.value());
+    }
+
+    public static By findByToBy(Attribute locator){
+        if (locator == null) return null;
+        return getAttribute(locator.name(), locator.value());
+    }
+
+    public static By findByToBy(ClassName locator){
+        if (locator == null) return null;
+        return By.className(locator.value());
+    }
+
+    public static By findByToBy(Id locator){
+        if (locator == null) return null;
+        return By.id(locator.value());
+    }
+
+    public static By findByToBy(ByName locator){
+        if (locator == null) return null;
+        return By.name(locator.value());
+    }
+
+    public static By findByToBy(Tag locator){
+        if (locator == null) return null;
+        return By.tagName(locator.value());
+    }
+    public static By findByToBy(Type locator){
+        if (locator == null) return null;
+        return getAttribute("type", locator.value());
+    }
+
+    public static By findByToBy(Text locator){
+        if (locator == null) return null;
+        return By.xpath(".//*/text()[contains(normalize-space(.), "+
+                Quotes.escape(locator.value())+")]/parent::*");
+    }
+
+    public static By findByToBy(NgModel locator){
+        if (locator == null) return null;
+            return getAttribute("ng-model", locator.value());
+    }
+    public static By findByToBy(NgBinding locator){
+        if (locator == null) return null;
+            return getAttribute("ng-binding", locator.value());
+    }
+
+    public static By findByToBy(NgRepeat locator){
+        if (locator == null) return null;
+            return getAttribute("ng-repeat", locator.value());
+    }
+
+    public static By findByToBy(E2E locator){
+        if (locator == null) return null;
+            return getAttribute("e2e", locator.value());
+    }
+
+    public static By findByToBy(Title locator){
+        if (locator == null) return null;
+            return getAttribute("title", locator.value());
+    }
+
+    public static By findByToBy(Value locator){
+        if (locator == null) return null;
+            return getAttribute("value", locator.value());
+    }
+
+    public static By findByToBy(XPath locator){
+        if (locator == null) return null;
+            return By.xpath(locator.value());
+    }
+
     public static By findByToBy(JFindBy locator) {
         if (locator == null) return null;
 
@@ -143,20 +216,20 @@ public class WebAnnotationsUtil extends AnnotationsUtil {
             return getAttribute("value", locator.value());
         if (!"".equals(locator.title()))
             return getAttribute("title", locator.title());
-
+        if (!"".equals(locator.type()))
+            return getAttribute("type", locator.title());
         if (!"".equals(locator.model()))
-            return By.cssSelector(format("[ng-model='%s']", locator.model()));
+            return getAttribute("ng-model", locator.model());
         if (!"".equals(locator.binding()))
-            return By.cssSelector(format("[ng-binding='%s']", locator.binding()));
+            return getAttribute("ng-binding", locator.binding());
         if (!"".equals(locator.repeat()))
-            return By.cssSelector(format("[ng-repeat='%s']", locator.repeat()));
-		if (!"".equals(locator.e2e()))
-			return By.cssSelector(format("[e2e='%s']", locator.e2e()));
-
+            return getAttribute("ng-repeat", locator.repeat());
+        if (!"".equals(locator.e2e()))
+            return getAttribute("e2e", locator.e2e());
         return null;
     }
 
     private static By getAttribute(String name, String value) {
-        return By.xpath(".//*[@" + name + '=' + Quotes.escape(value) + ']');
+        return By.cssSelector(format("[%s='%s']", name, value));
     }
 }

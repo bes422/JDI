@@ -18,11 +18,11 @@ package com.epam.jdi.uitests.web.selenium.elements.composite;
  */
 
 
+import com.epam.jdi.uitests.core.interfaces.base.ISetup;
 import com.epam.jdi.uitests.core.interfaces.common.IButton;
 import com.epam.jdi.uitests.core.interfaces.common.ITextField;
 import com.epam.jdi.uitests.core.interfaces.complex.ISearch;
 import com.epam.jdi.uitests.web.selenium.elements.apiInteract.GetElementModule;
-import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.common.Button;
 import com.epam.jdi.uitests.web.selenium.elements.common.TextField;
 import com.epam.jdi.uitests.web.selenium.elements.complex.TextList;
@@ -43,7 +43,7 @@ import static java.lang.String.format;
 /**
  * Created by Roman_Iovlev on 7/29/2015.
  */
-public class Search extends TextField implements ISearch {
+public class Search extends TextField implements ISearch, ISetup {
     protected IButton searchButton;
     protected TextList<Enum> suggestions;
 
@@ -193,13 +193,11 @@ public class Search extends TextField implements ISearch {
         }
     }
 
-    public static void setUp(BaseElement el, Field field) {
+    public void setup(Field field) {
         if (!fieldHasAnnotation(field, JSearch.class, ISearch.class))
             return;
-        ((Search) el).setUp(field.getAnnotation(JSearch.class));
-    }
-
-    public Search setUp(JSearch jSearch) {
+        JSearch jSearch = field.getAnnotation(JSearch.class);
+        By root = findByToBy(jSearch.root());
         By input = findByToBy(jSearch.input());
         By searchButton = findByToBy(jSearch.searchButton());
         By suggestions = findByToBy(jSearch.suggestions());
@@ -216,6 +214,5 @@ public class Search extends TextField implements ISearch {
             this.searchButton = new Button(searchButton);
         if (suggestions != null)
             this.suggestions = new TextList<>(suggestions);
-        return this;
     }
 }

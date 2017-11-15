@@ -1,0 +1,7 @@
+
+description = ''
+dependencies {
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version:'3.7.1'
+    compile group: 'io.appium', name: 'java-client', version:'3.3.0'
+  compile project(':jdi-uitest-mobile')
+}

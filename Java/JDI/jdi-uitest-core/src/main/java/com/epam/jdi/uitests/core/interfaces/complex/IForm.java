@@ -21,6 +21,7 @@ import com.epam.commons.map.MapArray;
 import com.epam.jdi.uitests.core.interfaces.base.IComposite;
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.base.IHasValue;
+import com.epam.jdi.uitests.core.interfaces.base.ISetValue;
 import io.qameta.allure.Step;
 
 import java.util.List;
@@ -33,11 +34,12 @@ import static com.epam.jdi.uitests.core.utils.common.PrintUtils.getMapFromObject
 /**
  * Created by Roman_Iovlev on 7/8/2015.
  */
-public interface IForm<T> extends IComposite, IHasValue, IElement {
+public interface IForm<T> extends IComposite, ISetValue, IHasValue, IElement {
     /**
      * @param map Specify entity as map
      *            Fills all elements on the form which implements SetValue interface and can be matched with fields in input entity
      */
+    @Step
     void fill(MapArray<String, String> map);
 
     void filter(FormFilters filter);
@@ -73,11 +75,13 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      * @param map Specify entity as mapArray
      *            Fills all elements on the form which implements SetValue interface and can be matched with fields in input entity
      */
+    @Step
     List<String> verify(MapArray<String, String> map);
 
     /**
      * Get fields from form as specified class entity
      */
+    @Step
     T getEntity();
     /**
      * @param entity Specify entity
@@ -101,6 +105,7 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      * @param map Specify entity as mapArray
      *            Verify that form filled correctly. If not throws error
      */
+    @Step
     void check(MapArray<String, String> map);
 
     /**
@@ -126,6 +131,7 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      *             Fill first setable field with value and click on Button “submit” <br>
      * @apiNote To use this option Form pageObject should have at least one ISetValue element and only one IButton Element
      */
+    @Step
     void submit(String text);
 
     /**
@@ -135,6 +141,7 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      * @apiNote To use this option Form pageObject should have at least one ISetValue element <br>
      * Allowed different buttons to send one form e.g. save/ publish / cancel / search update ...
      */
+    @Step
     void submit(String text, String buttonName);
 
 
@@ -409,6 +416,7 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
      * * Letters case in button name  no matters
      */
+    @Step
     void submit(T entity, String buttonName);
 
     /**
@@ -419,6 +427,7 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
      * * Letters case in button name  no matters
      */
+    @Step
     void submit(T entity, Enum buttonName);
 
     /**
@@ -427,5 +436,6 @@ public interface IForm<T> extends IComposite, IHasValue, IElement {
      * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
      * * Letters case in button name  no matters
      */
+    @Step
     void submit(MapArray<String, String> objStrings);
 }

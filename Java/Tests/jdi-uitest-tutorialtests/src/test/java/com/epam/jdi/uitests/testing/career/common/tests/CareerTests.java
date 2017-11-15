@@ -9,8 +9,8 @@ import org.testng.annotations.Test;
 import static com.epam.jdi.enums.HeaderMenu.CAREERS;
 import static com.epam.jdi.site.epam.EpamSite.*;
 
-
 public class CareerTests extends TestsBase {
+
     @Test(dataProvider = "attendees", dataProviderClass = AttendeesProvider.class)
     public void sendCVTest(Attendee attendee) {
         multipleHeaderMenu.hoverAndClick("SOLUTIONS|Product Development");

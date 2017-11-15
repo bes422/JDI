@@ -21,15 +21,15 @@ package com.epam.jdi.uitests.web.selenium.elements.complex.table;
 import com.epam.commons.map.MapArray;
 import com.epam.commons.pairs.Pair;
 import com.epam.jdi.uitests.core.interfaces.base.ISelect;
-import com.epam.jdi.uitests.core.interfaces.complex.interfaces.*;
+import com.epam.jdi.uitests.core.interfaces.base.ISetup;
+import com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.*;
 import com.epam.jdi.uitests.web.selenium.elements.apiInteract.GetElementModule;
-import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.common.Text;
 import com.epam.jdi.uitests.web.selenium.elements.complex.Elements;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JTable;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import io.qameta.allure.Step;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * Created by Roman_Iovlev on 6/2/2015.
  */
-public class Table extends Text implements ITable, Cloneable {
+public class Table extends Text implements ITable, Cloneable, ISetup {
     public boolean cache = true;
     protected List<String> footer;
     protected By cellLocatorTemplate;
@@ -148,21 +148,10 @@ public class Table extends Text implements ITable, Cloneable {
         return result;
     }
 
-    public static void setUp(BaseElement el, Field field) {
+    public void setup(Field field) {
         if (!fieldHasAnnotation(field, JTable.class, ITable.class))
             return;
-        ((Table) el).setUp(field.getAnnotation(JTable.class));
-    }
-
-    public List<String> getHeaders(){
-        return getHeaders(getName());
-    }
-    @Step("{elName} - get headers")
-    private List<String> getHeaders(String elName){
-        return columns.getHeadersTextAction();
-    }
-
-    public ITable setUp(JTable jTable) {
+        JTable jTable = field.getAnnotation(JTable.class);
         By root = findByToBy(jTable.root());
         if (root == null)
             root = findByToBy(jTable.jRoot());
@@ -215,15 +204,18 @@ public class Table extends Text implements ITable, Cloneable {
         switch (jTable.headerType()) {
             case COLUMNS_HEADERS:
                 hasOnlyColumnHeaders();
+                break;
             case ROWS_HEADERS:
                 hasOnlyRowHeaders();
+                break;
             case ALL_HEADERS:
                 hasAllHeaders();
+                break;
             case NO_HEADERS:
                 hasNoHeaders();
+                break;
         }
         useCache(jTable.useCache());
-        return this;
     }
 
     public ITable useCache(boolean value) {
@@ -271,9 +263,6 @@ public class Table extends Text implements ITable, Cloneable {
 
     public IRow rows() {
         return rows;
-    }
-    public int getRowsSize() {
-        return new Elements(rows.lineTemplate).size();
     }
 
     public MapArray<String, ICell> row(int rowNum) {
@@ -569,13 +558,13 @@ public class Table extends Text implements ITable, Cloneable {
 
     public ICell cell(String value, Column column) {
         int colIndex = column.get(
-                name -> columns().headers().indexOf(name) + 1,
+                name -> select(columns().headers(), String::toLowerCase).indexOf(name.toLowerCase()) + 1,
                 num -> num);
         return columns().getColumn(colIndex).first((name, cell) -> cell.getValue().equals(value));
     }
     public ICell cellContains(String value, Column column) {
         int colIndex = column.get(
-                name -> columns().headers().indexOf(name) + 1,
+                name -> select(columns().headers(), String::toLowerCase).indexOf(name.toLowerCase()) + 1,
                 num -> num);
         return columns().getColumn(colIndex).first((name, cell) -> cell.getValue().contains(value));
     }
@@ -651,23 +640,25 @@ public class Table extends Text implements ITable, Cloneable {
 
     private int getColumnIndex(String name) {
         int nameIndex;
-        List<String> headers = columns().headers();
-        if (headers != null && headers.contains(name))
-            nameIndex = headers.indexOf(name);
+        List<String> headers = select(columns().headers(), String::toLowerCase);
+        String lName = name.toLowerCase();
+        if (headers != null && headers.contains(lName))
+            nameIndex = headers.indexOf(lName);
         else
             throw exception("Can't Get Column: '" + name + "'. " + ((headers == null)
                     ? "ColumnHeaders is Null"
-                    : ("Available ColumnHeaders: " + print(headers, ", ", "'{0}'") + ")")));
+                    : ("Available ColumnHeaders: " + print(headers, ", ", "'%s'") + ")")));
         return nameIndex + columns().getStartIndex();
     }
 
     private int getRowIndex(String name) {
         int nameIndex;
-        List<String> headers = rows().headers();
-        if (headers != null && headers.contains(name))
-            nameIndex = headers.indexOf(name);
+        List<String> headers = select(rows().headers(), String::toLowerCase);
+        String lName = name.toLowerCase();
+        if (headers != null && headers.contains(lName))
+            nameIndex = headers.indexOf(lName);
         else
-            throw exception("Can't Get Row: '%s'. Available RowHeaders: (%s)", name, print(headers, ", ", "'{0}'"));
+            throw exception("Can't Get Row: '%s'. Available RowHeaders: (%s)", name, print(headers, ", ", "'%s'"));
         return nameIndex + rows().getStartIndex();
     }
 
@@ -700,5 +691,18 @@ public class Table extends Text implements ITable, Cloneable {
         if (cache)
             allCells.add(cell);
         return cell;
+    }
+
+    public int getRowsSize() {
+        return new Elements(rows.lineTemplate,Text.class).size();
+    }
+
+
+    public List<String> getHeaders(){
+        return getHeaders(getName());
+    }
+    @Step("{elName} - get headers")
+    private List<String> getHeaders(String elName){
+        return columns.getHeadersTextAction();
     }
 }

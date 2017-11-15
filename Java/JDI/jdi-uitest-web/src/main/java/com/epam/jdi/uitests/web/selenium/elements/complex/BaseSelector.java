@@ -18,7 +18,6 @@ package com.epam.jdi.uitests.web.selenium.elements.complex;
  */
 
 
-import com.epam.jdi.uitests.core.interfaces.base.IClickable;
 import com.epam.jdi.uitests.core.interfaces.base.IVisible;
 import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
 import com.epam.jdi.uitests.web.selenium.elements.apiInteract.GetElementModule;
@@ -33,6 +32,7 @@ import org.openqa.selenium.support.ui.Select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.epam.commons.EnumUtils.getEnumValue;
 import static com.epam.commons.LinqUtils.first;
@@ -48,341 +48,340 @@ import static com.epam.jdi.uitests.web.selenium.driver.WebDriverByUtils.fillByTe
  */
 
 abstract class BaseSelector<TEnum extends Enum> extends BaseElement implements IVisible, IHasElement {
-	protected boolean isSelector;
-	protected GetElementType allLabels = new GetElementType();
+    protected boolean isSelector;
+    protected GetElementType allLabels = new GetElementType();
 
-	BaseSelector() {
-		super();
-	}
+    BaseSelector() {
+        super();
+    }
 
-	BaseSelector(By optionsNamesLocator) {
-		super(optionsNamesLocator);
-	}
+    BaseSelector(By optionsNamesLocator) {
+        super(optionsNamesLocator);
+    }
 
-	BaseSelector(By optionsNamesLocator, By allLabelsLocator) {
-		super(optionsNamesLocator);
-		this.allLabels = new GetElementType(allLabelsLocator, this);
-	}
+    BaseSelector(By optionsNamesLocator, By allLabelsLocator) {
+        super(optionsNamesLocator);
+        this.allLabels = new GetElementType(allLabelsLocator, this);
+    }
 
-	protected TextList allLabels() {
-		return allLabels.get(TextList.class);
-	}
+    protected TextList allLabels() {
+        return allLabels.get(TextList.class);
+    }
 
-	protected void selectAction(String name) {
-		IClickable cl = getElement(name);
-		if (cl != null)
-			cl.click();
-	}
+    protected void selectAction(String name) {
+        Clickable cl = getElement(name);
+        if (cl != null)
+            cl.click();
+    }
+    protected Clickable getElement(String name) {
+        if (!hasLocator() && allLabels() == null)
+            throw exception("Can't find option '%s'. No optionsNamesLocator and allLabelsLocator found", name);
+        if (hasLocator() && getLocator().toString().contains("%s"))
+            return new GetElementType(fillByTemplate(getLocator(), name), this).get(Clickable.class);
+        if (allLabels() != null)
+            return allLabels().getLocator().toString().contains("%s")
+                ? new GetElementType(fillByTemplate(allLabels().getLocator(), name), this).get(Clickable.class)
+                : getFromList(allLabels().avatar.searchAll().getElements(), name);
+        List<WebElement> elements = getAvatar().searchAll().getElements();
+        WebElement element = elements.get(0);
+        if (elements.size() == 1 && element.getTagName().equals("select"))
+            if (getSelector().getOptions().size() > 0) {
+                getSelector().selectByVisibleText(name);
+                return null;
+            }
+            else throw exception("<select> tag has no <option> tags. Please Clarify element locator (%s)", this);
+        if (elements.size() == 1 && element.getTagName().equals("ul"))
+            elements = element.findElements(By.tagName("li"));
+        return getFromList(elements, name);
+    }
 
-	protected Clickable getElement(String name) {
-		if (!hasLocator() && allLabels() == null)
-			throw exception("Can't find option '%s'. No optionsNamesLocator and allLabelsLocator found", name);
-		if (hasLocator() && getLocator().toString().contains("%s"))
-			return new GetElementType(fillByTemplate(getLocator(), name), this).get(Clickable.class);
-		if (allLabels() != null)
-			return allLabels().getLocator().toString().contains("%s")
-					? new GetElementType(fillByTemplate(allLabels().getLocator(), name), this).get(Clickable.class)
-					: getFromList(allLabels().avatar.searchAll().getElements(), name);
-		List<WebElement> elements = getAvatar().searchAll().getElements();
-		WebElement element = elements.get(0);
-		if (elements.size() == 1 && element.getTagName().equals("select"))
-			if (getSelector().getOptions().size() > 0) {
-				getSelector().selectByVisibleText(name);
-				return null;
-			} else throw exception("<select> tag has no <option> tags. Please Clarify element locator (%s)", this);
-		if (elements.size() == 1 && element.getTagName().equals("ul"))
-			elements = element.findElements(By.tagName("li"));
-		return getFromList(elements, name);
-	}
+    protected Clickable getElement(TEnum optionName) {
+        String name = getEnumValue(optionName);
+        if (!hasLocator() && allLabels() == null)
+            throw exception("Can't find option '%s'. No optionsNamesLocator and allLabelsLocator found", name);
+        if (hasLocator() && getLocator().toString().contains("%s"))
+            return new GetElementType(fillByTemplate(getLocator(), name), this).get(Clickable.class);
+        if (allLabels() != null)
+            return allLabels().getLocator().toString().contains("%s")
+                    ? new GetElementType(fillByTemplate(allLabels().getLocator(), name), this).get(Clickable.class)
+                    : getFromList(allLabels().avatar.searchAll().getElements(), name);
+        return getFromList(getAvatar(), name);
+    }
 
-	protected Clickable getElement(TEnum optionName) {
-		String name = getEnumValue(optionName);
-		if (!hasLocator() && allLabels() == null)
-			throw exception("Can't find option '%s'. No optionsNamesLocator and allLabelsLocator found", name);
-		if (hasLocator() && getLocator().toString().contains("%s"))
-			return new GetElementType(fillByTemplate(getLocator(), name), this).get(Clickable.class);
-		if (allLabels() != null)
-			return allLabels().getLocator().toString().contains("%s")
-					? new GetElementType(fillByTemplate(allLabels().getLocator(), name), this).get(Clickable.class)
-					: getFromList(allLabels().avatar.searchAll().getElements(), name);
-		return getFromList(getAvatar(), name);
-	}
+    private Clickable getFromList(GetElementModule avatar, String name) {
+        Supplier<WebElement> getMyCustomElement = () -> getMyElement(avatar, name);
+        asserter.isTrue(() -> getMyCustomElement.get() != null);
+        return new Clickable(getMyCustomElement.get());
+    }
 
-	private Clickable getFromList(List<WebElement> els, String name) {
-		WebElement element = first(els, el -> el.getText().equals(name));
-		if (element == null)
-			throw exception("Can't find option '%s'. Please fix allLabelsLocator", name);
-		return new Clickable(element);
-	}
+    private WebElement getMyElement(GetElementModule avatar, String name) {
+        List<WebElement> elements = getAvatar().searchAll().getElements();
+        WebElement element = elements.get(0);
+        if (elements.size() == 1 && element.getTagName().equals("select"))
+            if (getSelector().getOptions().size() > 0) {
+                getSelector().selectByVisibleText(name);
+                return null;
+            } else throw exception("<select> tag has no <option> tags. Please Clarify element locator (%s)", this);
+        if (elements.size() == 1 && element.getTagName().equals("ul"))
+            elements = element.findElements(By.tagName("li"));
+        element = first(elements, el -> el.getText().equals(name));
+        return element;
+    }
 
-	private Clickable getFromList(GetElementModule avatar, String name) {
-		Supplier<WebElement> getMyCustomElement = () -> getMyElement(avatar, name);
-		asserter.isTrue(() -> getMyCustomElement.get() != null);
-		return new Clickable(getMyCustomElement.get());
-	}
+    private Clickable getFromList(List<WebElement> els, String name) {
+        WebElement element = first(els, el -> el.getText().toLowerCase().trim().equals(name.toLowerCase().trim()));
+        if (element == null)
+            throw exception("Can't find option '%s'. Please fix allLabelsLocator", name);
+        Clickable cl = new Clickable(element);
+        cl.setParent(getParent());
+        return cl;
+    }
+    @Override
+    public WebElement getWebElement() {
+        if (avatar.hasWebElement())
+            return avatar.getElement();
+        Object parent = getParent();
+        return parent != null && isInterface(parent.getClass(), IHasElement.class)
+                ? ((IHasElement)parent).getWebElement()
+                : null;
+    }
+    public void setWebElement(WebElement webElement) {
+        Element element = new Element();
+        element.setParent(getParent());
+        element.setWebElement(webElement);
+        setParent(element);
+    }
 
-	private WebElement getMyElement(GetElementModule avatar, String name) {
-		List<WebElement> elements = getAvatar().searchAll().getElements();
-		WebElement element = elements.get(0);
-		if (elements.size() == 1 && element.getTagName().equals("select"))
-			if (getSelector().getOptions().size() > 0) {
-				getSelector().selectByVisibleText(name);
-				return null;
-			} else throw exception("<select> tag has no <option> tags. Please Clarify element locator (%s)", this);
-		if (elements.size() == 1 && element.getTagName().equals("ul"))
-			elements = element.findElements(By.tagName("li"));
-		element = first(elements, el -> el.getText().equals(name));
-		return element;
-	}
+    protected void selectAction(int num) {
+        Clickable cl = getElement(num);
+        if (cl != null)
+            cl.click();
+    }
+    protected Clickable getElement(int num) {
+        if (!hasLocator() && allLabels() == null)
+            throw exception("Can't find option '%s'. No optionsNamesLocator and allLabelsLocator found", num);
+        if (allLabels() != null)
+            return selectFromList(allLabels().avatar.searchAll().getElements(), num);
+        if (getLocator().toString().contains("%s"))
+            return new GetElementType(fillByTemplate(getLocator(), num), this).get(Clickable.class);
+        List<WebElement> elements = getAvatar().searchAll().getElements();
+        WebElement element = elements.get(0);
+        if (elements.size() == 1 && element.getTagName().equals("select"))
+            if (getSelector().getOptions().size() > 0) {
+                getSelector().selectByIndex(num - 1);
+                return null;
+            }
+            else throw exception("<select> tag has no <option> tags. Please Clarify element locator (%s)", this);
+        if (elements.size() == 1 && element.getTagName().equals("ul"))
+            elements = element.findElements(By.tagName("li"));
+        return selectFromList(elements, num);
+    }
 
-	public WebElement getWebElement() {
-		if (avatar.hasWebElement())
-			return avatar.getElement();
-		Object parent = getParent();
-		return parent != null && isInterface(parent.getClass(), IHasElement.class)
-				? ((IHasElement) parent).getWebElement()
-				: null;
-	}
+    private Clickable selectFromList(List<WebElement> els, int num) {
+        if (num <= 0)
+            throw exception("Can't get option with num '%s'. Number should be 1 or more", num);
+        if (els == null)
+            throw exception("Can't find option with num '%s'. Please fix allLabelsLocator", num);
+        if (els.size() < num)
+            throw exception("Can't find option with num '%s'. Find only '%s' options", num, els.size());
+        return new Clickable(els.get(num - 1));
+    }
 
-	public void setWebElement(WebElement webElement) {
-		Element element = new Element();
-		element.setParent(getParent());
-		element.setWebElement(webElement);
-		setParent(element);
-	}
+    protected abstract boolean isSelectedAction(String name);
 
-	protected void selectAction(int num) {
-		Clickable cl = getElement(num);
-		if (cl != null)
-			cl.click();
-	}
+    protected abstract boolean isSelectedAction(int num);
 
-	protected Clickable getElement(int num) {
-		if (!hasLocator() && allLabels() == null)
-			throw exception("Can't find option '%s'. No optionsNamesLocator and allLabelsLocator found", num);
-		if (allLabels() != null)
-			return selectFromList(allLabels().avatar.searchAll().getElements(), num);
-		if (getLocator().toString().contains("%s"))
-			return new GetElementType(fillByTemplate(getLocator(), num), this).get(Clickable.class);
-		List<WebElement> elements = getAvatar().searchAll().getElements();
-		WebElement element = elements.get(0);
-		if (elements.size() == 1 && element.getTagName().equals("select"))
-			if (getSelector().getOptions().size() > 0) {
-				getSelector().selectByIndex(num - 1);
-				return null;
-			} else throw exception("<select> tag has no <option> tags. Please Clarify element locator (%s)", this);
-		if (elements.size() == 1 && element.getTagName().equals("ul"))
-			elements = element.findElements(By.tagName("li"));
-		return selectFromList(elements, num);
-	}
+    protected boolean isSelectedAction(WebElement el) {
+        if (isSelector)
+            return el.isSelected();
+        String attr = el.getAttribute("checked");
+        return attr != null && attr.equals("true");
+    }
 
-	private Clickable selectFromList(List<WebElement> els, int num) {
-		if (num <= 0)
-			throw exception("Can't get option with num '%s'. Number should be 1 or more", num);
-		if (els == null)
-			throw exception("Can't find option with num '%s'. Please fix allLabelsLocator", num);
-		if (els.size() < num)
-			throw exception("Can't find option with num '%s'. Find only '%s' options", num, els.size());
-		return new Clickable(els.get(num - 1));
-	}
+    /**
+     * @param name Specify name using string
+     * Wait while option (from text) is selected. Return false if this not happens
+     */
+    public final void waitSelected(String name) {
+        actions.isSelected(name, n -> waitCondition(() -> isSelectedAction(n)));
+    }
 
-	protected abstract boolean isSelectedAction(String name);
+    /**
+     * @param name Specify name using enum
+     * Wait while option (from enum) is selected. Return false if this not happens
+     */
+    public final void waitSelected(TEnum name) {
+        waitSelected(getEnumValue(name));
+    }
 
-	protected abstract boolean isSelectedAction(int num);
+    /**
+     * @param name Specify name using string
+     * @return Is option selected?
+     */
+    public final boolean isSelected(String name) {
+        return actions.isSelected(name, this::isSelectedAction);
+    }
 
-	protected boolean isSelectedAction(WebElement el) {
-		if (isSelector)
-			return el.isSelected();
-		String attr = el.getAttribute("checked");
-		return attr != null && attr.equals("true");
-	}
+    protected boolean isDisplayedAction(TEnum name) {
+        WebElement element = getElement(name).getWebElement();
+        return element != null && element.isDisplayed();
+    }
+    /**
+     * @param name Specify name using enum
+     * @return Is option selected?
+     */
+    public final boolean isSelected(TEnum name) {
+        return isSelected(getEnumValue(name));
+    }
 
-	/**
-	 * @param name Specify name using string
-	 *             Wait while option (from text) is selected. Return false if this not happens
-	 */
-	public final void waitSelected(String name) {
-		actions.isSelected(name, n -> waitCondition(() -> isSelectedAction(n)));
-	}
+    protected List<String> getOptionsAction() {
+        return select(getElements(), WebElement::getText);
+    }
 
-	/**
-	 * @param name Specify name using enum
-	 *             Wait while option (from enum) is selected. Return false if this not happens
-	 */
-	public final void waitSelected(TEnum name) {
-		waitSelected(getEnumValue(name));
-	}
+    protected abstract String getValueAction();
 
-	/**
-	 * @param name Specify name using string
-	 * @return Is option selected?
-	 */
-	public final boolean isSelected(String name) {
-		return actions.isSelected(name, this::isSelectedAction);
-	}
+    protected void setValueAction(String value) {
+        selectAction(value);
+    }
 
-	/**
-	 * @param name Specify name using enum
-	 * @return Is option selected?
-	 */
-	public final boolean isSelected(TEnum name) {
-		return isSelected(getEnumValue(name));
-	}
+    /**
+     * @return Get value of Element
+     */
+    public final String getValue() {
+        return actions.getValue(this::getValueAction);
+    }
 
-	protected List<String> getOptionsAction() {
-		return select(getElements(), WebElement::getText);
-	}
+    /**
+     * @param value Specify element value
+     *              Set value to Element
+     */
+    public final void setValue(String value) {
+        actions.setValue(value, this::setValueAction);
+    }
 
-	protected abstract String getValueAction();
+    /**
+     * @return Get labels of all options
+     */
+    public final List<String> getOptions() {
+        return getOptionsAction();
+    }
 
-	protected void setValueAction(String value) {
-		selectAction(value);
-	}
+    protected Select getSelector() {
+        isSelector = true;
+        return new Select(new Element(getLocator()).getWebElement());
+    }
 
-	/**
-	 * @return Get value of Element
-	 */
-	public final String getValue() {
-		return actions.getValue(this::getValueAction);
-	}
+    protected List<WebElement> getElements() {
+        if (!hasLocator() && allLabels() == null)
+            throw exception("Can't check is element displayed or not. No optionsNamesLocator and allLabelsLocator found");
+        if (allLabels() != null)
+            try { return allLabels().avatar.searchAll().getElements(); }
+            catch(Exception | Error ignore) { return new ArrayList<>(); }
+        if (getLocator().toString().contains("%s"))
+            throw exception("Can't check is element displayed or not. Please specify allLabelsLocator or correct optionsNamesLocator (should not contain '%s')");
+        try { return getElementsFromTag(); }
+        catch(Exception | Error ignore) { return new ArrayList<>(); }
+    }
 
-	/**
-	 * @param value Specify element value
-	 *              Set value to Element
-	 */
-	public final void setValue(String value) {
-		actions.setValue(value, this::setValueAction);
-	}
+    public List<WebElement> getElementsFromTag() {
+        List<WebElement> elements;
+        try {
+            elements = getAvatar().searchAll().getElements();
+        } catch (Exception | Error ex) {
+            return new ArrayList<>();
+        }
+        WebElement element = elements.get(0);
+        if (elements.size() == 1)
+            switch (element.getTagName()) {
+                case "select":
+                    return getSelector().getOptions();
+                case "ul":
+                    return element.findElements(By.tagName("li"));
+            }
+        return elements;
+    }
 
-	/**
-	 * @return Get labels of all options
-	 */
-	public final List<String> getOptions() {
-		return getOptionsAction();
-	}
+    public WebElement getWebElement(String name) {
+        return getElement(name).getWebElement();
+    }
 
-	protected Select getSelector() {
-		isSelector = true;
-		return new Select(new Element(getLocator()).getWebElement());
-	}
+    /**
+     * @param attribute Specify attribute name using string
+     * @return Return list of attributes of Elements
+     */
+    public List<String> getAttributesList(String attribute) {
+        return getElementsFromTag().stream().map(e -> e.getAttribute(attribute)).collect(Collectors.toList());
+    }
 
-	protected List<WebElement> getElements() {
-		if (!hasLocator() && allLabels() == null)
-			throw exception("Can't check is element displayed or not. No optionsNamesLocator and allLabelsLocator found");
-		if (allLabels() != null)
-			try {
-				return allLabels().avatar.searchAll().getElements();
-			} catch (Exception | Error ignore) {
-				return new ArrayList<>();
-			}
-		if (getLocator().toString().contains("%s"))
-			throw exception("Can't check is element displayed or not. Please specify allLabelsLocator or correct optionsNamesLocator (should not contain '%s')");
-		try {
-			return getElementsFromTag();
-		} catch (Exception | Error ignore) {
-			return new ArrayList<>();
-		}
-	}
+    protected boolean isDisplayedAction(String name) {
+        WebElement element = getWebElement(name);
+        return element != null && element.isDisplayed();
+    }
 
-	public List<WebElement> getElementsFromTag() {
-		List<WebElement> elements;
-		try {
-			elements = getAvatar().searchAll().getElements();
-		} catch (Exception | Error ex) {
-			return new ArrayList<>();
-		}
-		WebElement element = elements.get(0);
-		if (elements.size() == 1)
-			switch (element.getTagName()) {
-				case "select":
-					return getSelector().getOptions();
-				case "ul":
-					return element.findElements(By.tagName("li"));
-			}
-		return elements;
-	}
+    protected boolean isDisplayedAction(int num) {
+        return isDisplayedInList(getElements(), num);
+    }
 
-	public WebElement getWebElement(String name) {
-		return getElement(name).getWebElement();
-	}
+    private boolean isDisplayedInList(List<WebElement> els, int num) {
+        if (num <= 0)
+            throw exception("Can't get option with num '%s'. Number should be 1 or more", num);
+        if (els == null)
+            throw exception("Can't find option with num '%s'. Please fix allLabelsLocator", num);
+        if (els.size() < num)
+            throw exception("Can't find option with num '%s'. Find '%s' options", num, els.size());
+        return els.get(num - 1).isDisplayed();
+    }
 
-	protected boolean isDisplayedAction(String name) {
-		WebElement element = getWebElement(name);
-		return element != null && element.isDisplayed();
-	}
+    protected boolean isDisplayedAction() {
+        List<WebElement> els = avatar.findImmediately(this::getElements, null);
+        return els != null && !els.isEmpty() && els.get(0).isDisplayed();
+    }
 
-	protected boolean isDisplayedAction(TEnum name) {
-		WebElement element = getElement(name).getWebElement();
-		return element != null && element.isDisplayed();
-	}
+    protected boolean waitDisplayedAction() {
+        return timer().wait(() -> {
+            List<WebElement> els = getElements();
+            return els != null && !els.isEmpty() && els.get(0).isDisplayed();
+        });
+    }
 
-	protected boolean isDisplayedAction(int num) {
-		return isDisplayedInList(getElements(), num);
-	}
+    protected boolean waitVanishedAction() {
+        return timer().wait(() -> !isDisplayedAction());
+    }
 
-	private boolean isDisplayedInList(List<WebElement> els, int num) {
-		if (num <= 0)
-			throw exception("Can't get option with num '%s'. Number should be 1 or more", num);
-		if (els == null)
-			throw exception("Can't find option with num '%s'. Please fix allLabelsLocator", num);
-		if (els.size() < num)
-			throw exception("Can't find option with num '%s'. Find '%s' options", num, els.size());
-		return els.get(num - 1).isDisplayed();
-	}
+    /**
+     * @return Check is Element visible
+     */
+    public boolean isDisplayed() {
+        return actions.isDisplayed(this::isDisplayedAction);
+    }
+    public boolean isDisplayed(String name) {
+        return actions.isDisplayed(() -> isDisplayedAction(name));
+    }
+    public boolean isDisplayed(int num) {
+        return actions.isDisplayed(() -> isDisplayedAction(num));
+    }
+    public boolean isDisplayed(TEnum name) {
+        return actions.isDisplayed(() -> isDisplayedAction(name));
+    }
 
-	protected boolean isDisplayedAction() {
-		List<WebElement> els = avatar.findImmediately(this::getElements, null);
-		return els != null && !els.isEmpty() && els.get(0).isDisplayed();
-	}
+    /**
+     * @return Check is Element hidden
+     */
+    public boolean isHidden() {
+        return actions.isDisplayed(() -> !isDisplayedAction());
+    }
 
-	protected boolean waitDisplayedAction() {
-		return timer().wait(() -> {
-			List<WebElement> els = getElements();
-			return els != null && !els.isEmpty() && els.get(0).isDisplayed();
-		});
-	}
+    /**
+     * Waits while Element becomes visible
+     */
+    public void waitDisplayed() {
+        actions.waitDisplayed(this::waitDisplayedAction);
+    }
 
-	protected boolean waitVanishedAction() {
-		return timer().wait(() -> !isDisplayedAction());
-	}
-
-	/**
-	 * @return Check is Element visible
-	 */
-	public boolean isDisplayed() {
-		return actions.isDisplayed(this::isDisplayedAction);
-	}
-
-	public boolean isDisplayed(String name) {
-		return actions.isDisplayed(() -> isDisplayedAction(name));
-	}
-
-	public boolean isDisplayed(TEnum name) {
-		return actions.isDisplayed(() -> isDisplayedAction(name));
-	}
-
-	public boolean isDisplayed(int num) {
-		return actions.isDisplayed(() -> isDisplayedAction(num));
-	}
-
-	/**
-	 * @return Check is Element hidden
-	 */
-	public boolean isHidden() {
-		return actions.isDisplayed(() -> !isDisplayedAction());
-	}
-
-	/**
-	 * Waits while Element becomes visible
-	 */
-	public void waitDisplayed() {
-		actions.waitDisplayed(this::waitDisplayedAction);
-	}
-
-	/**
-	 * Waits while Element becomes invisible
-	 */
-	public void waitVanished() {
-		actions.waitVanished(() -> timer().wait(() -> !isDisplayedAction()));
-	}
+    /**
+     * Waits while Element becomes invisible
+     */
+    public void waitVanished() {
+        actions.waitVanished(() -> timer().wait(() -> !isDisplayedAction()));
+    }
 }

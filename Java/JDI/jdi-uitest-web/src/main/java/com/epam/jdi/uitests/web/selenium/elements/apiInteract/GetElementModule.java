@@ -17,6 +17,7 @@ package com.epam.jdi.uitests.web.selenium.elements.apiInteract;
  * along with JDI. If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 import com.epam.commons.Timer;
 import com.epam.commons.linqinterfaces.JFuncTREx;
 import com.epam.jdi.uitests.core.interfaces.base.IAvatar;
@@ -89,7 +90,7 @@ public class GetElementModule implements IAvatar {
     }
     public By getLocator() { return byLocator; }
     public void setWebElement(WebElement webElement) { this.webElement = webElement; }
-    public boolean hasWebElement() { return webElement != null; }
+    public boolean hasWebElement() { if (webElement == null) return false; try { webElement.getTagName(); return true; } catch (Exception ex) {return false; } }
 
     public WebDriver getDriver() {
         return (WebDriver) driverFactory.getDriver(driverName);
@@ -104,7 +105,6 @@ public class GetElementModule implements IAvatar {
         WebElement element = webElement != null
                 ? webElement
                 : getElementAction();
-        //: timer().getResultByCondition(this::getElementAction, Objects::nonNull);
         logger.debug("One Element found");
         return element;
     }
@@ -166,8 +166,8 @@ public class GetElementModule implements IAvatar {
     }
     private List<WebElement> getOneOrMoreElements() {
         List<WebElement> result = webElements != null
-                ? webElements
-                : searchElements();
+            ? webElements
+            : searchElements();
         if (result.size() == 1)
             return result;
         return where(result, el -> getSearchCriteria().invoke(el));
@@ -189,16 +189,17 @@ public class GetElementModule implements IAvatar {
     }
 
     private SearchContext getSearchContext(Object element) {
-        Object p;
-        BaseElement bElement;
-        Element el;
-        if (element == null || !isClass(element.getClass(), BaseElement.class)
-                || ((p = (bElement = (BaseElement) element).getParent()) == null
-                && bElement.avatar.frameLocator == null))
+        if (element == null || !isClass(element.getClass(), BaseElement.class))
             return getDriver().switchTo().defaultContent();
-        if (isClass(bElement.getClass(), Element.class)
-                && (el = (Element) bElement).avatar.hasWebElement())
-            return el.getWebElement();
+        BaseElement bElement = (BaseElement) element;
+        if (bElement.useCache && isClass(bElement.getClass(), Element.class)) {
+            Element el = (Element) bElement;
+            if (el.avatar.hasWebElement())
+                return el.avatar.webElement;
+        }
+        Object p = bElement.getParent();
+        if (p == null && bElement.avatar.frameLocator == null)
+            return getDriver().switchTo().defaultContent();
         By locator = bElement.getLocator();
         SearchContext searchContext = containsRoot(locator)
                 ? getDriver().switchTo().defaultContent()
@@ -236,8 +237,8 @@ public class GetElementModule implements IAvatar {
                 ? printFullLocator()
                 : format("Locator: '%s'", getLocator())
                 + (element.getParent() != null && isClass(element.getParent().getClass(), IBaseElement.class)
-                ? format(", Context: '%s'", element.printContext())
-                : "");
+                        ? format(", Context: '%s'", element.printContext())
+                        : "");
     }
 
     private String printFullLocator() {

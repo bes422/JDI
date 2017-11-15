@@ -19,7 +19,6 @@ public class FormExamples extends TestsBase {
     public void before(Method method) throws IOException {
         jobDescriptionPage.shouldBeOpened();
     }
-
     @Test(dataProvider = "attendees", dataProviderClass = AttendeesProvider.class)
     public void fillForm(Attendee attendee) {
         jobDescriptionPage.addCVForm.submit(attendee);

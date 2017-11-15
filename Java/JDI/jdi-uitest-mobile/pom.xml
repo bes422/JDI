@@ -5,27 +5,34 @@
     <parent>
         <artifactId>jdi-uitest-framework</artifactId>
         <groupId>com.epam.jdi</groupId>
-        <version>1.0.70</version>
+        <version>1.0.82</version>
         <relativePath>../..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jdi-uitest-mobile</artifactId>
+    <name>EPAM JDI UI Testing Mobile</name>
 
-    <properties>
-        <selenium.version>3.0.1</selenium.version>
-        <testng.version>6.8.1</testng.version>
-        <log4j.version>1.2.17</log4j.version>
-        <saucelab.version>2.1.19</saucelab.version>
-        <junit.version>4.11</junit.version>
-        <appium.version>3.3.0</appium.version>
-    </properties>
+    <scm>
+        <connection>scm:https://github.com/epam/JDI</connection>
+        <developerConnection>scm:https://github.com/epam/JDI</developerConnection>
+        <url>https://github.com/epam/JDI</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>engineer</id>
+            <name>Roman Iovlev</name>
+            <email>roman_iovlev@epam.com</email>
+            <timezone>UTC+3</timezone>
+        </developer>
+    </developers>
+    <artifactId>jdi-uitest-mobile</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.saucelabs</groupId>
             <artifactId>sauce_junit</artifactId>
-            <version>${saucelab.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>
@@ -40,22 +47,22 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <version>6.11</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
-            <version>${appium.version}</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

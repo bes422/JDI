@@ -5,7 +5,7 @@
     <parent>
         <artifactId>jdi-uitest-framework</artifactId>
         <groupId>com.epam.jdi</groupId>
-        <version>1.0.70</version>
+        <version>1.0.82</version>
         <relativePath>../..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.8.10-SNAPSHOT</version>
+            <version>6.11</version>
         </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>
@@ -32,11 +32,6 @@
             <groupId>com.sikulix</groupId>
             <artifactId>sikulixapi</artifactId>
             <version>1.1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-api</artifactId>
-            <version>2.45.0</version>
         </dependency>
     </dependencies>
 

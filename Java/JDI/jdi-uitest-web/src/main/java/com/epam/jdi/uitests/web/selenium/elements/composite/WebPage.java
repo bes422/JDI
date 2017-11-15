@@ -20,14 +20,17 @@ package com.epam.jdi.uitests.web.selenium.elements.composite;
 
 import com.epam.commons.Timer;
 import com.epam.jdi.uitests.core.interfaces.complex.IPage;
-import com.epam.jdi.uitests.core.interfaces.complex.interfaces.CheckPageTypes;
+import com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.CheckPageTypes;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
+import com.epam.jdi.uitests.web.selenium.utils.Layout;
 import com.epam.jdi.uitests.web.settings.WebSettings;
 import org.openqa.selenium.Cookie;
 import io.qameta.allure.Step;
 
+import java.text.MessageFormat;
 import java.util.function.Supplier;
 
+import static com.epam.commons.FileUtils.getFiles;
 import static com.epam.jdi.uitests.core.settings.JDISettings.*;
 import static java.lang.String.format;
 
@@ -42,6 +45,7 @@ public class WebPage extends BaseElement implements IPage {
     public CheckPageTypes checkTitleType = CheckPageTypes.EQUAL;
     public String urlTemplate;
     public static WebPage currentPage;
+    private String imageRoot;
 
     public WebPage() {
     }
@@ -67,6 +71,16 @@ public class WebPage extends BaseElement implements IPage {
         return WebSettings.getDriver().getTitle();
     }
 
+    @Override
+    public String getImageRoot() {
+        return this.imageRoot;
+    }
+
+    @Override
+    public void setImageRoot(String imageRoot) {
+        this.imageRoot = imageRoot;
+    }
+
     public void updatePageData(String url, String title, CheckPageTypes checkUrlType, CheckPageTypes checkTitleType, String urlTemplate) {
         if (this.url == null)
             this.url = url;
@@ -90,6 +104,7 @@ public class WebPage extends BaseElement implements IPage {
      * Check that page opened
      */
     public void checkOpened() {
+        logger.step(format("I check '%s' is opened", getName()));
         asserter.isTrue(verifyOpened(),
                 format("Page '%s' is not opened", toString()));
     }
@@ -119,14 +134,15 @@ public class WebPage extends BaseElement implements IPage {
     /**
      * Opens url specified for page
      */
+    @Step
     public <T extends IPage> T open() {
-		return open(url);
-	}
-
-	@Step("Open page {url}")
-	private <T extends IPage> T open(String url) {
-        invoker.doJAction(format("Open page '%s' by url %s", getName(), url),
-                () -> getDriver().navigate().to(url));
+        return open(null);
+    }
+    public <T extends IPage> T open(Object... params) {
+        String urlWithParams = (params == null || params.length == 0)
+            ? url : MessageFormat.format(url, params);
+        invoker.doJAction(format("Open page '%s'", getName()),
+                () -> getDriver().navigate().to(urlWithParams));
         if (checkAfterOpen)
             checkOpened();
         currentPage = this;
@@ -148,6 +164,38 @@ public class WebPage extends BaseElement implements IPage {
         } catch (Exception ex) {
             throw exception(format("Can't open page '%s'. Reason: %s", getName(), ex.getMessage()));
         }
+    }
+
+    /**
+     * Searches for a match on a web browser layout for a single file.
+     *
+     * @param pathToFile path to file: C:/Screenshots/file.png
+     * @return <tt>true</tt>, if match was found.
+     */
+    public boolean verifyElementOnPage(String pathToFile) {
+        return Layout.verify(pathToFile);
+    }
+    public void checkThatElementOnPage(String pathToFile) {
+        asserter.isTrue(verifyElementOnPage(pathToFile));
+    }
+
+    /**
+     * Searches for a match on a web browser layout for all images in dir.
+     *
+     * @param pathToDir path to a directory: C:/Screenshots/
+     * @return a list of names for all matched images.
+     */
+    public boolean verifyElementsOnPage(String pathToDir) {
+        boolean result = true;
+        for (String path : getFiles(pathToDir))
+            if (!verifyElementOnPage(path)) {
+                logger.info(format("Can't find image '%s'", path));
+                result = false;
+            }
+        return result;
+    }
+    public void checkElementsOnPage(String pathToDir) {
+        asserter.isTrue(!verifyElementsOnPage(pathToDir));
     }
 
     /**
@@ -226,6 +274,7 @@ public class WebPage extends BaseElement implements IPage {
         /**
          * Check that current page url/title equals to expected url/title
          */
+        @Step
         public boolean check() {
             logger.info(format("Check that page %s equals to '%s'", what, equals));
             return equals == null
@@ -236,6 +285,7 @@ public class WebPage extends BaseElement implements IPage {
         /**
          * Check that current page url/title matches to expected url/title-matcher
          */
+        @Step
         public boolean match() {
             logger.info(format("Check that page %s matches to '%s'", what, template));
             return template == null
@@ -246,6 +296,7 @@ public class WebPage extends BaseElement implements IPage {
         /**
          * Check that current page url/title contains expected url/title-matcher
          */
+        @Step
         public boolean contains() {
             logger.info(format("Check that page %s contains to '%s'", what, template));
             return template == null

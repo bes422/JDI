@@ -33,4 +33,7 @@ public interface IPage extends IComposite {
      * Opens url specified for page
      */
     <T extends IPage> T open();
+
+    String getImageRoot();
+    void setImageRoot(String imageRoot);
 }

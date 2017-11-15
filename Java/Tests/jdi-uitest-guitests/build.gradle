@@ -1,0 +1,7 @@
+
+description = ''
+dependencies {
+  compile project(':jdi-uitest-gui')
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version:'2.45.0'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-api', version:'2.45.0'
+}

@@ -1,8 +1,8 @@
 package com.epam.jdi.uitests.testing.simple.examples;
 
 import com.epam.commons.map.MapArray;
-import com.epam.jdi.uitests.core.interfaces.complex.interfaces.ICell;
-import com.epam.jdi.uitests.core.interfaces.complex.interfaces.ITable;
+import com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.ICell;
+import com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.ITable;
 import com.epam.jdi.uitests.testing.TestsBase;
 import com.epam.web.matcher.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -12,8 +12,8 @@ import java.lang.reflect.Method;
 
 import static com.epam.jdi.site.epam.EpamSite.jobDescriptionPage;
 import static com.epam.jdi.site.epam.EpamSite.jobListingPage;
-import static com.epam.jdi.uitests.core.interfaces.complex.interfaces.Column.inColumn;
-import static com.epam.jdi.uitests.core.interfaces.complex.interfaces.WithValue.withValue;
+import static com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.Column.inColumn;
+import static com.epam.jdi.uitests.core.interfaces.complex.tables.interfaces.WithValue.withValue;
 
 
 public class TableExamples extends TestsBase {
@@ -28,7 +28,6 @@ public class TableExamples extends TestsBase {
     }
     @Test
     public void getTableInfo() {
-        jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         Assert.areEquals(jobsTable().columns().count(), 4);
         Assert.areEquals(jobsTable().rows().count(), 4);
@@ -42,7 +41,6 @@ public class TableExamples extends TestsBase {
 
     @Test
     public void searchInTable() {
-        jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
             .row(withValue("Test Automation Engineer (back-end)"), inColumn("name"))
@@ -52,17 +50,17 @@ public class TableExamples extends TestsBase {
     }
     @Test
     public void searchContainsInTable() {
-        jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
             .rowContains("front-end", inColumn("name"))
             .get("apply").select();
-
+        /*jobsTable()
+                .rowContains("front-end", inColumn("name"))
+                .get("apply").select();*/
         jobDescriptionPage.checkOpened();
     }
     @Test
     public void searchMatchInTable() {
-        jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         jobsTable()
                 .rowMatch(".+front-end.*", inColumn("name"))
@@ -72,7 +70,6 @@ public class TableExamples extends TestsBase {
     }
     @Test
     public void searchContainsListInTable() {
-        jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         MapArray<String, ICell> firstRow = jobsTable().rows(
                 "name~=front-end",
@@ -85,7 +82,6 @@ public class TableExamples extends TestsBase {
 
     @Test
     public void searchByMultiCriteriaInTable() {
-        jobListingPage.shouldBeOpened();
         Assert.isFalse(jobsTable()::isEmpty);
         MapArray<String, ICell> firstRow = jobsTable().rows(
                 "name=Test Automation Engineer (back-end)",

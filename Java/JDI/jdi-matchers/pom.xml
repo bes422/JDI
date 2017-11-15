@@ -5,30 +5,24 @@
     <parent>
         <artifactId>jdi-uitest-framework</artifactId>
         <groupId>com.epam.jdi</groupId>
-        <version>1.0.70</version>
+        <version>1.0.82</version>
         <relativePath>../..</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jdi-matchers</artifactId>
-    <version>1.0.70</version>
-
-    <properties>
-        <testng.version>6.8.1</testng.version>
-        <junit.version>4.11</junit.version>
-        <version>1.0.70</version>
-    </properties>
+    <version>1.0.82</version>
 
     <dependencies>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+            <version>6.11</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.epam.jdi</groupId>
@@ -38,7 +32,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.13</version>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
 

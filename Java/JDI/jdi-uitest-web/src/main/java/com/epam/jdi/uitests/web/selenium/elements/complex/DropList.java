@@ -20,14 +20,20 @@ package com.epam.jdi.uitests.web.selenium.elements.complex;
 
 import com.epam.jdi.uitests.core.interfaces.complex.IDropList;
 import com.epam.jdi.uitests.web.selenium.elements.GetElementType;
+import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.base.Clickable;
+import com.epam.jdi.uitests.web.selenium.elements.base.Element;
+import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JDropList;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import io.qameta.allure.Step;
 
+import java.lang.reflect.Field;
 import java.util.function.Function;
 
 import static java.lang.String.format;
+import static com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.WebAnnotationsUtil.findByToBy;
+import static com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.FillFromAnnotationRules.fieldHasAnnotation;
 
 /**
  * Select control implementation
@@ -55,6 +61,34 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         this.button = new GetElementType(valueLocator, this);
     }
 
+    public static void setUp(BaseElement el, Field field) {
+        if (!fieldHasAnnotation(field, JDropList.class, IDropList.class)) {
+            return;
+        }
+        ((DropList) el).setUp(field.getAnnotation(JDropList.class));
+    }
+
+    public DropList setUp(JDropList jDropList) {
+        By root = findByToBy(jDropList.root());
+        By list = findByToBy(jDropList.list());
+        By value = findByToBy(jDropList.value());
+
+        if (root != null) {
+            Element el = new Element(root);
+            el.setParent(getParent());
+            setParent(el);
+            setAvatar(root);
+        }
+        if (list != null) {
+            this.allLabels = new GetElementType(list, this);
+        }
+
+        if(value != null) {
+            this.button = new GetElementType(value, this);
+        }
+        return this;
+    }
+
     protected Clickable button() {
         return button.get(Clickable.class);
     }
@@ -69,8 +103,9 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
 
     @Override
     protected void selectListAction(String... names) {
-        if (names == null || names.length == 0)
+        if (names == null || names.length == 0) {
             return;
+        }
         if (button() != null) {
             expandAction(names[0]);
             super.selectListAction(names);
@@ -122,6 +157,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * Waits while Element becomes invisible
      */
     @Override
+    @Step
     public void waitVanished() {
         button().waitVanished();
     }
@@ -151,15 +187,20 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
         button().setAttribute(attributeName, value);
     }
 
+    @Override
+    public String getImgPath() {
+        return null;
+    }
+
+    @Override
+    public void setImgPath(String imgPath) {
+
+    }
+
     /**
      * @return Get Element’s text
      */
     public final String getText() {
-        return getText(getName());
-    }
-
-    @Step("{elName} - Get text")
-    private String getText(String elName) {
         return actions.getText(this::getTextAction);
     }
 
@@ -200,6 +241,11 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
      * @return Returns chosen attribute
      */
     public String getAttribute(String name) {
+        return getAttribute(getName(),name);
+    }
+
+    @Step("{elName} - Get attribute {name}")
+    private String getAttribute(String elName, String name) {
         return button().getAttribute(name);
     }
 
@@ -211,6 +257,7 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
     public void waitAttribute(String name, String value) {
         button().waitAttribute(name, value);
     }
+
 
     public void removeAttribute(String attributeName) {
         removeAttribute(getName(),attributeName);
@@ -230,5 +277,4 @@ public class DropList<TEnum extends Enum> extends MultiSelector<TEnum> implement
     private void waitContainsAttribute(String elName, String name, String value) {
         wait(el -> el.getAttribute(name).contains(value));
     }
-
 }

@@ -23,21 +23,28 @@ import com.epam.commons.map.MapArray;
 import com.epam.commons.pairs.Pair;
 import com.epam.jdi.uitests.core.interfaces.base.IElement;
 import com.epam.jdi.uitests.core.interfaces.settings.IDriver;
-import com.epam.jdi.uitests.core.logger.LogLevels;
 import com.epam.jdi.uitests.core.settings.HighlightSettings;
 import com.epam.jdi.uitests.web.selenium.elements.base.BaseElement;
 import com.epam.jdi.uitests.web.selenium.elements.base.Element;
 import com.epam.jdi.uitests.web.settings.WebSettings;
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.FirefoxDriverManager;
+import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.awt.*;
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -45,25 +52,22 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.epam.commons.LinqUtils.any;
 import static com.epam.commons.ReflectionUtils.isClass;
 import static com.epam.commons.StringUtils.LINE_BREAK;
 import static com.epam.commons.Timer.sleep;
 import static com.epam.jdi.uitests.core.settings.JDISettings.exception;
 import static com.epam.jdi.uitests.core.settings.JDISettings.timeouts;
-import static com.epam.jdi.uitests.core.settings.JDISettings.toLog;
 import static com.epam.jdi.uitests.web.selenium.driver.DriverTypes.*;
-import static com.epam.jdi.uitests.web.selenium.driver.RunTypes.GRID;
 import static com.epam.jdi.uitests.web.selenium.driver.RunTypes.LOCAL;
-import static com.epam.jdi.uitests.web.selenium.driver.RunTypes.REMOTE;
-import static com.epam.jdi.uitests.web.selenium.driver.WebDriverProvider.*;
 import static com.epam.jdi.uitests.web.settings.WebSettings.*;
 import static java.lang.String.format;
 import static java.lang.System.setProperty;
 import static java.lang.Thread.currentThread;
+import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.remote.DesiredCapabilities.internetExplorer;
 
 /**
  * Created by Roman_Iovlev on 6/10/2015.
@@ -72,10 +76,11 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     public static JFuncTREx<WebElement, Boolean> elementSearchCriteria = WebElement::isDisplayed;
     public static boolean onlyOneElementAllowedInSearch = true;
     public RunTypes runType = LOCAL;
+    static final String FOLDER_PATH = new File("").getAbsolutePath() + File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"driver"+File.separator;
     public Boolean getLatestDriver = false;
     public static String currentDriverName = "CHROME";
     public boolean isDemoMode = false;
-    public String pageLoadStrategy = "eager";
+    public String pageLoadStrategy = "normal";
     public HighlightSettings highlightSettings = new HighlightSettings();
     private String driversPath = FOLDER_PATH;
     private MapArray<String, Supplier<WebDriver>> drivers = new MapArray<>();
@@ -112,6 +117,29 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
         this.driversPath = driverPath;
     }
 
+    static final String getChromeDriverPath(String folderPath) {
+        return checkOS().equals("win") ? folderPath + "\\chromedriver.exe" : folderPath + "\\chromedriver";
+    }
+
+    static final String getIEDriverPath(String folderPath) {
+        return folderPath + "\\IEDriverServer.exe";
+    }
+
+    static final String getFirefoxDriverPath(String folderPath) {
+        return checkOS().equals("win") ? folderPath + "\\geckodriver.exe" : folderPath + "\\geckodriver";
+    }
+
+    static String checkOS() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("mac")) {
+            return "mac";
+        } else if (osName.contains("win") || osName.contains("ms")) {
+            return "win";
+        } else {
+            return "nix";
+        }
+    }
+
     public String currentDriverName() {
         return currentDriverName;
     }
@@ -137,16 +165,13 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
     public void setRunType(String runType) {
         switch (runType.toLowerCase()) {
             case "local":
-                toLog("runType = local", LogLevels.DEBUG);
                 this.runType = LOCAL;
                 break;
             case "remote":
-                toLog("runType = remote", LogLevels.DEBUG);
-                this.runType = REMOTE;
+                this.runType = RunTypes.REMOTE;
                 break;
             case "grid":
-                toLog("runType = grid", LogLevels.DEBUG);
-                this.runType = GRID;
+                this.runType = RunTypes.GRID;
                 break;
         }
     }
@@ -180,10 +205,9 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
             case GRID:
                 return registerDriver("Grid " + driverType,
                         () -> {
-                            if (!hasHub())
-                                throw exception("Please set hubUrl");
-                            setProperty("webdriver.gecko.driver", getGeckoDriverPath(driversPath));
-                            return webDriverSettings.apply(new RemoteWebDriver(hub, driverType.getDesiredCapabilities(downloadsDir)));
+                            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(hub, driverType.getDesiredCapabilities(downloadsDir));
+                            remoteWebDriver.manage().window().maximize();
+                            return remoteWebDriver;
                         });
             case REMOTE:
                 return registerDriver("Remote " + driverType,
@@ -202,34 +226,72 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
             case ANDROID:
                 return registerDriver(driverType,
                         () -> {
-                            if (getLatestDriver)
-                                downloadChromeDriver(driversPath);
-                            DesiredCapabilities capabilities = driverType.getDesiredCapabilities(downloadsDir);
-                            setProperty("webdriver.chrome.driver", getChromeDriverPath(driversPath));
-                            return webDriverSettings.apply(driverType.getWebDriverObject(capabilities));
+                            System.setProperty("wdm.targetPath", downloadsDir);
+                            System.setProperty("wdm.architecture", "");
+                            ChromeOptions chromeOptions = defaultChromeOptions();
+                            chromeOptions.merge(driverType.getDesiredCapabilities(downloadsDir));
+
+                            if (getLatestDriver) {
+                                ChromeDriverManager.getInstance().setup();
+                                ChromeDriver t = new ChromeDriver(chromeOptions);
+                                t.manage().window().maximize();
+                                return webDriverSettings.apply(t);
+                            } else {
+                                setProperty("webdriver.chrome.driver", getChromeDriverPath(driversPath));
+                                ChromeDriver t = new ChromeDriver(chromeOptions);
+                                t.manage().window().maximize();
+                                return webDriverSettings.apply(t);
+                            }
                         });
+
             case FIREFOX:
                 return registerDriver(driverType,
                         () -> {
-                            downloadGeckoDriver(driversPath);
-                            DesiredCapabilities capabilities = driverType.getDesiredCapabilities(downloadsDir);
-                            capabilities.setCapability(PAGE_LOAD_STRATEGY, pageLoadStrategy);
-                            setProperty("webdriver.gecko.driver", getGeckoDriverPath(driversPath));
-                            return webDriverSettings.apply(driverType.getWebDriverObject(capabilities));
+                            System.setProperty("wdm.targetPath", downloadsDir);
+                            System.setProperty("wdm.architecture", "");
+                            if (getLatestDriver) {
+                                return webDriverSettings.apply(initFirefox());
+                            } else {
+                                setProperty("webdriver.gecko.driver", getFirefoxDriverPath(driversPath));
+                                return webDriverSettings.apply(new FirefoxDriver(defaultFirefoxOptions()));
+                            }
                         });
             case IE:
                 return registerDriver(driverType, () -> {
                     DesiredCapabilities capabilities = driverType.getDesiredCapabilities(downloadsDir);
                     capabilities.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-                    if (getLatestDriver)
-                        downloadIEDriver(driversPath);
-                    setProperty("webdriver.ie.driver", getIEDriverPath(driversPath));
-                    return webDriverSettings.apply(driverType.getWebDriverObject(capabilities));
+                    InternetExplorerOptions internetExplorerOptions = defaultIEOptions();
+                    internetExplorerOptions.merge(capabilities);
+                    if (getLatestDriver) {
+                        InternetExplorerDriverManager.getInstance().setup();
+
+                        return webDriverSettings.apply(new InternetExplorerDriver(internetExplorerOptions));
+                    } else {
+                        setProperty("webdriver.ie.driver", getIEDriverPath(driversPath));
+                        return webDriverSettings.apply(new InternetExplorerDriver(internetExplorerOptions));
+                    }
                 });
         }
         throw exception("Unknown driver: " + driverType);
     }
-
+    private FirefoxOptions defaultFirefoxOptions() {
+        FirefoxOptions cap = new FirefoxOptions();
+        cap.setCapability(PAGE_LOAD_STRATEGY, pageLoadStrategy);
+        return cap;
+    }
+    private ChromeOptions defaultChromeOptions() {
+        ChromeOptions cap = new ChromeOptions();
+        cap.setCapability(PAGE_LOAD_STRATEGY, pageLoadStrategy);
+        return cap;
+    }
+    private InternetExplorerOptions defaultIEOptions() {
+        InternetExplorerOptions cap = new InternetExplorerOptions();
+        cap.setCapability(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+        cap.setCapability("ignoreZoomSetting", true);
+        //cap.setCapability("requireWindowFocus", true);
+        cap.setCapability(PAGE_LOAD_STRATEGY, pageLoadStrategy);
+        return cap;
+    }
     public String registerDriver(DriverTypes driverType, Supplier<WebDriver> driver) {
         int numerator = 2;
         String driverName = driverType.toString();
@@ -258,11 +320,39 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
         }
     }
 
+    private WebDriver initFirefox() {
+        FirefoxDriverManager.getInstance().arch32().setup();
+        return new FirefoxDriver(defaultFirefoxOptions());
+    }
+
+    private WebDriver initChrome() {
+        ChromeDriverManager.getInstance().setup();
+        return new ChromeDriver(defaultChromeOptions());
+    }
+
+    private WebDriver initIE() {
+        InternetExplorerDriverManager.getInstance().setup();
+        return new InternetExplorerDriver(defaultIEOptions());
+    }
+
     public static Dimension browserSizes;
 
+    private static void maximizeMacBrowser(WebDriver driver) {
+        java.awt.Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        driver.manage().window()
+                .setSize(new org.openqa.selenium.Dimension(screenSize.width, screenSize.height));
+    }
+
     public static Function<WebDriver, WebDriver> webDriverSettings = driver -> {
-        if (browserSizes == null)
-            driver.manage().window().maximize();
+        if (browserSizes == null) {
+            if (any(asList("chrome", "internetexplorer"),
+                    el -> driver.toString().toLowerCase().contains(el))) {
+                if (System.getProperty("os.name").toLowerCase().contains("mac"))
+                    maximizeMacBrowser(driver);
+                else
+                    driver.manage().window().maximize();
+            }
+        }
         else
             driver.manage().window().setSize(browserSizes);
         driver.manage().timeouts().implicitlyWait(timeouts.getCurrentTimeoutSec(), SECONDS);
@@ -288,6 +378,10 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
                 runDrivers.set(rDrivers);
             }
             WebDriver result = runDrivers.get().get(driverName);
+            if (result.toString().contains("(null)")) {
+                result = drivers.get(driverName).get();
+                runDrivers.get().update(driverName, result);
+            }
             lock.unlock();
             return result;
         } catch (Exception ex) {
@@ -336,9 +430,9 @@ public class SeleniumDriverFactory implements IDriver<WebDriver> {
         WebElement webElement = ((Element) element).getHighLightElement();
         String orig = webElement.getAttribute("style");
         getJSExecutor().executeScript(format("arguments[0].setAttribute('%s',arguments[1]);", "style"),
-                webElement, format("border: 1px solid %s; background-color: %s;", highlightSettings.getFrameColor(),
+                webElement, format("border: 3px solid %s; background-color: %s;", highlightSettings.getFrameColor(),
                         highlightSettings.getBgColor()));
-        sleep(highlightSettings.getTimeoutInSec());
+        sleep(highlightSettings.getTimeoutInSec() * 1000);
         getJSExecutor().executeScript(format("arguments[0].setAttribute('%s',arguments[1]);", "style"),
                 webElement, orig);
     }

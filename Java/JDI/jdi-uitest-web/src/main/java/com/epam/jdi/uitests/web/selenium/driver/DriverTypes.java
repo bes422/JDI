@@ -21,8 +21,8 @@ package com.epam.jdi.uitests.web.selenium.driver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -47,14 +47,15 @@ public enum DriverTypes implements DriverSetup  {
         }
 
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-            return new FirefoxDriver(new FirefoxBinary(), getFirefoxProfile(downloadFileDir), capabilities);
+            FirefoxOptions firefoxOptions = new FirefoxOptions(capabilities);
+            firefoxOptions.setProfile(getFirefoxProfile(downloadFileDir));
+            return new FirefoxDriver(firefoxOptions);
+//            return new FirefoxDriver(new FirefoxBinary(), getFirefoxProfile(downloadFileDir), capabilities);
         }
 
         public FirefoxProfile getFirefoxProfile(String downloadsDir) {
             FirefoxProfile firefoxProfile = new FirefoxProfile();
             firefoxProfile.setAssumeUntrustedCertificateIssuer(false);
-            firefoxProfile.setEnableNativeEvents(false);
-
             firefoxProfile.setPreference("browser.download.folderList", 2);
             firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
             firefoxProfile.setPreference("browser.helperApps.alwaysAsk.force", false);

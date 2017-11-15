@@ -46,6 +46,10 @@ public interface IElement extends IBaseElement, IVisible {
      */
     void setAttribute(String attributeName, String value);
 
+    String getImgPath();
+
+    void setImgPath(String imgPath);
+
     void removeAttribute(String attributeName);
 
 }

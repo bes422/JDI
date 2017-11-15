@@ -8,7 +8,7 @@ import com.epam.commons.DataClass;
  */
 /*@AllArgsConstructor
 @NoArgsConstructor*/
-public class Attendee extends DataClass {
+public class Attendee extends DataClass<Attendee> {
     public JobSearchFilter filter = new JobSearchFilter();
 
     public String name = "Roman";
@@ -19,10 +19,4 @@ public class Attendee extends DataClass {
     public String cv; // = "jdi-uitest-tutorialtests\\src\\test\\resources\\cv.txt";
     public String comment = "I WANT TO WORK IN EPAM!!!";
 
-    public Attendee(String name) {
-        this.name = name;
-    }
-
-    public Attendee(){
-    }
 }

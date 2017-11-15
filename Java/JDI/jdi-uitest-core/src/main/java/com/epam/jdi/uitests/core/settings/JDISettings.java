@@ -26,7 +26,7 @@ import io.qameta.allure.Step;
 import java.io.IOException;
 
 import static com.epam.commons.PropertyReader.fillAction;
-import static com.epam.commons.PropertyReader.getProperties;
+import static com.epam.jdi.uitests.core.settings.JDIPropertiesReader.getProperties;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -41,13 +41,16 @@ public abstract class JDISettings {
     public static boolean shortLogMessagesFormat = true;
     public static String jdiSettingsPath = "test.properties";
     public static IDriver driverFactory;
-    public static boolean useCache = false;
+    public static boolean USE_CACHE = false;
 
     protected JDISettings() {
     }
 
     public static void toLog(String message, LogLevels level) {
         switch (level) {
+            case STEP:
+                logger.step(message);
+                break;
             case INFO:
                 logger.info(message);
                 break;
@@ -68,12 +71,13 @@ public abstract class JDISettings {
         fillAction(driverFactory::setRunType, "run.type");
         fillAction(driverFactory::registerDriver, "driver");
         fillAction(p -> shortLogMessagesFormat = p.toLowerCase().equals("short"), "log.message.format");
-        fillAction(p -> useCache =
+        fillAction(p -> USE_CACHE =
                 p.toLowerCase().equals("true") || p.toLowerCase().equals("1"), "cache");
         fillAction(p -> isDemoMode =
                 p.toLowerCase().equals("true") || p.toLowerCase().equals("1"), "demo.mode");
         fillAction(p -> highlightSettings.setTimeoutInSec(parseInt(p)), "demo.delay");
         fillAction(p -> timeouts.setDefaultTimeoutSec(parseInt(p)), "timeout.wait.element");
+        fillAction(p -> verifyLayout = p.toLowerCase().equals("true") || p.toLowerCase().equals("1"), "verifyLayout");
         // fillAction(p -> timeouts.waitPageLoadSec = parseInt(p), "timeout.wait.pageLoad");
     }
 
@@ -82,6 +86,8 @@ public abstract class JDISettings {
         initFromProperties();
     }
 
+
+    public static boolean verifyLayout = false;
     public static RuntimeException exception(String msg, Object... args) {
         return asserter.exception(msg, args);
     }

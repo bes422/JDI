@@ -38,5 +38,4 @@ public class RadioButtons<TEnum extends Enum> extends Selector<TEnum> implements
     public RadioButtons(By optionsNamesLocatorTemplate, By allOptionsNamesLocator) {
         super(optionsNamesLocatorTemplate, allOptionsNamesLocator);
     }
-
 }

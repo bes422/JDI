@@ -50,212 +50,186 @@ import static java.lang.String.format;
  * Created by Roman_Iovlev on 7/8/2015.
  */
 public class Form<T> extends Element implements IForm<T> {
-	protected Class<T> entityClass;
+    protected Class<T> entityClass;
+    public Form() {}
+    public Form(Class<T> clazz) {
+        this.entityClass = checkEntityIsNotNull(clazz);
+    }
 
-	public Form() {
-	}
+    protected void setValueAction(String text, ISetValue element) {
+        element.setValue(text);
+    }
 
-	public Form(Class<T> clazz) {
-		this.entityClass = checkEntityIsNotNull(clazz);
-	}
+    protected String getValueAction(IHasValue element) {
+        return element.getValue();
+    }
 
-	protected void setValueAction(String text, ISetValue element) {
-		element.setValue(text);
-	}
+    private FormFilters filter = ALL;
+    public void filter(FormFilters filter) {
+        this.filter = filter;
+    }
 
-	protected String getValueAction(IHasValue element) {
-		return element.getValue();
-	}
+    private List<Field> allFields() {
+        switch (filter) {
+            case MANDATORY:
+                return LinqUtils.where(getFields(this, ISetValue.class),
+                        field -> field.isAnnotationPresent(Mandatory.class));
+            case OPTIONAL:
+                return LinqUtils.where(getFields(this, ISetValue.class),
+                        field -> !field.isAnnotationPresent(Mandatory.class));
+            default:
+                return getFields(this, ISetValue.class);
+        }
+    }
+    /**
+     * @param map Specify entity as map
+     *            Fills all elements on the form which implements SetValue interface and can be matched with fields in input entity
+     */
+    public final void fill(MapArray<String, String> map) {
+        fill(getName(), map);
+    }
 
-	private FormFilters filter = ALL;
+    @Step("{elName} - fill {map}")
+    private void fill(String elName, MapArray<String, String> map) {
+        foreach(allFields(), element -> {
+            String fieldValue = map.first((name, value) ->
+                namesEqual(name, getElementName(element)));
+            if (fieldValue == null)
+                return;
+            ISetValue setValueElement = (ISetValue) getValueField(element, this);
+            doActionRule.accept(fieldValue, val -> setValueAction(val, setValueElement));
+        });
+        filter = ALL;
+    }
 
-	public void filter(FormFilters filter) {
-		this.filter = filter;
-	}
+    private Button getSubmitButton() {
+        List<Field> fields = getFields(this, IButton.class);
+        switch (fields.size()) {
+            case 0:
+                throw exception("Can't find any buttons on form '%s.", toString());
+            case 1:
+                return (Button) getValueField(fields.get(0), this);
+            default:
+                throw exception("Form '%s' have more than 1 button. Use submit(entity, buttonName) for this case instead", toString());
+        }
+    }
 
-	private List<Field> allFields() {
-		switch (filter) {
-			case MANDATORY:
-				return LinqUtils.where(getFields(this, ISetValue.class),
-						field -> field.isAnnotationPresent(Mandatory.class));
-			case OPTIONAL:
-				return LinqUtils.where(getFields(this, ISetValue.class),
-						field -> !field.isAnnotationPresent(Mandatory.class));
-			default:
-				return getFields(this, ISetValue.class);
-		}
-	}
+    /**
+     * @param objStrings Fill all SetValue elements and click on Button specified button e.g. "Publish" or "Save" <br>
+     * @apiNote To use this option Form pageObject should have button names in specific format <br>
+     * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
+     * * Letters case in button name  no matters
+     */
+    public void submit(MapArray<String, String> objStrings) {
+        fill(objStrings);
+        getElementClass.getButton("submit").click();
+    }
 
-	/**
-	 * @param map Specify entity as map
-	 *            Fills all elements on the form which implements SetValue interface and can be matched with fields in input entity
-	 */
-	public final void fill(MapArray<String, String> map) {
-		fill(getName(), map);
-	}
+    private void setText(String text) {
+        Field field = getFields(this, ISetValue.class).get(0);
+        ISetValue setValueElement = (ISetValue) getValueField(field, this);
+        doActionRule.accept(text, val -> setValueAction(val, setValueElement));
+    }
 
-	@Step("{elName} - fill {map}")
-	private void fill(String elName, MapArray<String, String> map) {
-		foreach(allFields(), element -> {
-			String fieldValue = map.first((name, value) ->
-					namesEqual(name, getElementName(element)));
-			if (fieldValue == null)
-				return;
-			ISetValue setValueElement = (ISetValue) getValueField(element, this);
-			doActionRule.accept(fieldValue, val -> setValueAction(val, setValueElement));
-		});
-		filter = ALL;
-	}
+    /**
+     * @param text Specify text
+     *             Fill first setable field with value and click on Button “submit” <br>
+     * @apiNote To use this option Form pageObject should have at least one ISetValue element and only one IButton Element
+     */
+    public void submit(String text) {
+        setText(text);
+        getElementClass.getButton("submit").click();
+    }
 
-	private Button getSubmitButton() {
-		List<Field> fields = getFields(this, IButton.class);
-		switch (fields.size()) {
-			case 0:
-				throw exception("Can't find any buttons on form '%s.", toString());
-			case 1:
-				return (Button) getValueField(fields.get(0), this);
-			default:
-				throw exception("Form '%s' have more than 1 button. Use submit(entity, buttonName) for this case instead", toString());
-		}
-	}
+    /**
+     * @param buttonName Specify Button Name
+     * @param entity     Specify entity
+     *                   Fill all SetValue elements and click on Button specified button e.g. "Publish" or "Save" <br>
+     * @apiNote To use this option Form pageObject should have button names in specific format <br>
+     * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
+     * * Letters case in button name  no matters
+     */
+    public void submit(T entity, String buttonName) {
+        fill(getMapFromObject(entity));
+        getElementClass.getButton(buttonName).click();
+    }
 
-	/**
-	 * @param objStrings Fill all SetValue elements and click on Button specified button e.g. "Publish" or "Save" <br>
-	 * @apiNote To use this option Form pageObject should have button names in specific format <br>
-	 * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
-	 * * Letters case in button name  no matters
-	 */
-	public void submit(MapArray<String, String> objStrings) {
-		submit(getName(), objStrings);
-	}
+    /**
+     * @param text       Specify text
+     * @param buttonName button name for form submiting
+     *                   Fill first setable field with value and click on Button “buttonName” <br>
+     * @apiNote To use this option Form pageObject should have at least one ISetValue element <br>
+     * Allowed different buttons to send one form e.g. save/ publish / cancel / search update ...
+     */
+    public void submit(String text, String buttonName) {
+        setText(text);
+        getElementClass.getButton(buttonName).click();
+    }
 
-	@Step("{elName} - submit {objStrings}")
-	private void submit(String elName, MapArray<String, String> objStrings) {
-		fill(objStrings);
-		getElementClass.getButton("submit").click();
-	}
+    /**
+     * @param buttonName Specify Button Name
+     * @param entity     Specify entity
+     *                   Fill all SetValue elements and click on Button specified button e.g. "Publish" or "Save" <br>
+     * @apiNote To use this option Form pageObject should have button names in specific format <br>
+     * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
+     * * Letters case in button name  no matters
+     */
+    public void submit(T entity, Enum buttonName) {
+        fill(getMapFromObject(entity));
+        getElementClass.getButton(buttonName.toString().toLowerCase()).click();
+    }
 
-	private void setText(String text) {
-		Field field = getFields(this, ISetValue.class).get(0);
-		ISetValue setValueElement = (ISetValue) getValueField(field, this);
-		doActionRule.accept(text, val -> setValueAction(val, setValueElement));
-	}
+    public T getEntity() {
+        return asEntity(entityClass);
+    }
 
-	/**
-	 * @param text Specify text
-	 *             Fill first setable field with value and click on Button “submit” <br>
-	 * @apiNote To use this option Form pageObject should have at least one ISetValue element and only one IButton Element
-	 */
-	public void submit(String text) {
-		submitCustom(getName(), text);
-	}
+    /**
+     * @param objStrings Specify entity as mapArray
+     *            Fills all elements on the form which implements SetValue interface and can be matched with fields in input entity
+     */
+    public List<String> verify(MapArray<String, String> objStrings) {
+        List<String> compareFalse = new ArrayList<>();
+        foreach(allFields(), field -> {
+            String fieldValue = objStrings.first((name, value) ->
+                    namesEqual(name, getElementName(field)));
+            if (fieldValue == null)
+                return;
+            IHasValue valueField = (IHasValue) getValueField(field, this);
+            doActionRule.accept(fieldValue, expected -> {
+                String actual = getValueAction(valueField).trim();
+                if (actual.equals(expected))
+                    return;
+                compareFalse.add(format("Field '%s' (Actual: '%s' <> Expected: '%s')", field.getName(), actual, expected));
+            });
+        });
+        filter = ALL;
+        return compareFalse;
+    }
 
-	@Step("{elName} - submit {text}")
-	private void submitCustom(String elName, String text) {
-		setText(text);
-		getElementClass.getButton("submit").click();
-	}
+    /**
+     * @param objStrings Specify entity as mapArray
+     *            Verify that form filled correctly. If not throws error
+     */
+    public void check(MapArray<String, String> objStrings) {
+        List<String> result = verify(objStrings);
+        Assert.areEquals(result.size(), 0,
+            "Check form failed:" + LINE_BREAK + print(result, LINE_BREAK));
+    }
 
-	/**
-	 * @param buttonName Specify Button Name
-	 * @param entity     Specify entity
-	 *                   Fill all SetValue elements and click on Button specified button e.g. "Publish" or "Save" <br>
-	 * @apiNote To use this option Form pageObject should have button names in specific format <br>
-	 * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
-	 * * Letters case in button name  no matters
-	 */
-	public void submit(T entity, String buttonName) {
-		submit(getName(), entity, buttonName);
-	}
+    protected String getValueAction() {
+        return print(LinqUtils.select(getFields(this, IHasValue.class), field ->
+                ((IHasValue) getValueField(field, this)).getValue()));
+    }
 
-	@Step("{elName} - submit entity {entity} and click button {buttonName}")
-	private void submit(String elName, T entity, String buttonName) {
-		fill(getMapFromObject(entity));
-		getElementClass.getButton(buttonName).click();
-	}
-
-	/**
-	 * @param text       Specify text
-	 * @param buttonName button name for form submiting
-	 *                   Fill first setable field with value and click on Button “buttonName” <br>
-	 * @apiNote To use this option Form pageObject should have at least one ISetValue element <br>
-	 * Allowed different buttons to send one form e.g. save/ publish / cancel / search update ...
-	 */
-	public void submit(String text, String buttonName) {
-		submit(getName(), text, buttonName);
-	}
-
-	@Step("{elName} - submit {text} and click button {buttonName}")
-	private void submit(String elName, String text, String buttonName) {
-		setText(text);
-		getElementClass.getButton(buttonName).click();
-	}
-
-	/**
-	 * @param buttonName Specify Button Name
-	 * @param entity     Specify entity
-	 *                   Fill all SetValue elements and click on Button specified button e.g. "Publish" or "Save" <br>
-	 * @apiNote To use this option Form pageObject should have button names in specific format <br>
-	 * e.g. if you call "submit(user, "Publish") then you should have Element 'publishButton'. <br>
-	 * * Letters case in button name  no matters
-	 */
-	public void submit(T entity, Enum buttonName) {
-		submit(getName(), entity, buttonName);
-	}
-
-	@Step("{elName} - submit {entity} and click button {buttonName}")
-	private void submit(String elName, T entity, Enum buttonName) {
-		fill(getMapFromObject(entity));
-		getElementClass.getButton(buttonName.toString().toLowerCase()).click();
-	}
-
-	public T getEntity() {
-		return extractEntity(entityClass, this);
-	}
-
-	/**
-	 * @param objStrings Specify entity as mapArray
-	 *                   Fills all elements on the form which implements SetValue interface and can be matched with fields in input entity
-	 */
-	public List<String> verify(MapArray<String, String> objStrings) {
-		List<String> compareFalse = new ArrayList<>();
-		foreach(allFields(), field -> {
-			String fieldValue = objStrings.first((name, value) ->
-					namesEqual(name, getElementName(field)));
-			if (fieldValue == null)
-				return;
-			IHasValue valueField = (IHasValue) getValueField(field, this);
-			doActionRule.accept(fieldValue, expected -> {
-				String actual = getValueAction(valueField).trim();
-				if (actual.equals(expected))
-					return;
-				compareFalse.add(format("Field '%s' (Actual: '%s' <> Expected: '%s')", field.getName(), actual, expected));
-			});
-		});
-		filter = ALL;
-		return compareFalse;
-	}
-
-	/**
-	 * @param objStrings Specify entity as mapArray
-	 *                   Verify that form filled correctly. If not throws error
-	 */
-	public void check(MapArray<String, String> objStrings) {
-		List<String> result = verify(objStrings);
-		Assert.areEquals(result.size(), 0,
-				"Check form failed:" + LINE_BREAK + print(result, LINE_BREAK));
-	}
-
-	protected String getValueAction() {
-		return print(LinqUtils.select(getFields(this, IHasValue.class), field ->
-				((IHasValue) getValueField(field, this)).getValue()));
-	}
-
-	/**
-	 * @return Get value of Element
-	 */
-	public final String getValue() {
-		return actions.getValue(this::getValueAction);
-	}
+    @Override
+    public void setValue(String value) {
+        invoker.doJAction("Get value", () -> setValueAction(value, this));
+    }
+    /**
+     * @return Get value of Element
+     */
+    public final String getValue() {
+        return actions.getValue(this::getValueAction);
+    }
 
 }
